@@ -1,0 +1,19 @@
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: add-tenant-node-selector
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    namespaces: ["uc1", "uc2", "uc3", "uc4"]
+  location: spec.nodeSelector.tenant
+  parameters:
+    pathTests:
+    - subPath: "spec.nodeSelector.tenant"
+      condition: MustNotExist
+    assign:
+      fromMetadata:
+        field: namespace

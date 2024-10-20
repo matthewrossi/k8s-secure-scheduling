@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    data-sovereignty: eu
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/region
+            operator: In
+            values:
+            - italynorth
+            - bergamo
+            - milano
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent

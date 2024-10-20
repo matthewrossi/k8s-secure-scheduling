@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    data-sovereignty: eu
+spec:
+  affinity:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent

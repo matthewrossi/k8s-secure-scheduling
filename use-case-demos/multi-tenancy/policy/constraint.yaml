@@ -1,0 +1,16 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequireNodeSelectorsEqualTo
+metadata:
+  name: secure-multi-tenant-scheduling
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces: ["uc1", "uc2", "uc3", "uc4"]
+  parameters:
+    nodeSelectors:
+    - key: tenant
+      value:
+      - metadata
+      - namespace

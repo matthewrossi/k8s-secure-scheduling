@@ -1,0 +1,64 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequirenodeselectorsequalto
+  annotations:
+    metadata.gatekeeper.sh/title: "Required Node Selector Equal To"
+    metadata.gatekeeper.sh/version: 1.0.1
+    description: >-
+      Requires pods to contain nodeSelector key-value pairs. The expected value
+      is retrieved by traversing the input review object.
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequireNodeSelectorsEqualTo
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            nodeSelectors:
+              description: List of required nodeSelectors.
+              type: array
+              items:
+                description: The required nodeSelector.
+                type: object
+                properties:
+                  key:
+                    description: The required nodeSelector key.
+                    type: string
+                  value:
+                    description: >-
+                      The list of keys to navigate the input review object to
+                      the expected nodeSelector value.
+                    type: array
+                    items:
+                      type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequirenodeselectorsequalto
+
+        # missing node selector
+        violation[{"msg": msg}] {
+          required := {key | key := input.parameters.nodeSelectors[_].key}
+          provided := {key | input.review.object.spec.nodeSelector[key]}
+          missing := required - provided
+          count(missing) > 0
+
+          podName := input.review.object.metadata.name
+          msg := sprintf("pod <%v> does not specify the required nodeSelector keys <%v>", [podName, missing])
+        }
+
+        # wrong node selector value
+        violation[{"msg": msg}] {
+          nodeSelector := input.parameters.nodeSelectors[_]
+          required_key := nodeSelector.key
+          required_value := object.get(input.review.object, nodeSelector.value, null)
+          provided_value := input.review.object.spec.nodeSelector[required_key]
+          provided_value != required_value
+
+          podName := input.review.object.metadata.name
+          path_to_expected_value := sprintf(".%v", [concat(".", nodeSelector.value)]) # avoid leaking actual value
+          msg := sprintf("pod <%v> has node selector <%v> set to a value different from the value of <%v>", [podName, required_key, path_to_expected_value])
+        }

@@ -1,0 +1,50 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowednodeselectorvalues
+  annotations:
+    metadata.gatekeeper.sh/title: "Restrict Allowed Node Selector Values"
+    metadata.gatekeeper.sh/version: 1.0.1
+    description: >-
+      Restricts the set of allowed nodeSelector values if the target
+      nodeSelectors exist.
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sAllowedNodeSelectorValues
+      validation:
+        openAPIV3Schema:
+          # type: object
+          # properties:
+          #   restrictions:
+              description: List of restricted nodeSelectors.
+              type: array
+              items:
+                description: The restricted nodeSelector and its allowed values.
+                type: object
+                properties:
+                  key:
+                    description: The restricted nodeSelector key.
+                    type: string
+                  values:
+                    description: The list of allowed values.
+                    type: array
+                    items:
+                      type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sallowednodeselectorvalues
+
+        # wrong nodeSelector value
+        violation[{"msg": msg}] {
+          restriction := input.parameters[_]
+          restricted_key := restriction.key
+          allowed_values := {value | value := restriction.values[_]}
+          provided_value := input.review.object.spec.nodeSelector[restricted_key]
+          not allowed_values[provided_value]
+
+          name := input.review.object.metadata.name
+          msg := sprintf("pod <%v> has nodeSelector <%v> with value not in <%v>", [name, restricted_key, allowed_values])
+        }

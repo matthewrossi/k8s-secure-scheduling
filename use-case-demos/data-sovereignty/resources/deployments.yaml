@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-anywhere
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-eu
+  labels:
+    app: nginx
+    data-sovereignty: eu
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+      data-sovereignty: eu
+  template:
+    metadata:
+      labels:
+        app: nginx
+        data-sovereignty: eu
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-us
+  labels:
+    app: nginx
+    data-sovereignty: us
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+      data-sovereignty: us
+  template:
+    metadata:
+      labels:
+        app: nginx
+        data-sovereignty: us
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-italynorth
+  labels:
+    app: nginx
+    data-sovereignty: eu
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+      data-sovereignty: eu
+  template:
+    metadata:
+      labels:
+        app: nginx
+        data-sovereignty: eu
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: topology.kubernetes.io/region
+                operator: In
+                values:
+                - italynorth
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80

@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-sensitive
+  labels:
+    env: test
+    security-ring: sensitive
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-unhardened
+  labels:
+    env: test
+    security-ring: unhardened
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent

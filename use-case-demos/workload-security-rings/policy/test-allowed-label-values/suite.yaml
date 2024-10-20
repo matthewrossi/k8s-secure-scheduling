@@ -1,0 +1,25 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+metadata:
+  name: allowed-nodeselector-values
+tests:
+- name: allowed-nodeselector-values
+  template: ../allowed-nodeselector-values-template.yaml
+  constraint: ../allowed-nodeselector-values-constraint.yaml
+  cases:
+  - name: allow-without-nodeselector
+    object: pod-without-nodeselector.yaml
+    assertions:
+    - violations: no
+  - name: allow-without-specified-nodeselector
+    object: pod-without-specified-nodeselector.yaml
+    assertions:
+    - violations: no
+  - name: allow-correct-value
+    object: pod-nodeselector-with-correct-value.yaml
+    assertions:
+    - violations: no
+  - name: disallow-wrong-value
+    object: pod-nodeselector-with-wrong-value.yaml
+    assertions:
+    - violations: yes

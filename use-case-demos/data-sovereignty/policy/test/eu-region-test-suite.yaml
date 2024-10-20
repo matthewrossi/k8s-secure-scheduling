@@ -1,0 +1,57 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+metadata:
+  name: eu-region-node-affinity
+tests:
+- name: eu-region-node-affinity
+  template: ../template.yaml
+  constraint: ../warn-unknown-eu-region-constraint.yaml
+  cases:
+  # Allow correct regions
+  - name: allow-specific-known-region
+    object: pod-specific-region.yaml
+    assertions:
+    - violations: no
+  - name: allow-multiple-known-regions
+    object: pod-multiple-regions.yaml
+    assertions:
+    - violations: no
+  # Warn use of unknown regions
+  - name: warn-specific-unknown-region
+    object: pod-specific-unknown-region.yaml
+    assertions:
+    - violations: yes
+  - name: warn-multiple-unknown-region
+    object: pod-multiple-unknown-regions.yaml
+    assertions:
+    - violations: yes
+  # Disallow use of all regions
+  - name: disallow-all-regions
+    object: pod-all-regions.yaml
+    assertions:
+    - violations: yes
+  # Disallow missing node affinity requirement
+  - name: disallow-no-affinity
+    object: pod-no-affinity.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-no-node-affinity
+    object: pod-no-node-affinity.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-no-required-scheduling
+    object: pod-no-required-scheduling.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-no-node-selector
+    object: pod-no-node-selector.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-no-match-expr
+    object: pod-no-match-expr.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-no-match-expr-with-target-key
+    object: pod-no-match-expr-with-target-key.yaml
+    assertions:
+    - violations: yes

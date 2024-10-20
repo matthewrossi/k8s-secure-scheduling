@@ -1,0 +1,47 @@
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: add-sensitive-security-ring-node-selector
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    labelSelector:
+      matchExpressions:
+      - key: security-ring
+        operator: In
+        values:
+        - sensitive
+  location: spec.nodeSelector.security-ring
+  parameters:
+    pathTests:
+    - subPath: spec.nodeSelector.security-ring
+      condition: MustNotExist
+    assign:
+      value: sensitive
+---
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: add-unhardened-security-ring-node-selector
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    labelSelector:
+      matchExpressions:
+      - key: security-ring
+        operator: In
+        values:
+        - unhardened
+  location: spec.nodeSelector.security-ring
+  parameters:
+    pathTests:
+    - subPath: spec.nodeSelector.security-ring
+      condition: MustNotExist
+    assign:
+      value: unhardened

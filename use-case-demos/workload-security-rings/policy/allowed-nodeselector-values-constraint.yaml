@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAllowedNodeSelectorValues
+metadata:
+  name: security-ring-value-restrinction
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    - key: security-ring
+      values:
+      - sensitive
+      - unhardened

@@ -1,0 +1,29 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+metadata:
+  name: tenant-node-selector
+tests:
+- name: tenant-node-selector
+  template: ../template.yaml
+  constraint: ../constraint.yaml
+  cases:
+  - name: allow-correct-tenant
+    object: pod-with-correct-tenant.yaml
+    assertions:
+    - violations: no
+  - name: allow-nonexistent-tenant
+    object: pod-nonexistent-tenant.yaml
+    assertions:
+    - violations: no
+  - name: disallow-without-node-selector
+    object: pod-no-node-selector.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-without-target-node-selector
+    object: pod-no-matching-node-selector.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-with-wrong-tenant
+    object: pod-with-wrong-tenant.yaml
+    assertions:
+    - violations: yes

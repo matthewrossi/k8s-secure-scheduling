@@ -1,0 +1,33 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+metadata:
+  name: securinty-ring-node-selector
+tests:
+- name: securinty-ring-node-selector
+  template: ../template.yaml
+  constraint: ../constraint.yaml
+  cases:
+  - name: allow-without-security-ring
+    object: pod-without-security-ring.yaml
+    assertions:
+    - violations: no
+  - name: allow-only-selectors
+    object: pod-with-only-selectors.yaml
+    assertions:
+    - violations: no
+  - name: allow-correct-security-ring-selector
+    object: pod-with-correct-security-ring-selector.yaml
+    assertions:
+    - violations: no
+  - name: disallow-without-selector
+    object: pod-without-selector.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-without-security-ring-selector
+    object: pod-without-security-ring-selector.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-wrong-security-ring-selector
+    object: pod-with-wrong-security-ring-selector.yaml
+    assertions:
+    - violations: yes

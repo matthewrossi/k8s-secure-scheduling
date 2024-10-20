@@ -1,0 +1,59 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequireSpecificNodeAffinity
+metadata:
+  name: warn-unknown-us-region
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    labelSelector:
+      matchExpressions:
+      - key: data-sovereignty
+        operator: In
+        values:
+        - us
+  enforcementAction: warn
+  parameters:
+    expression:
+      key: topology.kubernetes.io/region
+      operator: In
+      values:
+      # Azure regions
+      - centralus
+      - centraluseuap
+      - centralusstage
+      - eastus
+      - eastus2
+      - eastus2euap
+      - eastus2stage
+      - eastusstage
+      - eastusstg
+      - northcentralus
+      - northcentralusstage
+      - southcentralus
+      - southcentralusstage
+      - southcentralusstg
+      - westcentralus
+      - westus
+      - westus2
+      - westus2stage
+      - westus3
+      - westusstage
+      # AWS regions
+      - us-east-1
+      - us-east-2
+      - us-gov-east-1
+      - us-gov-west-1
+      - us-west-1
+      - us-west-2
+      # GCP regions
+      - us-central1
+      - us-east1
+      - us-east4
+      - us-east5
+      - us-south1
+      - us-west1
+      - us-west2
+      - us-west3
+      - us-west4

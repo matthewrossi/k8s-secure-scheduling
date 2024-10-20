@@ -1,0 +1,55 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequireSpecificNodeAffinity
+metadata:
+  name: warn-unknown-eu-region
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    labelSelector:
+      matchExpressions:
+      - key: data-sovereignty
+        operator: In
+        values:
+        - eu
+  enforcementAction: warn
+  parameters:
+    expression:
+      key: topology.kubernetes.io/region
+      operator: In
+      values:
+      # Azure regions
+      - francecentral
+      - francesouth
+      - germanynorth
+      - germanywestcentral
+      - italynorth
+      - northeurope
+      - norwayeast
+      - norwaywest
+      - polandcentral
+      - spaincentral
+      - swedencentral
+      - switzerlandnorth
+      - switzerlandwest
+      - westeurope
+      # AWS regions
+      - eu-central-1
+      - eu-central-2
+      - eu-north-1
+      - eu-south-1
+      - eu-south-2
+      - eu-west-1
+      - eu-west-3
+      # GCP regions
+      - europe-central2
+      - europe-north1
+      - europe-southwest1
+      - europe-west1
+      - europe-west3
+      - europe-west4
+      - europe-west6
+      - europe-west8
+      - europe-west9
+      - europe-west12

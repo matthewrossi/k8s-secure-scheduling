@@ -1,0 +1,20 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequireNodeSelectorsEqualTo
+metadata:
+  name: security-aware-scheduling
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    labelSelector:
+      matchExpressions:
+      - key: security-ring
+        operator: Exists
+  parameters:
+    nodeSelectors:
+    - key: security-ring
+      value:
+      - metadata
+      - labels
+      - security-ring

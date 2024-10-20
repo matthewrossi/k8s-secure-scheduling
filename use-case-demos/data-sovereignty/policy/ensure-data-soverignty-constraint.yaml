@@ -1,0 +1,17 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequireSpecificNodeAffinity
+metadata:
+  name: ensure-data-sovereignty
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    labelSelector:
+      matchExpressions:
+      - key: data-sovereignty
+        operator: Exists
+  parameters:
+    expression:
+      key: topology.kubernetes.io/region
+      operator: In

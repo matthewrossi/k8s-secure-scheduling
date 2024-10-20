@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-glaciation-platform
+  namespace: glaciation-platform
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-uc1
+  namespace: uc1
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-uc2
+  namespace: uc2
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
