@@ -1,0 +1,49 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+metadata:
+  name: required-node-affinity
+tests:
+- name: required-node-affinity
+  template: template.yaml
+  constraint: constraint.yaml
+  cases:
+  - name: allow-specific-security-level
+    object: ../../../default-node-filtering-options/node-affinity/pod-specific-security-level.yaml
+    assertions:
+    - violations: no
+  - name: allow-nonexisting-security-level
+    object: ../../../default-node-filtering-options/node-affinity/pod-nonexistent-security-level.yaml
+    assertions:
+    - violations: no
+  - name: allow-multiple-security-levels
+    object: ../../../default-node-filtering-options/node-affinity/pod-multiple-security-levels.yaml
+    assertions:
+    - violations: no
+  - name: allow-all-security-levels
+    object: ../../../default-node-filtering-options/node-affinity/pod-all-security-levels.yaml
+    assertions:
+    - violations: no
+  - name: disallow-no-affinity
+    object: ../../../default-node-filtering-options/node-affinity/pod-no-security-level.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-no-node-affinity
+    object: pod-no-node-affinity.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-no-required-scheduling
+    object: pod-no-required-scheduling.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-no-expr
+    object: pod-no-node-selector.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-no-match-expr
+    object: pod-no-match-expr.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-not-all-match-expr-with-target
+    object: pod-no-match-expr-with-target-key.yaml
+    assertions:
+    - violations: yes

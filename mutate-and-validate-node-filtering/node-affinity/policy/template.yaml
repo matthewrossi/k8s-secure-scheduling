@@ -1,0 +1,59 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequirednodeaffinity
+  annotations:
+    metadata.gatekeeper.sh/title: "Required Node Affinity"
+    metadata.gatekeeper.sh/version: 1.0.1
+    description: >-
+      Requires pods to contain specified keys in the node affinity.
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredNodeAffinity
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          type: object
+          properties:
+            nodeAffinityKeys:
+              description: The list of node affinity keys the pod must specify.
+              type: array
+              items:
+                type: string
+                description: >-
+                  The required node affinity key.
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequirednodeaffinity
+
+        # missing node selector terms
+        violation[{"msg": msg}] {
+          not input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
+
+          podName := input.review.object.metadata.name
+          msg := sprintf("pod <%v> does not specify a node affinity required during scheduling", [podName])
+        }
+
+        # empty node selector terms
+        violation[{"msg": msg}] {
+          nodeSelectorTerms := input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
+          nodeSelectorTerms == null
+
+          podName := input.review.object.metadata.name
+          msg := sprintf("pod <%v> does not specify a node affinity required during scheduling", [podName])
+        }
+
+        # missing required keys in at least one node selector term
+        violation[{"msg": msg}] {
+          nodeSelectorTerm := input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[_]
+          required := {key | key := input.parameters.nodeAffinityKeys[_]}
+          provided := {key | key := nodeSelectorTerm.matchExpressions[_].key}
+          missing := required - provided
+          count(missing) > 0
+
+          podName := input.review.object.metadata.name
+          msg := sprintf("pod <%v> does not specify the required node affinity keys <%v> on all node terms", [podName, missing])
+        }

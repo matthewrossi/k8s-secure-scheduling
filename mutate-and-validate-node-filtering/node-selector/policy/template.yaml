@@ -1,0 +1,39 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequirednodeselector
+  annotations:
+    metadata.gatekeeper.sh/title: "Required Node Selector"
+    metadata.gatekeeper.sh/version: 1.0.1
+    description: >-
+      Requires pods to contain specified keys in the nodeSelector.
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredNodeSelector
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          type: object
+          properties:
+            nodeSelectorKeys:
+              description: The list of nodeSelector keys the pod must specify.
+              type: array
+              items:
+                type: string
+                description: >-
+                  The required nodeSelector key.
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequirednodeselector
+
+        violation[{"msg": msg}] {
+          required := {key | key := input.parameters.nodeSelectorKeys[_]}
+          provided := {key | input.review.object.spec.nodeSelector[key]}
+          missing := required - provided
+          count(missing) > 0
+          podName := input.review.object.metadata.name
+          msg := sprintf("pod <%v> does not specify the required nodeSelector keys <%v>", [podName, missing])
+        }

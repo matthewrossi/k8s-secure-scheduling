@@ -1,0 +1,25 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+metadata:
+  name: required-node-selector
+tests:
+- name: required-node-selector
+  template: template.yaml
+  constraint: constraint.yaml
+  cases:
+  - name: allow-specific-security-level
+    object: ../../../default-node-filtering-options/node-selector/pod-specific-security-level.yaml
+    assertions:
+    - violations: no
+  - name: allow-nonexisting-security-level
+    object: ../../../default-node-filtering-options/node-selector/pod-nonexistent-security-level.yaml
+    assertions:
+    - violations: no
+  - name: disallow-without-node-selector
+    object: ../../../default-node-filtering-options/node-selector/pod-no-security-level.yaml
+    assertions:
+    - violations: yes
+  - name: disallow-without-target-node-selector
+    object: pod-no-matching-node-selector.yaml
+    assertions:
+    - violations: yes

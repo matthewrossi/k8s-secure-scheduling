@@ -1,0 +1,24 @@
+apiVersion: mutations.gatekeeper.sh/v1
+kind: ModifySet
+metadata:
+  name: add-required-node-affinity
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    excludedNamespaces: ["kube-*"]
+  location: spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
+  parameters:
+    operation: merge
+    pathTests:
+    - subPath: "spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms"
+      condition: MustNotExist
+    values:
+      fromList:
+        - matchExpressions:
+          - key: security_level
+            operator: In
+            values:
+            - "2"

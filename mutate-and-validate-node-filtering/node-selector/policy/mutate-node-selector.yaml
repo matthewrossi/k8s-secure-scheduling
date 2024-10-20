@@ -1,0 +1,18 @@
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: add-required-node-selector
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    excludedNamespaces: ["kube-*"]
+  location: spec.nodeSelector.security_level
+  parameters:
+    pathTests:
+    - subPath: "spec.nodeSelector.security_level"
+      condition: MustNotExist
+    assign:
+      value: "2"
