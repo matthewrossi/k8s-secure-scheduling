@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: set-node-labels
+  namespace: gatekeeper-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: set-node-labels
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["nodes"]
+  verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: set-node-labels
+  namespace: gatekeeper-system
+subjects:
+- kind: ServiceAccount
+  name: set-node-labels
+  namespace: gatekeeper-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: set-node-labels
+---
+apiVersion: apps.kruise.io/v1alpha1
+kind: BroadcastJob
+metadata:
+  name: init-worker-node-labels
+  namespace: gatekeeper-system
+  # # With the type set to Never, use the following hook delete policy
+  # annotations:    
+  #   argocd.argoproj.io/hook: Sync    
+  #   argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  template:
+    spec:
+      containers:
+      - name: kubectl
+        image: bitnami/kubectl:1.30
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e # make sure the job fails if any instruction fails
+
+          # WARNING: Without additional work it is not safe to change the
+          # security labels of the nodes.
+          # Indeed, "at minimum, it requires draining all the workloads from a
+          # machine to be transferred, but a reboot or even a reinstall may be
+          # required to prevent potential persistence attacks or data leakage
+          # between the rings".
+          # https://www.usenix.org/publications/loginonline/workload-security-rings
+
+          # Get current node security-ring label
+          declare -a SECURITY_RINGS=("sensitive" "unhardened")
+
+          # Get current node tenant label
+          declare -a TENANTS=("uc1" "uc2" "uc3" "uc4")
+
+          # Get current node topology.kubernetes.io/region label
+          declare -a EU_REGIONS=("francecentral" "francesouth" "germanynorth" "germanywestcentral" "italynorth" "northeurope" "norwayeast" "norwaywest" "polandcentral" "spaincentral" "swedencentral" "switzerlandnorth" "switzerlandwest" "westeurope" "eu-central-1" "eu-central-2" "eu-north-1" "eu-south-1" "eu-south-2" "eu-west-1" "eu-west-3" "europe-central2" "europe-north1" "europe-southwest1" "europe-west1" "europe-west3" "europe-west4" "europe-west6" "europe-west8" "europe-west9" "europe-west12")
+          declare -a US_REGIONS=("centralus" "centraluseuap" "centralusstage" "eastus" "eastus2" "eastus2euap" "eastus2stage" "eastusstage" "eastusstg" "northcentralus" "northcentralusstage" "southcentralus" "southcentralusstage" "southcentralusstg" "westcentralus" "westus" "westus2" "westus2stage" "westus3" "westusstage" "us-east-1" "us-east-2" "us-gov-east-1" "us-gov-west-1" "us-west-1" "us-west-2" "us-central1" "us-east1" "us-east4" "us-east5" "us-south1" "us-west1" "us-west2" "us-west3" "us-west4")
+          declare -a REGIONS=(${EU_REGIONS[@]} ${US_REGIONS[@]})
+
+          # Set current node labels
+          kubectl label nodes ${NODE_NAME} security-ring=${SECURITY_RINGS[${RANDOM} % 2]} tenant=${TENANTS[${RANDOM} % 4]} topology.kubernetes.io/region=${REGIONS[${RANDOM} % 66]} --overwrite
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+      restartPolicy: Never
+      serviceAccountName: set-node-labels
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+  completionPolicy:
+    # # With the type set to Never, the job is never marked as terminated even if
+    # # all Pods run to completion. This allows to init all nodes even newly
+    # # added ones.
+    # # Unfortunately, it does not seem to work with minikube because the
+    # # resolution of the Kube API server done by the Kube proxy fails at the
+    # # beginning of the new node life. The same happens with the DaemonSet,
+    # # but eventually after a few restarts the Pod succeeds.
+    # type: Never
+    type: Always
+    activeDeadlineSeconds: 60
+    ttlSecondsAfterFinished: 10
+  failurePolicy:
+    type: FailFast
+    restartLimit: 5
