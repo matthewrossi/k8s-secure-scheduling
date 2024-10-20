@@ -29,8 +29,12 @@ spec:
       rego: |
         package k8srequirednodeaffinity
 
+        import future.keywords.contains
+        import future.keywords.if
+        import future.keywords.in
+
         # missing node selector terms
-        violation[{"msg": msg}] {
+        violation contains {"msg": msg} if {
           not input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
 
           podName := input.review.object.metadata.name
@@ -38,7 +42,7 @@ spec:
         }
 
         # empty node selector terms
-        violation[{"msg": msg}] {
+        violation contains {"msg": msg} if {
           nodeSelectorTerms := input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
           nodeSelectorTerms == null
 
@@ -47,10 +51,10 @@ spec:
         }
 
         # missing required keys in at least one node selector term
-        violation[{"msg": msg}] {
-          nodeSelectorTerm := input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[_]
-          required := {key | key := input.parameters.nodeAffinityKeys[_]}
-          provided := {key | key := nodeSelectorTerm.matchExpressions[_].key}
+        violation contains {"msg": msg} if {
+          some nodeSelectorTerm in input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
+          required := {key | some key in input.parameters.nodeAffinityKeys}
+          provided := {exp.key | some exp in nodeSelectorTerm.matchExpressions}
           missing := required - provided
           count(missing) > 0
 

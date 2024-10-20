@@ -29,9 +29,13 @@ spec:
       rego: |
         package k8srequirednodeselector
 
-        violation[{"msg": msg}] {
-          required := {key | key := input.parameters.nodeSelectorKeys[_]}
-          provided := {key | input.review.object.spec.nodeSelector[key]}
+        import future.keywords.contains
+        import future.keywords.if
+        import future.keywords.in
+
+        violation contains {"msg": msg} if {
+          required := {key | some key in input.parameters.nodeSelectorKeys}
+          provided := {key | some key, _ in input.review.object.spec.nodeSelector}
           missing := required - provided
           count(missing) > 0
           podName := input.review.object.metadata.name

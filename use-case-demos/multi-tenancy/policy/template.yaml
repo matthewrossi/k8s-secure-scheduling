@@ -39,10 +39,14 @@ spec:
       rego: |
         package k8srequirenodeselectorsequalto
 
+        import future.keywords.contains
+        import future.keywords.if
+        import future.keywords.in
+
         # missing node selector
-        violation[{"msg": msg}] {
-          required := {key | key := input.parameters.nodeSelectors[_].key}
-          provided := {key | input.review.object.spec.nodeSelector[key]}
+        violation contains {"msg": msg} if {
+          required := {nodeSelector.key | some nodeSelector in input.parameters.nodeSelectors}
+          provided := {key | some key, _ in input.review.object.spec.nodeSelector}
           missing := required - provided
           count(missing) > 0
 
@@ -51,14 +55,13 @@ spec:
         }
 
         # wrong node selector value
-        violation[{"msg": msg}] {
-          nodeSelector := input.parameters.nodeSelectors[_]
-          required_key := nodeSelector.key
+        violation contains {"msg": msg} if {
+          some nodeSelector in input.parameters.nodeSelectors
           required_value := object.get(input.review.object, nodeSelector.value, null)
-          provided_value := input.review.object.spec.nodeSelector[required_key]
+          provided_value := input.review.object.spec.nodeSelector[nodeSelector.key]
           provided_value != required_value
 
           podName := input.review.object.metadata.name
           path_to_expected_value := sprintf(".%v", [concat(".", nodeSelector.value)]) # avoid leaking actual value
-          msg := sprintf("pod <%v> has node selector <%v> set to a value different from the value of <%v>", [podName, required_key, path_to_expected_value])
+          msg := sprintf("pod <%v> has node selector <%v> set to a value different from the value of <%v>", [podName, nodeSelector.key, path_to_expected_value])
         }

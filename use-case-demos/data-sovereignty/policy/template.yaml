@@ -41,8 +41,12 @@ spec:
       rego: |
         package k8srequirednodeaffinity
 
+        import future.keywords.contains
+        import future.keywords.if
+        import future.keywords.in
+
         # missing node selector terms
-        violation[{"msg": msg}] {
+        violation contains {"msg": msg} if {
           not input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
 
           podName := input.review.object.metadata.name
@@ -50,7 +54,7 @@ spec:
         }
 
         # empty node selector terms
-        violation[{"msg": msg}] {
+        violation contains {"msg": msg} if {
           nodeSelectorTerms := input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
           nodeSelectorTerms == null
 
@@ -59,10 +63,10 @@ spec:
         }
 
         # missing required key in at least one node selector term
-        violation[{"msg": msg}] {
-          nodeSelectorTerm := input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[_]
+        violation contains {"msg": msg} if {
+          some nodeSelectorTerm in input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
           required := input.parameters.expression.key
-          provided := {key | key := nodeSelectorTerm.matchExpressions[_].key}
+          provided := {exp.key | some exp in nodeSelectorTerm.matchExpressions}
           not provided[required]
           
           podName := input.review.object.metadata.name
@@ -70,27 +74,28 @@ spec:
         }
 
         # wrong operator
-        violation[{"msg": msg}] {
-          nodeSelectorTerm := input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[_]
+        violation contains {"msg": msg} if {
+          some nodeSelectorTerm in input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
           required_exp := input.parameters.expression
-          nodeSelectorTerm.matchExpressions[i].key == required_exp.key
-          nodeSelectorTerm.matchExpressions[i].operator != required_exp.operator
+          some provided_exp in nodeSelectorTerm.matchExpressions
+          provided_exp.key == required_exp.key
+          provided_exp.operator != required_exp.operator
 
           podName := input.review.object.metadata.name
           msg := sprintf("pod <%v> specifies the required node affinity key <%v> with the wrong operator. Operator <%v> must be used.", [podName, required_exp.key, required_exp.operator])
         }
 
         # wrong values
-        violation[{"msg": msg}] {
-          nodeSelectorTerm := input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[_]
+        violation contains {"msg": msg} if {
+          some nodeSelectorTerm in input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
           required_exp := input.parameters.expression
           count(required_exp.values) > 0 # ignore this check when the list of values is empty
-          nodeSelectorTerm.matchExpressions[i].key == required_exp.key
-          nodeSelectorTerm.matchExpressions[i].operator == required_exp.operator
-          provided := {value | value := nodeSelectorTerm.matchExpressions[i].values[_]}
-          required := {value | value := required_exp.values[_]}
+          some provided_exp in nodeSelectorTerm.matchExpressions
+          provided_exp.key == required_exp.key
+          provided := {value | some value in provided_exp.values}
+          known := {value | some value in required_exp.values}
 
-          unknown = provided - required
+          unknown = provided - known
           count(unknown) != 0
 
           podName := input.review.object.metadata.name
