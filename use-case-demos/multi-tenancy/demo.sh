@@ -6,7 +6,7 @@ declare -a TENANTS=("uc1" "uc2") #"uc3" "uc4")
 
 function deploy {
     echo -e "\n[*] Deploy $2"
-    kubectl create -f "$1"
+    kubectl apply -f "$1"
     kubectl apply -f "$2"
 
     if [ ${kind} != "pod" ]; then
@@ -58,25 +58,19 @@ done
 echo -e '\n[*] Node labels'
 kubectl get nodes --show-labels
 
-echo -e '\n[*] Install admission control service'
-helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts
-helm install gatekeeper/gatekeeper --name-template=gatekeeper --namespace gatekeeper-system --create-namespace
-
-echo -e '\nWaiting for the rollout of the service...'
-kubectl -n gatekeeper-system rollout status deploy/gatekeeper-audit
-kubectl -n gatekeeper-system rollout status deploy/gatekeeper-controller-manager
+source "${SCRIPT_DIR}/../../gatekeeper-install.sh"
 
 echo -e '\n[*] Allow Gatekeeper to reject workloads that create pods violating constraints'
-kubectl create -f "${SCRIPT_DIR}/policy/expansion-template.yaml"
+kubectl apply -f "${SCRIPT_DIR}/policy/expansion-template.yaml"
 
 echo -e '\n[*] Use Gatekeeper to mutate the node selector config'
-kubectl create -f "${SCRIPT_DIR}/policy/mutation.yaml"
+kubectl apply -f "${SCRIPT_DIR}/policy/mutation.yaml"
 
 echo -e '\n[*] Use Gatekeeper to validate the node selector config'
 echo -e '[+] Add constraint template'
-kubectl create -f "${SCRIPT_DIR}/policy/template.yaml"
+kubectl apply -f "${SCRIPT_DIR}/policy/template.yaml"
 echo -e '[+] Add constraint'
-kubectl create -f "${SCRIPT_DIR}/policy/constraint.yaml"
+kubectl apply -f "${SCRIPT_DIR}/policy/constraint.yaml"
 
 if [ ${kind} == "pod" ]; then
     deploy "${SCRIPT_DIR}/resources/namespaces.yaml" "${SCRIPT_DIR}/resources/pods.yaml"
@@ -84,9 +78,9 @@ else
     deploy "${SCRIPT_DIR}/resources/namespaces.yaml" "${SCRIPT_DIR}/resources/deployments.yaml"
 fi
 
-# # Wait for manual interaction with the example application
-# echo ''
-# read -n 1 -srep '<<Press any key to continue>>'
+# Wait for manual interaction with the example application
+echo ''
+read -n 1 -srep '<<Press any key to continue>>'
 
 echo -e '\n[*] Delete Gatekeeper resources'
 kubectl delete -f "${SCRIPT_DIR}/policy/constraint.yaml"
@@ -94,9 +88,7 @@ kubectl delete -f "${SCRIPT_DIR}/policy/template.yaml"
 kubectl delete -f "${SCRIPT_DIR}/policy/mutation.yaml"
 kubectl delete -f "${SCRIPT_DIR}/policy/expansion-template.yaml"
 
-echo -e '\n[*] Uninstall admission control service'
-helm delete gatekeeper --namespace gatekeeper-system
-kubectl delete crd -l gatekeeper.sh/system=yes
+source "${SCRIPT_DIR}/../../gatekeeper-uninstall.sh"
 
 echo -e '\n[*] Remove node labels'
 for node in "${nodes[@]}"

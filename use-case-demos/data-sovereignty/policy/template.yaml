@@ -67,7 +67,7 @@ spec:
           some nodeSelectorTerm in input.review.object.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
           required := input.parameters.expression.key
           provided := {exp.key | some exp in nodeSelectorTerm.matchExpressions}
-          not provided[required]
+          not required in provided
           
           podName := input.review.object.metadata.name
           msg := sprintf("pod <%v> does not specify the required node affinity key <%v> on all node terms", [podName, required])
