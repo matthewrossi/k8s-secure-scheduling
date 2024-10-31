@@ -15,7 +15,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nginx-uc1
-  namespace: uc1
+  namespace: mef-sog-uc1-wl
   labels:
     env: test
 spec:

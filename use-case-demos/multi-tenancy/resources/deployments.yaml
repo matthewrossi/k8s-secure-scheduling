@@ -25,7 +25,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment-uc1
-  namespace: uc1
+  namespace: mef-sog-uc1-wl
   labels:
     app: nginx
 spec:

@@ -14,7 +14,7 @@ function deploy {
     fi
 
     echo -e "\n[+] Pod's node selector"
-    kubectl get pods -A -o json | jq -r '.items[] | select(.metadata.namespace == "glaciation-platform" or .metadata.namespace == "uc1" or .metadata.namespace == "uc2") | "\(.metadata.namespace) namespace -> \(.spec.nodeSelector)"'
+    kubectl get pods -A -o json | jq -r '.items[] | select(.metadata.namespace == "glaciation-platform" or .metadata.namespace == "mef-sog-uc1-wl" or .metadata.namespace == "uc2") | "\(.metadata.namespace) namespace -> \(.spec.nodeSelector)"'
 
     echo -e '\nWaiting for the deployment...'
     if [ ${kind} == "pod" ]; then
@@ -25,7 +25,7 @@ function deploy {
 
     echo -e '\n[+] Pod schedules'
     echo "NAMESPACE, NAME, NODE"
-    kubectl get pods -A -o json | jq -r '.items[] | select(.metadata.namespace == "glaciation-platform" or .metadata.namespace == "uc1" or .metadata.namespace == "uc2") | "\(.metadata.namespace), \(.metadata.name), \(.spec.nodeName)"'
+    kubectl get pods -A -o json | jq -r '.items[] | select(.metadata.namespace == "glaciation-platform" or .metadata.namespace == "mef-sog-uc1-wl" or .metadata.namespace == "uc2") | "\(.metadata.namespace), \(.metadata.name), \(.spec.nodeName)"'
 
     echo -e '\n[+] Delete pod'
     kubectl delete -f "$2"
@@ -47,12 +47,15 @@ fi
 echo '[*] Nodes'
 kubectl get nodes
 
+echo -e '\n[*] Set node labels'
 nodes=$(kubectl get nodes -l !node-role.kubernetes.io/control-plane -o json | jq -r '.items[].metadata.name')
 readarray -t nodes <<<"${nodes}"
-echo -e '\n[*] Set node labels'
+labels=()
 for node in "${nodes[@]}"
 do
-    kubectl label nodes ${node} tenant=${TENANTS[${RANDOM} % 2]} --overwrite # % 4]} --overwrite
+    label=${TENANTS[${RANDOM} % 2]}-tenant
+    kubectl label nodes ${node} ${label}=true --overwrite # % 4]} --overwrite
+    labels+=("${label}")
 done
 
 echo -e '\n[*] Node labels'
@@ -91,9 +94,11 @@ kubectl delete -f "${SCRIPT_DIR}/policy/expansion-template.yaml"
 source "${SCRIPT_DIR}/../../gatekeeper-uninstall.sh"
 
 echo -e '\n[*] Remove node labels'
-for node in "${nodes[@]}"
+for i in $(seq 0 $(("${#nodes[@]}" - 1)))
 do
-    kubectl label nodes ${node} tenant-
+    node=${nodes[$i]}
+    label=${labels[$i]}
+    kubectl label nodes ${node} ${label}-
 done
 
 # minikube delete

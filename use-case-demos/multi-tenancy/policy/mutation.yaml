@@ -1,19 +1,37 @@
 apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
-  name: add-tenant-node-selector
+  name: add-uc1-tenant-node-selector
 spec:
   applyTo:
   - groups: [""]
     kinds: ["Pod"]
     versions: ["v1"]
   match:
-    namespaces: ["uc1", "uc2", "uc3", "uc4"]
-  location: spec.nodeSelector.tenant
+    namespaces: ["mef-sog-uc1-wl"]
+  location: spec.nodeSelector.uc1-tenant
   parameters:
     pathTests:
-    - subPath: "spec.nodeSelector.tenant"
+    - subPath: spec.nodeSelector.uc1-tenant
       condition: MustNotExist
     assign:
-      fromMetadata:
-        field: namespace
+      value: "true"
+---
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: add-uc2-tenant-node-selector
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    namespaces: ["uc2"]
+  location: spec.nodeSelector.uc2-tenant
+  parameters:
+    pathTests:
+    - subPath: spec.nodeSelector.uc2-tenant
+      condition: MustNotExist
+    assign:
+      value: "true"

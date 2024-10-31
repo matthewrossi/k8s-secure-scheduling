@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nginx
-  namespace: uc1
+  namespace: mef-sog-uc1-wl
   labels:
     env: test
 spec:
@@ -11,4 +11,4 @@ spec:
     image: nginx
     imagePullPolicy: IfNotPresent
   nodeSelector:
-    tenant: uc2
+    uc2-tenant: "true"
