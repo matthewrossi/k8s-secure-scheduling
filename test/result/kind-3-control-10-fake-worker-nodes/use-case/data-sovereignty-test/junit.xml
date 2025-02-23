@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <testsuite name="ClusterLoaderV2" tests="0" failures="0" errors="0" time="101.903">
+      <testcase name="vanilla overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="25.463514191"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.106127161"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.055990017"></testcase>
+      <testcase name="vanilla: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="6.165247759"></testcase>
+      <testcase name="vanilla: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="5.052128408"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.017919886"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.00136887"></testcase>
+      <testcase name="vanilla: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="4.050285838"></testcase>
+      <testcase name="pod-eu-region overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="25.458373275"></testcase>
+      <testcase name="pod-eu-region: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.102041437"></testcase>
+      <testcase name="pod-eu-region: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.051858876"></testcase>
+      <testcase name="pod-eu-region: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="6.175832683"></testcase>
+      <testcase name="pod-eu-region: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="5.052512366"></testcase>
+      <testcase name="pod-eu-region: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.020661505"></testcase>
+      <testcase name="pod-eu-region: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.001309661"></testcase>
+      <testcase name="pod-eu-region: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="4.045314036"></testcase>
+      <testcase name="pod-us-region overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="25.508793906"></testcase>
+      <testcase name="pod-us-region: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.10432785"></testcase>
+      <testcase name="pod-us-region: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.05416004"></testcase>
+      <testcase name="pod-us-region: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="6.164155135"></testcase>
+      <testcase name="pod-us-region: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="5.052400698"></testcase>
+      <testcase name="pod-us-region: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.020137043"></testcase>
+      <testcase name="pod-us-region: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.001217962"></testcase>
+      <testcase name="pod-us-region: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="4.043868937"></testcase>
+      <testcase name="pod-italynorth-region overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="25.465975056"></testcase>
+      <testcase name="pod-italynorth-region: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.101992133"></testcase>
+      <testcase name="pod-italynorth-region: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.051818154"></testcase>
+      <testcase name="pod-italynorth-region: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="6.184012497"></testcase>
+      <testcase name="pod-italynorth-region: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="5.05413244"></testcase>
+      <testcase name="pod-italynorth-region: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.019791347"></testcase>
+      <testcase name="pod-italynorth-region: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.001406249"></testcase>
+      <testcase name="pod-italynorth-region: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="4.025621112"></testcase>
+  </testsuite>

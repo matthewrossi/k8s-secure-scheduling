@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <testsuite name="ClusterLoaderV2" tests="0" failures="9" errors="0" time="429.391">
+      <testcase name="vanilla overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="136.458798002">
+          <failure type="Failure">:0&#xA;[measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 144.000000 lower than threshold 400.000000&#xA;measurement call PodStartupLatency - DirectSchedulerThroughputPodStartupLatency error: pod startup: too high latency 50th percentile: got 15.570553517s expected: 5s]&#xA;:0</failure>
+      </testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.105855338"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.05570752"></testcase>
+      <testcase name="vanilla: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="28.028629947"></testcase>
+      <testcase name="vanilla: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="30.121415872"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.103941061">
+          <failure type="Failure">:0&#xA;[measurement call PodStartupLatency - DirectSchedulerThroughputPodStartupLatency error: pod startup: too high latency 50th percentile: got 15.570553517s expected: 5s]&#xA;:0</failure>
+      </testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.001146151">
+          <failure type="Failure">:0&#xA;[measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 144.000000 lower than threshold 400.000000]&#xA;:0</failure>
+      </testcase>
+      <testcase name="vanilla: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="28.038207266"></testcase>
+      <testcase name="pod-sensitive overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="146.448819886">
+          <failure type="Failure">:0&#xA;[measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 145.000000 lower than threshold 400.000000&#xA;measurement call PodStartupLatency - DirectSchedulerThroughputPodStartupLatency error: pod startup: too high latency 50th percentile: got 15.591364548s expected: 5s]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.101893307"></testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.051715576"></testcase>
+      <testcase name="pod-sensitive: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="28.031336206"></testcase>
+      <testcase name="pod-sensitive: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="30.120612861"></testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.087825797">
+          <failure type="Failure">:0&#xA;[measurement call PodStartupLatency - DirectSchedulerThroughputPodStartupLatency error: pod startup: too high latency 50th percentile: got 15.591364548s expected: 5s]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.001369478">
+          <failure type="Failure">:0&#xA;[measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 145.000000 lower than threshold 400.000000]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-sensitive: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="28.042092436"></testcase>
+      <testcase name="pod-unhandened overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="146.475895857">
+          <failure type="Failure">:0&#xA;[measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 144.000000 lower than threshold 400.000000&#xA;measurement call PodStartupLatency - DirectSchedulerThroughputPodStartupLatency error: pod startup: too high latency 50th percentile: got 15.597621809s expected: 5s]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.102383935"></testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.05227633"></testcase>
+      <testcase name="pod-unhandened: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="28.036234503"></testcase>
+      <testcase name="pod-unhandened: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="30.120372876"></testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.083479899">
+          <failure type="Failure">:0&#xA;[measurement call PodStartupLatency - DirectSchedulerThroughputPodStartupLatency error: pod startup: too high latency 50th percentile: got 15.597621809s expected: 5s]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.001338798">
+          <failure type="Failure">:0&#xA;[measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 144.000000 lower than threshold 400.000000]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-unhandened: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="28.038806642"></testcase>
+  </testsuite>

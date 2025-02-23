@@ -1,0 +1,127 @@
+name: direct-scheduler-throughput
+automanagednamespaces: 0
+namespace:
+  number: 1
+  prefix: test-u2spn6
+  deletestalenamespaces: false
+  deleteautomanagednamespaces: true
+  enableexistingnamespaces: false
+  deletenamespacetimeout: 600000000000
+steps:
+- phases: []
+  measurements:
+  - method: PodStartupLatency
+    params:
+      action: start
+      labelSelector: group = direct-scheduler-throughput
+      threshold: 5s
+    identifier: DirectSchedulerThroughputPodStartupLatency
+    instances: []
+  - method: SchedulingThroughput
+    params:
+      action: start
+      labelSelector: group = direct-scheduler-throughput
+      measurmentInterval: 1s
+    identifier: DirectSchedulingThroughput
+    instances: []
+  module:
+    path: ""
+    params: {}
+  name: Creating scheduler throughput measurements
+- phases:
+  - namespacerange:
+      min: 1
+      max: 1
+      basename: null
+    namespacelist: []
+    replicaspernamespace: 30000
+    tuningset: UniformQPS
+    objectbundle:
+    - basename: direct-scheduler-throughput-pod
+      objecttemplatepath: data-sovereignty/italynorth-region/pod.yaml
+      templatefillmap:
+        Group: direct-scheduler-throughput
+      listunknownobjectoptions: null
+  measurements: []
+  module:
+    path: ""
+    params: {}
+  name: create scheduler throughput pods
+- phases: []
+  measurements:
+  - method: WaitForRunningPods
+    params:
+      action: gather
+      desiredPodCount: 30000
+      labelSelector: group = direct-scheduler-throughput
+      timeout: 5m
+    identifier: WaitForDirectSchedulerThroughputPods
+    instances: []
+  module:
+    path: ""
+    params: {}
+  name: Waiting for scheduler throughput pods to be created
+- phases: []
+  measurements:
+  - method: PodStartupLatency
+    params:
+      action: gather
+    identifier: DirectSchedulerThroughputPodStartupLatency
+    instances: []
+  - method: SchedulingThroughput
+    params:
+      action: gather
+      enableViolations: true
+      threshold: 400
+    identifier: DirectSchedulingThroughput
+    instances: []
+  module:
+    path: ""
+    params: {}
+  name: Collecting scheduler throughput measurements
+- phases:
+  - namespacerange:
+      min: 1
+      max: 1
+      basename: null
+    namespacelist: []
+    replicaspernamespace: 0
+    tuningset: default
+    objectbundle:
+    - basename: direct-scheduler-throughput-pod
+      objecttemplatepath: data-sovereignty/italynorth-region/pod.yaml
+      templatefillmap:
+        Group: direct-scheduler-throughput
+      listunknownobjectoptions: null
+  measurements: []
+  module:
+    path: ""
+    params: {}
+  name: Delete scheduler throughput pods
+tuningsets:
+- name: default
+  initialdelay: 0
+  qpsload: null
+  randomizedload: null
+  steppedload: null
+  timelimitedload: null
+  randomizedtimelimitedload: null
+  parallelismlimitedload: null
+  globalqpsload:
+    qps: 500
+    burst: 1000
+  poissonload: null
+- name: UniformQPS
+  initialdelay: 0
+  qpsload:
+    qps: 500
+  randomizedload: null
+  steppedload: null
+  timelimitedload: null
+  randomizedtimelimitedload: null
+  parallelismlimitedload: null
+  globalqpsload: null
+  poissonload: null
+chaosmonkey:
+  nodefailure: null
+  excludednodes: {}

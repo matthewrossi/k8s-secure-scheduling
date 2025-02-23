@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-anywhere
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-eu
+  labels:
+    data-sovereignty: eu
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-us
+  labels:
+    data-sovereignty: us
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-italynorth
+  labels:
+    data-sovereignty: eu
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/region
+            operator: In
+            values:
+            - italynorth
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent

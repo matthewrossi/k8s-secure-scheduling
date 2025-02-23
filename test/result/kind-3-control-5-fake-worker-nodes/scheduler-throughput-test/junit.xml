@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <testsuite name="ClusterLoaderV2" tests="0" failures="0" errors="0" time="33.538">
+      <testcase name="direct-scheduler-throughput overall (./testing/scheduler-throughput/config.yaml)" classname="ClusterLoaderV2" time="33.535788773"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.106679382"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.056509012"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="10.263764992"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="5.052261467"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.02651221"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.00142085"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="8.015550958"></testcase>
+  </testsuite>

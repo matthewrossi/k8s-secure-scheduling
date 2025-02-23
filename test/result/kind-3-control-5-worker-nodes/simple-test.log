@@ -1,0 +1,94 @@
+Log file created at: 2025/02/22 11:30:14
+Running on machine: odst
+Binary: Built with gc go1.23.4 for linux/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0222 11:30:14.308615  211215 clusterloader.go:272] Listening on 8000
+I0222 11:30:14.314266  211215 clusterloader.go:168] ClusterConfig.Nodes set to 8
+I0222 11:30:14.315609  211215 clusterloader.go:174] ClusterConfig.MasterName set to kind-control-plane
+E0222 11:30:14.316858  211215 clusterloader.go:185] Getting master external ip error: didn't find any ExternalIP master IPs
+I0222 11:30:14.318109  211215 clusterloader.go:192] ClusterConfig.MasterInternalIP set to [172.18.0.9 172.18.0.6 172.18.0.3]
+I0222 11:30:14.318119  211215 clusterloader.go:300] Using config: {ClusterConfig:{KubeConfigPath:/home/matt/.kube/config RunFromCluster:false Nodes:8 Provider:0xc0003425b0 EtcdCertificatePath:/etc/srv/kubernetes/pki/etcd-apiserver-server.crt EtcdKeyPath:/etc/srv/kubernetes/pki/etcd-apiserver-server.key EtcdInsecurePort:2382 MasterIPs:[] MasterInternalIPs:[172.18.0.9 172.18.0.6 172.18.0.3] MasterName:kind-control-plane DeleteStaleNamespaces:false DeleteAutomanagedNamespaces:true APIServerPprofByClientEnabled:true KubeletPort:10250 K8SClientsNumber:1 SkipClusterVerification:false} ReportDir:/home/matt/Documents/k8s/scheduler/test/result/simple-test ExecServiceConfig:{Enable:true ImageRegistry:registry.k8s.io} ModifierConfig:{OverwriteTestConfig:[] SkipSteps:[]} PrometheusConfig:{TearDownServer:true EnableServer:false EnablePushgateway:false ScrapeEtcd:false ScrapeNodeExporter:false ScrapeWindowsNodeExporter:false ScrapeKubelets:false ScrapeMasterKubelets:false ScrapeKubeProxy:true KubeProxySelectorKey:component ScrapeKubeStateMetrics:false ScrapeMetricsServerMetrics:false ScrapeNodeLocalDNS:false ScrapeAnet:false ScrapeNetworkPolicies:false ScrapeMastersWithPublicIPs:false APIServerScrapePort:443 SnapshotProject: AdditionalMonitorsPath: StorageClassProvisioner:kubernetes.io/gce-pd StorageClassVolumeType:pd-ssd PVCStorageClass:ssd ReadyTimeout:15m0s PrometheusMemoryRequest:10Gi} OverridePaths:[]}
+I0222 11:30:14.319372  211215 cluster.go:75] Listing cluster nodes:
+I0222 11:30:14.319375  211215 cluster.go:87] Name: kind-control-plane, clusterIP: 172.18.0.9, externalIP: , isSchedulable: true
+I0222 11:30:14.319377  211215 cluster.go:87] Name: kind-control-plane2, clusterIP: 172.18.0.6, externalIP: , isSchedulable: true
+I0222 11:30:14.319382  211215 cluster.go:87] Name: kind-control-plane3, clusterIP: 172.18.0.3, externalIP: , isSchedulable: true
+I0222 11:30:14.319383  211215 cluster.go:87] Name: kind-worker, clusterIP: 172.18.0.5, externalIP: , isSchedulable: true
+I0222 11:30:14.319384  211215 cluster.go:87] Name: kind-worker2, clusterIP: 172.18.0.7, externalIP: , isSchedulable: true
+I0222 11:30:14.319385  211215 cluster.go:87] Name: kind-worker3, clusterIP: 172.18.0.4, externalIP: , isSchedulable: true
+I0222 11:30:14.319385  211215 cluster.go:87] Name: kind-worker4, clusterIP: 172.18.0.8, externalIP: , isSchedulable: true
+I0222 11:30:14.319386  211215 cluster.go:87] Name: kind-worker5, clusterIP: 172.18.0.2, externalIP: , isSchedulable: true
+I0222 11:30:14.320670  211215 framework.go:74] Creating framework with 1 clients and "/home/matt/.kube/config" kubeconfig.
+I0222 11:30:14.321784  211215 exec_service.go:86] Exec service: setting up service!
+I0222 11:30:14.338928  211215 framework.go:276] Applying templates for "manifest/exec_deployment.yaml"
+I0222 11:30:14.338945  211215 framework.go:287] Applying manifest/exec_deployment.yaml
+I0222 11:30:14.352479  211215 reflector.go:368] Caches populated for *v1.Pod from *v1.PodStore: namespace(cluster-loader), labelSelector(feature = exec)
+I0222 11:30:14.401765  211215 wait_for_pods.go:64] Exec service: namespace(cluster-loader), labelSelector(feature = exec): starting with timeout: 1m59.949776167s
+I0222 11:30:24.402052  211215 wait_for_pods.go:122] Exec service: namespace(cluster-loader), labelSelector(feature = exec): Pods: 3 out of 3 created, 3 running (3 updated), 0 pending scheduled, 0 not scheduled, 0 inactive, 0 terminating, 0 unknown, 0 runningButNotReady 
+I0222 11:30:24.402063  211215 exec_service.go:122] Exec service: service set up successfully!
+W0222 11:30:24.402117  211215 imagepreload.go:92] No images specified. Skipping image preloading
+I0222 11:30:24.404613  211215 clusterloader.go:454] Test config successfully dumped to: /home/matt/Documents/k8s/scheduler/test/result/simple-test/generatedConfig_test.yaml
+I0222 11:30:24.404619  211215 clusterloader.go:243] --------------------------------------------------------------------------------
+I0222 11:30:24.404621  211215 clusterloader.go:244] Running config.yaml
+I0222 11:30:24.404623  211215 clusterloader.go:245] --------------------------------------------------------------------------------
+I0222 11:30:24.404632  211215 simple_test_executor.go:58] AutomanagedNamespacePrefix: test-6bpec9
+I0222 11:30:24.416026  211215 simple_test_executor.go:152] Step "[step: 01] Start measurements" started
+I0222 11:30:24.423323  211215 wait_for_controlled_pods.go:257] WaitForControlledPodsRunning: starting wait for controlled pods measurement...
+I0222 11:30:24.423358  211215 pod_startup_latency.go:132] PodStartupLatency: labelSelector(group = test-pod): starting pod startup latency measurement...
+I0222 11:30:24.423442  211215 shared_informer.go:313] Waiting for caches to sync for PodsIndexer
+I0222 11:30:24.425095  211215 reflector.go:368] Caches populated for <unspecified> from pkg/mod/k8s.io/client-go@v0.31.4/tools/cache/reflector.go:243
+I0222 11:30:24.426008  211215 reflector.go:368] Caches populated for *v1.ReplicaSet from pkg/mod/k8s.io/client-go@v0.31.4/tools/cache/reflector.go:243
+I0222 11:30:24.431851  211215 reflector.go:368] Caches populated for *v1.Pod from pkg/mod/k8s.io/client-go@v0.31.4/tools/cache/reflector.go:243
+I0222 11:30:24.523550  211215 shared_informer.go:320] Caches are synced for PodsIndexer
+I0222 11:30:24.525132  211215 reflector.go:368] Caches populated for apps/v1, Resource=deployments from pkg/mod/k8s.io/client-go@v0.31.4/tools/cache/reflector.go:243
+I0222 11:30:24.624245  211215 simple_test_executor.go:174] Step "[step: 01] Start measurements" ended
+I0222 11:30:24.624264  211215 simple_test_executor.go:152] Step "[step: 02] Create deployment" started
+I0222 11:30:24.641538  211215 wait_for_pods.go:64] WaitForControlledPodsRunning: namespace(test-6bpec9-1), controlledBy(test-deployment-0): starting with timeout: 1m59.99997696s
+I0222 11:30:25.624874  211215 simple_test_executor.go:174] Step "[step: 02] Create deployment" ended
+I0222 11:30:25.624891  211215 simple_test_executor.go:152] Step "[step: 03] Wait for pods to be running" started
+I0222 11:30:25.625868  211215 wait_for_controlled_pods.go:288] WaitForControlledPodsRunning: waiting for controlled pods measurement...
+I0222 11:30:29.642661  211215 wait_for_pods.go:122] WaitForControlledPodsRunning: namespace(test-6bpec9-1), controlledBy(test-deployment-0): Pods: 10 out of 10 created, 10 running (10 updated), 0 pending scheduled, 0 not scheduled, 0 inactive, 0 terminating, 0 unknown, 0 runningButNotReady 
+I0222 11:30:30.645451  211215 wait_for_controlled_pods.go:365] WaitForControlledPodsRunning: running 1, deleted 0, timeout: 0, failed: 0
+I0222 11:30:30.645490  211215 wait_for_controlled_pods.go:370] WaitForControlledPodsRunning: maxDuration=5.001136667s, operationTimeout=2m0s, ratio=0.04
+I0222 11:30:30.645682  211215 wait_for_controlled_pods.go:384] WaitForControlledPodsRunning: 1/1 Deployments are running with all pods
+I0222 11:30:30.645697  211215 simple_test_executor.go:174] Step "[step: 03] Wait for pods to be running" ended
+I0222 11:30:30.645712  211215 simple_test_executor.go:152] Step "[step: 04] Measure pod startup latency" started
+I0222 11:30:30.647319  211215 pod_startup_latency.go:226] PodStartupLatency: labelSelector(group = test-pod): gathering pod startup latency measurement...
+I0222 11:30:30.657617  211215 phase_latency.go:141] PodStartupLatency: 10 worst pod_startup latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 2.091912043s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 2.116213683s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 2.151844345s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 2.17658156s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 2.339854251s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 2.363590586s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 2.396666852s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 2.409025535s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 2.43382755s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 2.435254046s}]
+I0222 11:30:30.657650  211215 phase_latency.go:146] PodStartupLatency: perc50: 2.339854251s, perc90: 2.43382755s, perc99: 2.435254046s; threshold 20s
+I0222 11:30:30.657660  211215 phase_latency.go:141] PodStartupLatency: 10 worst create_to_schedule latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 0s}]
+I0222 11:30:30.657670  211215 phase_latency.go:146] PodStartupLatency: perc50: 0s, perc90: 0s, perc99: 0s
+I0222 11:30:30.657676  211215 phase_latency.go:141] PodStartupLatency: 10 worst schedule_to_run latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 1s}]
+I0222 11:30:30.657684  211215 phase_latency.go:146] PodStartupLatency: perc50: 1s, perc90: 1s, perc99: 1s
+I0222 11:30:30.657690  211215 phase_latency.go:141] PodStartupLatency: 10 worst run_to_watch latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 1.091912043s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 1.116213683s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 1.151844345s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 1.17658156s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 1.339854251s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 1.363590586s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 1.396666852s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 1.409025535s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 1.43382755s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 1.435254046s}]
+I0222 11:30:30.657706  211215 phase_latency.go:146] PodStartupLatency: perc50: 1.339854251s, perc90: 1.43382755s, perc99: 1.435254046s
+I0222 11:30:30.657717  211215 phase_latency.go:141] PodStartupLatency: 10 worst schedule_to_watch latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 2.091912043s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 2.116213683s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 2.151844345s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 2.17658156s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 2.339854251s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 2.363590586s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 2.396666852s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 2.409025535s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 2.43382755s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 2.435254046s}]
+I0222 11:30:30.657727  211215 phase_latency.go:146] PodStartupLatency: perc50: 2.339854251s, perc90: 2.43382755s, perc99: 2.435254046s
+I0222 11:30:30.657839  211215 phase_latency.go:141] PodStartupLatency: 10 worst run_to_watch latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 1.091912043s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 1.116213683s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 1.151844345s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 1.17658156s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 1.339854251s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 1.363590586s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 1.396666852s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 1.409025535s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 1.43382755s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 1.435254046s}]
+I0222 11:30:30.657852  211215 phase_latency.go:146] PodStartupLatency: perc50: 1.339854251s, perc90: 1.43382755s, perc99: 1.435254046s
+I0222 11:30:30.657859  211215 phase_latency.go:141] PodStartupLatency: 10 worst schedule_to_watch latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 2.091912043s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 2.116213683s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 2.151844345s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 2.17658156s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 2.339854251s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 2.363590586s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 2.396666852s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 2.409025535s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 2.43382755s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 2.435254046s}]
+I0222 11:30:30.657868  211215 phase_latency.go:146] PodStartupLatency: perc50: 2.339854251s, perc90: 2.43382755s, perc99: 2.435254046s
+I0222 11:30:30.657874  211215 phase_latency.go:141] PodStartupLatency: 10 worst pod_startup latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 2.091912043s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 2.116213683s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 2.151844345s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 2.17658156s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 2.339854251s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 2.363590586s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 2.396666852s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 2.409025535s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 2.43382755s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 2.435254046s}]
+I0222 11:30:30.657884  211215 phase_latency.go:146] PodStartupLatency: perc50: 2.339854251s, perc90: 2.43382755s, perc99: 2.435254046s; threshold 20s
+I0222 11:30:30.657889  211215 phase_latency.go:141] PodStartupLatency: 10 worst create_to_schedule latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 0s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 0s}]
+I0222 11:30:30.657897  211215 phase_latency.go:146] PodStartupLatency: perc50: 0s, perc90: 0s, perc99: 0s
+I0222 11:30:30.657902  211215 phase_latency.go:141] PodStartupLatency: 10 worst schedule_to_run latencies: [{test-6bpec9-1/test-deployment-0-7b5459b7f8-ztw6w 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-t5l7b 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-52zp2 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-cdjbn 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-nzfnd 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-8d269 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-9lhkm 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-lxdwk 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-q28vt 1s} {test-6bpec9-1/test-deployment-0-7b5459b7f8-msp24 1s}]
+I0222 11:30:30.657911  211215 phase_latency.go:146] PodStartupLatency: perc50: 1s, perc90: 1s, perc99: 1s
+I0222 11:30:30.657948  211215 phase_latency.go:141] PodStartupLatency: 0 worst schedule_to_watch latencies: []
+I0222 11:30:30.657951  211215 phase_latency.go:146] PodStartupLatency: perc50: 0s, perc90: 0s, perc99: 0s
+I0222 11:30:30.657957  211215 phase_latency.go:141] PodStartupLatency: 0 worst pod_startup latencies: []
+I0222 11:30:30.657960  211215 phase_latency.go:146] PodStartupLatency: perc50: 0s, perc90: 0s, perc99: 0s; threshold 20s
+I0222 11:30:30.657965  211215 phase_latency.go:141] PodStartupLatency: 0 worst create_to_schedule latencies: []
+I0222 11:30:30.657967  211215 phase_latency.go:146] PodStartupLatency: perc50: 0s, perc90: 0s, perc99: 0s
+I0222 11:30:30.657973  211215 phase_latency.go:141] PodStartupLatency: 0 worst schedule_to_run latencies: []
+I0222 11:30:30.657975  211215 phase_latency.go:146] PodStartupLatency: perc50: 0s, perc90: 0s, perc99: 0s
+I0222 11:30:30.657980  211215 phase_latency.go:141] PodStartupLatency: 0 worst run_to_watch latencies: []
+I0222 11:30:30.657982  211215 phase_latency.go:146] PodStartupLatency: perc50: 0s, perc90: 0s, perc99: 0s
+I0222 11:30:30.658018  211215 simple_test_executor.go:174] Step "[step: 04] Measure pod startup latency" ended
+I0222 11:30:45.671998  211215 simple_test_executor.go:402] Resources cleanup time: 15.01373807s
+I0222 11:30:45.672011  211215 clusterloader.go:253] --------------------------------------------------------------------------------
+I0222 11:30:45.672014  211215 clusterloader.go:254] Test Finished
+I0222 11:30:45.672017  211215 clusterloader.go:255]   Test: config.yaml
+I0222 11:30:45.672019  211215 clusterloader.go:256]   Status: Success
+I0222 11:30:45.672022  211215 clusterloader.go:260] --------------------------------------------------------------------------------
+I0222 11:30:45.672254  211215 prometheus.go:307] Get snapshot from Prometheus
+I0222 11:30:45.672261  211215 exec_service.go:130] Exec service: tearing down service

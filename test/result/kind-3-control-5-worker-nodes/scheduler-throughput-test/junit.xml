@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <testsuite name="ClusterLoaderV2" tests="0" failures="2" errors="0" time="123.68">
+      <testcase name="direct-scheduler-throughput overall (./testing/scheduler-throughput/config.yaml)" classname="ClusterLoaderV2" time="123.677275262">
+          <failure type="Failure">:0&#xA;[measurement call PodStartupLatency - DirectSchedulerThroughputPodStartupLatency error: pod startup: too high latency 50th percentile: got 37.171969701s expected: 5s]&#xA;:0</failure>
+      </testcase>
+      <testcase name="direct-scheduler-throughput: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.105957593"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.055790133"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="10.391741989"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="60.062618914"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.047352286">
+          <failure type="Failure">:0&#xA;[measurement call PodStartupLatency - DirectSchedulerThroughputPodStartupLatency error: pod startup: too high latency 50th percentile: got 37.171969701s expected: 5s]&#xA;:0</failure>
+      </testcase>
+      <testcase name="direct-scheduler-throughput: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.00123636"></testcase>
+      <testcase name="direct-scheduler-throughput: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="8.02925479"></testcase>
+  </testsuite>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <testsuite name="ClusterLoaderV2" tests="0" failures="0" errors="0" time="76.359">
+      <testcase name="vanilla overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="25.458767378"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.107480891"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.057279057"></testcase>
+      <testcase name="vanilla: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="6.166750062"></testcase>
+      <testcase name="vanilla: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="5.0519954"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.031595324"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.001284331"></testcase>
+      <testcase name="vanilla: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="4.044189139"></testcase>
+      <testcase name="pod-sensitive overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="25.432322926"></testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.101957273"></testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.05178385"></testcase>
+      <testcase name="pod-sensitive: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="6.178690419"></testcase>
+      <testcase name="pod-sensitive: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="5.052535206"></testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.017935439"></testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.001225351"></testcase>
+      <testcase name="pod-sensitive: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="4.028830556"></testcase>
+      <testcase name="pod-unhandened overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="25.461556499"></testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.101731035"></testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.051577281"></testcase>
+      <testcase name="pod-unhandened: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="6.190967007"></testcase>
+      <testcase name="pod-unhandened: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="5.051599271"></testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [00] - DirectSchedulerThroughputPodStartupLatency" classname="ClusterLoaderV2" time="0.017648694"></testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [01] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.000880077"></testcase>
+      <testcase name="pod-unhandened: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="4.02512107"></testcase>
+  </testsuite>
