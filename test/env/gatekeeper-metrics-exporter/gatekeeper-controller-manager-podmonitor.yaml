@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: gatekeeper-controller-manager
+  namespace: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+    - gatekeeper-system
+  selector:
+    matchLabels:
+      gatekeeper.sh/operation: webhook
+  podMetricsEndpoints:
+  - portNumber: 8888
