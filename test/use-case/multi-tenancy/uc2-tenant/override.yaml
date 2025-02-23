@@ -1,0 +1,2 @@
+POD_SPEC: uc2-tenant/pod.yaml
+NAMESPACE: uc2

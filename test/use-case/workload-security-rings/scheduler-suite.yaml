@@ -1,0 +1,13 @@
+- identifier: vanilla
+  configPath: use-case/config.yaml
+  overridePaths: []
+
+- identifier: pod-sensitive
+  configPath: use-case/config.yaml
+  overridePaths:
+  - use-case/workload-security-rings/sensitive/override.yaml
+
+- identifier: pod-unhandened
+  configPath: use-case/config.yaml
+  overridePaths:
+  - use-case/workload-security-rings/unhardened/override.yaml

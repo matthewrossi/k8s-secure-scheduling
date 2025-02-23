@@ -1,0 +1,13 @@
+- identifier: vanilla
+  configPath: use-case/config.yaml
+  overridePaths: []
+
+- identifier: pod-uc1-tenant
+  configPath: use-case/multi-tenancy/config.yaml
+  overridePaths:
+  - use-case/multi-tenancy/uc1-tenant/override.yaml
+
+- identifier: pod-uc2-tenant
+  configPath: use-case/multi-tenancy/config.yaml
+  overridePaths:
+  - use-case/multi-tenancy/uc2-tenant/override.yaml

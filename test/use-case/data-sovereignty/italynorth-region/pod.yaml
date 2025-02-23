@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  generateName: pod-churn-italynorth-
+  labels:
+    data-sovereignty: eu
+    group: {{.Group}}
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/region
+            operator: In
+            values:
+            - italynorth
+  containers:
+  - image: registry.k8s.io/pause:3.9
+    name: pause

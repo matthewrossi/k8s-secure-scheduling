@@ -1,0 +1,18 @@
+- identifier: vanilla
+  configPath: use-case/config.yaml
+  overridePaths: []
+
+- identifier: pod-eu-region
+  configPath: use-case/config.yaml
+  overridePaths:
+  - use-case/data-sovereignty/eu-region/override.yaml
+
+- identifier: pod-us-region
+  configPath: use-case/config.yaml
+  overridePaths:
+  - use-case/data-sovereignty/us-region/override.yaml
+
+- identifier: pod-italynorth-region
+  configPath: use-case/config.yaml
+  overridePaths:
+  - use-case/data-sovereignty/italynorth-region/override.yaml
