@@ -52,6 +52,17 @@ do
   kubectl taint nodes ${node} node-role.kubernetes.io/control-plane=:NoSchedule-
 done
 
+if [ "$NODES" -gt 0 ]; then
+  worker_nodes=$(kubectl get nodes -l !node-role.kubernetes.io/control-plane -o json | jq -r '.items[].metadata.name')
+  readarray -t worker_nodes <<<"${worker_nodes}"
+
+  echo -e "\n[*] Disable scheduling 'management' pods on worker nodes"
+  for node in "${worker_nodes[@]}"
+  do
+    kubectl taint nodes ${node} node-role.kubernetes.io/control-plane=:NoSchedule
+  done
+fi
+
 # echo -e "\n[*] Install Ingress NGINX Controller"
 # # NOTE: The Ingress controller ports will be exposed in your localhost address
 # # through paths (i.e., /alertmanager, /prometheus, and /grafana)
@@ -99,6 +110,14 @@ for node in "${control_plane_nodes[@]}"
 do
   kubectl taint nodes ${node} node-role.kubernetes.io/control-plane=:NoSchedule --overwrite
 done
+
+if [ "$NODES" -gt 0 ]; then
+  echo -e "\n[*] Enable scheduling pods on worker nodes"
+  for node in "${worker_nodes[@]}"
+  do
+    kubectl taint nodes ${node} node-role.kubernetes.io/control-plane=:NoSchedule-
+  done
+fi
 
 if [ "$FAKE_NODES" -gt 0 ]; then
   echo -e "\n[*] Create $FAKE_NODES fake nodes"
