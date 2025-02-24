@@ -23,12 +23,12 @@ tuningSets:
 steps:
 - name: Creating scheduler throughput measurements
   measurements:
-  - Identifier: DirectSchedulerThroughputPodStartupLatency
-    Method: PodStartupLatency
-    Params:
-      action: start
-      labelSelector: group = direct-scheduler-throughput
-      threshold: 5s
+  # - Identifier: DirectSchedulerThroughputPodStartupLatency
+  #   Method: PodStartupLatency
+  #   Params:
+  #     action: start
+  #     labelSelector: group = direct-scheduler-throughput
+  #     threshold: 5s
   - Identifier: DirectSchedulingThroughput
 # TODO: Move to SchedulingThroughputPrometheus which requires cl2 prom stack setup as pre-req
     Method: SchedulingThroughput
@@ -58,10 +58,10 @@ steps:
       labelSelector: group = direct-scheduler-throughput
 - name: Collecting scheduler throughput measurements
   measurements:
-  - Identifier: DirectSchedulerThroughputPodStartupLatency
-    Method: PodStartupLatency
-    Params:
-      action: gather
+  # - Identifier: DirectSchedulerThroughputPodStartupLatency
+  #   Method: PodStartupLatency
+  #   Params:
+  #     action: gather
   - Identifier: DirectSchedulingThroughput
     Method: SchedulingThroughput
     Params:
