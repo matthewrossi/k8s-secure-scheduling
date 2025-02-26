@@ -22,19 +22,40 @@ tuningSets:
 steps:
 - name: Creating scheduler throughput measurements
   measurements:
-  # - Identifier: DirectSchedulerThroughputPodStartupLatency
-  #   Method: PodStartupLatency
-  #   Params:
-  #     action: start
-  #     labelSelector: group = direct-scheduler-throughput
-  #     threshold: 5s
   - Identifier: DirectSchedulingThroughput
-# TODO: Move to SchedulingThroughputPrometheus which requires cl2 prom stack setup as pre-req
     Method: SchedulingThroughput
     Params:
       action: start
       labelSelector: group = direct-scheduler-throughput
-      measurmentInterval: 1s
+      measurementInterval: 1s
+
+  - Identifier: APIAvailability
+    Method: APIAvailability
+    Params:
+      action: start
+      labelSelector: group = direct-scheduler-throughput
+      pollFrequency: 1s
+  
+  - Identifier: APIResponsivenessPrometheus
+    Method: APIResponsivenessPrometheus
+    Params:
+      action: start
+      labelSelector: group = direct-scheduler-throughput
+
+  - Identifier: SchedulingMetrics
+    Method: SchedulingMetrics
+    Params:
+      action: start
+      labelSelector: group = direct-scheduler-throughput
+      measurementInterval: 1s
+
+  - Identifier: SchedulingThroughputPrometheus
+    Method: SchedulingThroughputPrometheus
+    Params:
+      action: start
+      labelSelector: group = direct-scheduler-throughput
+      measurementInterval: 1s
+
 - name: create scheduler throughput pods
   phases:
   - namespaceRange:
@@ -58,16 +79,28 @@ steps:
       labelSelector: group = direct-scheduler-throughput
 - name: Collecting scheduler throughput measurements
   measurements:
-  # - Identifier: DirectSchedulerThroughputPodStartupLatency
-  #   Method: PodStartupLatency
-  #   Params:
-  #     action: gather
+  - Identifier: APIAvailability
+    Method: APIAvailability
+    Params:
+      action: gather
+  - Identifier: APIResponsivenessPrometheus
+    Method: APIResponsivenessPrometheus
+    Params:
+      action: gather
+  - Identifier: SchedulingMetrics
+    Method: SchedulingMetrics
+    Params:
+      action: gather
   - Identifier: DirectSchedulingThroughput
     Method: SchedulingThroughput
     Params:
       action: gather
       enableViolations: true
       threshold: {{$SCHEDULER_THROUGHPUT_THRESHOLD}}
+  - Identifier: SchedulingThroughputPrometheus
+    Method: SchedulingThroughputPrometheus
+    Params:
+      action: gather
 - name: Delete scheduler throughput pods
   phases:
   - namespaceRange:

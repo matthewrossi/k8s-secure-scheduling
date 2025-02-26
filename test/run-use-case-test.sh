@@ -40,7 +40,13 @@ mkdir -p $SCRIPT_DIR/result/use-case/$TEST-test
 # CL2_UNIFORM_QPS=50
 # CL2_SCHEDULER_THROUGHPUT_THRESHOLD=40
 echo -e "[*] Run $TEST test"
-$SCRIPT_DIR/clusterloader --alsologtostderr --logtostderr=false \
+CL2_PROMETHEUS_NODE_SELECTOR='node-role.kubernetes.io/control-plane: ""' \
+CL2_PROMETHEUS_TOLERATE_MASTER=true \
+    $SCRIPT_DIR/clusterloader --alsologtostderr --logtostderr=false \
+    --enable-prometheus-server=true \
+    --prometheus-apiserver-scrape-port=6443 \
+    --prometheus-pvc-storage-class=standard \
+    --prometheus-ready-timeout=0 \
     --log_file=$SCRIPT_DIR/result/use-case/$TEST-test.log \
     --report-dir=$SCRIPT_DIR/result/use-case/$TEST-test \
     --testsuite=$SCRIPT_DIR/use-case/$TEST/scheduler-suite.yaml \
