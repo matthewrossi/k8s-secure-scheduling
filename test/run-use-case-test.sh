@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO: Adapt config.yaml to add measurement about K8s API (where Gatkeeper
-# operates) and more measurement about scheduling.
-# Specifically: APIAvailabilityMeasurement, APIResponsivenessPrometheusSimple,
-# APIResponsivenessPrometheus, SchedulingMetrics, and SchedulingThroughputPrometheus
 # TODO: Add muatations and constraints precise times
 
 NODES="${NODES:-100}"

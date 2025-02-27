@@ -80,10 +80,10 @@ helm install metrics-server oci://registry-1.docker.io/bitnamicharts/metrics-ser
     --namespace kube-system --wait \
     --values $SCRIPT_DIR/values/metrics-server.yaml
 
-echo -e "\n[*] Install kube-prometheus-stack chart"
-helm upgrade --install kube-prometheus-stack --namespace monitoring --create-namespace --wait \
-    --repo https://prometheus-community.github.io/helm-charts kube-prometheus-stack \
-    --values $SCRIPT_DIR/values/kind-kube-prometheus-stack.yaml
+# echo -e "\n[*] Install kube-prometheus-stack chart"
+# helm upgrade --install kube-prometheus-stack --namespace monitoring --create-namespace --wait \
+#     --repo https://prometheus-community.github.io/helm-charts kube-prometheus-stack \
+#     --values $SCRIPT_DIR/values/kind-kube-prometheus-stack.yaml
 
 if [ "$WITHOUT_GATEKEEPER" = false ]; then
   echo -e '\n[*] Install Gatekeeper chart'
@@ -91,8 +91,8 @@ if [ "$WITHOUT_GATEKEEPER" = false ]; then
   helm upgrade --install gatekeeper --namespace gatekeeper-system --create-namespace --wait \
       --repo https://open-policy-agent.github.io/gatekeeper/charts gatekeeper
 
-  echo -e "\n[*] Install Gatekeeper pod monitors"
-  kubectl apply -f $SCRIPT_DIR/gatekeeper-metrics-exporter
+  # echo -e "\n[*] Install Gatekeeper pod monitors"
+  # kubectl apply -f $SCRIPT_DIR/gatekeeper-metrics-exporter
 fi
 
 echo -e "\n[*] Install Kubernetes WithOut Kubelet"
