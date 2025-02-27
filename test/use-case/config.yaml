@@ -27,7 +27,7 @@ steps:
     Params:
       action: start
       labelSelector: group = direct-scheduler-throughput
-      measurementInterval: 1s
+      measurmentInterval: 1s # Not a typo, it's wrong in the source code
 
   - Identifier: APIAvailability
     Method: APIAvailability
