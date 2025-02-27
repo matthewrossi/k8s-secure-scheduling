@@ -112,7 +112,7 @@ if [ "$WITHOUT_GATEKEEPER" = false ]; then
       --repo https://open-policy-agent.github.io/gatekeeper/charts gatekeeper
 
   echo -e "\n[*] Install Gatekeeper pod monitors"
-  kubectl apply -f $SCRIPT_DIR/gatekeeper-metrics-exporter
+  kubectl apply -f $SCRIPT_DIR/gatekeeper-metrics-exporter/
 fi
 
 echo -e "\n[*] Install Kubernetes WithOut Kubelet"
