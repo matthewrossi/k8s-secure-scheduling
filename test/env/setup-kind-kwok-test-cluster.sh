@@ -85,14 +85,34 @@ helm install metrics-server oci://registry-1.docker.io/bitnamicharts/metrics-ser
 #     --repo https://prometheus-community.github.io/helm-charts kube-prometheus-stack \
 #     --values $SCRIPT_DIR/values/kind-kube-prometheus-stack.yaml
 
+echo -e "\n[*] Install prometheus-stack with clusterloader"
+# Create fake test result directory
+mkdir -p $SCRIPT_DIR/fake-test-report
+
+CL2_PROMETHEUS_NODE_SELECTOR='node-role.kubernetes.io/control-plane: ""' \
+CL2_PROMETHEUS_TOLERATE_MASTER=true \
+    $SCRIPT_DIR/../clusterloader \
+    --enable-prometheus-server=true \
+    --kubeconfig=$HOME/.kube/config \
+    --prometheus-apiserver-scrape-port=6443 \
+    --prometheus-pvc-storage-class=standard \
+    --prometheus-ready-timeout=0 \
+    --provider=kind \
+    --report-dir=$SCRIPT_DIR/fake-test-report \
+    --tear-down-prometheus-server=false \
+    --testconfig=$SCRIPT_DIR/config.yaml
+
+# Remove fake test result directory
+rm -rf $SCRIPT_DIR/fake-test-report
+
 if [ "$WITHOUT_GATEKEEPER" = false ]; then
   echo -e '\n[*] Install Gatekeeper chart'
   # kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v3.18.2/deploy/gatekeeper.yaml
   helm upgrade --install gatekeeper --namespace gatekeeper-system --create-namespace --wait \
       --repo https://open-policy-agent.github.io/gatekeeper/charts gatekeeper
 
-  # echo -e "\n[*] Install Gatekeeper pod monitors"
-  # kubectl apply -f $SCRIPT_DIR/gatekeeper-metrics-exporter
+  echo -e "\n[*] Install Gatekeeper pod monitors"
+  kubectl apply -f $SCRIPT_DIR/gatekeeper-metrics-exporter
 fi
 
 echo -e "\n[*] Install Kubernetes WithOut Kubelet"

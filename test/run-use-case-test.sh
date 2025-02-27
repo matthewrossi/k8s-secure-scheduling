@@ -40,6 +40,7 @@ CL2_PROMETHEUS_NODE_SELECTOR='node-role.kubernetes.io/control-plane: ""' \
 CL2_PROMETHEUS_TOLERATE_MASTER=true \
     $SCRIPT_DIR/clusterloader --alsologtostderr --logtostderr=false \
     --enable-prometheus-server=true \
+    --tear-down-prometheus-server=false \
     --prometheus-apiserver-scrape-port=6443 \
     --prometheus-pvc-storage-class=standard \
     --prometheus-ready-timeout=0 \

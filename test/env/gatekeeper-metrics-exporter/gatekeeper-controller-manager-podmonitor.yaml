@@ -11,4 +11,4 @@ spec:
     matchLabels:
       gatekeeper.sh/operation: webhook
   podMetricsEndpoints:
-  - portNumber: 8888
+  - port: metrics
