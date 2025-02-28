@@ -1,0 +1,74 @@
+{
+  "frameworkExtensionPointDuration": {
+    "Bind": {
+      "Perc50": 204800000,
+      "Perc90": 204800000,
+      "Perc99": 204800000
+    },
+    "Filter": {
+      "Perc50": 366666,
+      "Perc90": 734448,
+      "Perc99": 1866666
+    },
+    "Permit": {
+      "Perc50": 50000,
+      "Perc90": 90000,
+      "Perc99": 99000
+    },
+    "PostBind": {
+      "Perc50": 50000,
+      "Perc90": 90000,
+      "Perc99": 99000
+    },
+    "PostFilter": {
+      "Perc50": 0,
+      "Perc90": 0,
+      "Perc99": 0
+    },
+    "PreBind": {
+      "Perc50": 50000,
+      "Perc90": 90000,
+      "Perc99": 99000
+    },
+    "PreFilter": {
+      "Perc50": 50050,
+      "Perc90": 90090,
+      "Perc99": 99099
+    },
+    "PreScore": {
+      "Perc50": 50120,
+      "Perc90": 90216,
+      "Perc99": 99238
+    },
+    "Reserve": {
+      "Perc50": 50010,
+      "Perc90": 90018,
+      "Perc99": 99019
+    },
+    "Score": {
+      "Perc50": 158827,
+      "Perc90": 277588,
+      "Perc99": 691891
+    },
+    "Unreserve": {
+      "Perc50": 0,
+      "Perc90": 0,
+      "Perc99": 0
+    }
+  },
+  "preemptionEvaluationLatency": {
+    "Perc50": 0,
+    "Perc90": 0,
+    "Perc99": 0
+  },
+  "e2eSchedulingLatency": {
+    "Perc50": 0,
+    "Perc90": 0,
+    "Perc99": 0
+  },
+  "schedulingLatency": {
+    "Perc50": 545732,
+    "Perc90": 982318,
+    "Perc99": 3244897
+  }
+}
