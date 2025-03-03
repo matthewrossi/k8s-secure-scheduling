@@ -57,6 +57,40 @@ steps:
       labelSelector: group = direct-scheduler-throughput
       measurementInterval: 1s
 
+  - Identifier: GatekeeperValidationRequestDuration
+    Method: GenericPrometheusQuery
+    Params:
+      action: start
+      metricName: GatekeeperValidationRequestDuration
+      metricVersion: v1
+      unit: s
+      queries:
+      - name: Perc50
+        query: histogram_quantile(0.50, sum(rate(gatekeeper_validation_request_duration_seconds_bucket[5m])) by (le))
+      - name: Perc90
+        query: histogram_quantile(0.90, sum(rate(gatekeeper_validation_request_duration_seconds_bucket[5m])) by (le))
+      - name: Perc99
+        query: histogram_quantile(0.99, sum(rate(gatekeeper_validation_request_duration_seconds_bucket[5m])) by (le))
+      - name: Sum
+        query: gatekeeper_validation_request_duration_seconds_sum
+
+  - Identifier: GatekeeperMutationRequestDuration
+    Method: GenericPrometheusQuery
+    Params:
+      action: start
+      metricName: GatekeeperMutationRequestDuration
+      metricVersion: v1
+      unit: s
+      queries:
+      - name: Perc50
+        query: histogram_quantile(0.50, sum(rate(gatekeeper_mutation_request_duration_seconds_bucket[5m])) by (le))
+      - name: Perc90
+        query: histogram_quantile(0.90, sum(rate(gatekeeper_mutation_request_duration_seconds_bucket[5m])) by (le))
+      - name: Perc99
+        query: histogram_quantile(0.99, sum(rate(gatekeeper_mutation_request_duration_seconds_bucket[5m])) by (le))
+      - name: Sum
+        query: gatekeeper_mutation_request_duration_seconds_sum
+
 - name: create scheduler throughput pods
   phases:
   - namespaceList:
@@ -99,6 +133,14 @@ steps:
       threshold: {{$SCHEDULER_THROUGHPUT_THRESHOLD}}
   - Identifier: SchedulingThroughputPrometheus
     Method: SchedulingThroughputPrometheus
+    Params:
+      action: gather
+  - Identifier: GatekeeperValidationRequestDuration
+    Method: GenericPrometheusQuery
+    Params:
+      action: gather
+  - Identifier: GatekeeperMutationRequestDuration
+    Method: GenericPrometheusQuery
     Params:
       action: gather
 - name: Delete scheduler throughput pods
