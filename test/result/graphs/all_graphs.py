@@ -63,9 +63,9 @@ def scheduling_latency(use_case, types, labels):
         with open(path) as f:
             values = json.load(f)
 
-        data['50th percentile'][test_type] = values['schedulingLatency']['Perc50'] / 1000
-        data['90th percentile'][test_type] = values['schedulingLatency']['Perc90'] / 1000
-        data['99th percentile'][test_type] = values['schedulingLatency']['Perc99'] / 1000
+        data['50th percentile'][test_type] = values['schedulingLatency']['Perc50'] / 1e6
+        data['90th percentile'][test_type] = values['schedulingLatency']['Perc90'] / 1e6
+        data['99th percentile'][test_type] = values['schedulingLatency']['Perc99'] / 1e6
 
     x = np.arange(len(types)) # label locations
 
@@ -82,7 +82,7 @@ def scheduling_latency(use_case, types, labels):
     ax.set_ylabel('Scheduling Latency [ms]')
     ax.set_xticks(x + width, [labels[t] for t in types])
     ax.legend(loc='upper left')
-    ax.set_ylim(0, 3700)
+    ax.set_ylim(0, 3.7)
 
     plt.savefig(f'out/{use_case}-scheduling-latency.pdf', bbox_inches='tight')
 
