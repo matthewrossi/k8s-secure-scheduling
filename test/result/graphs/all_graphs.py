@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
+# For LaTeX-like fonts, comment if it errors out
+plt.rcParams['font.family'] = 'NewComputerModern08'
+
 FOLDER = Path('../anthem-kind-3-control-1000-fake-worker-nodes-30k-pods')
 
 def get_type(path, types=[]):
