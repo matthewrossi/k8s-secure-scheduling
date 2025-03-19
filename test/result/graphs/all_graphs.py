@@ -7,6 +7,7 @@ from pathlib import Path
 
 # For LaTeX-like fonts, comment if it errors out
 plt.rcParams['font.family'] = 'NewComputerModern08'
+plt.rcParams['font.size'] = 14
 
 FOLDER = Path('../anthem-kind-3-control-1000-fake-worker-nodes-30k-pods')
 
@@ -100,7 +101,7 @@ scheduling_latency(use_case='multi-tenancy-test', types=TYPES, labels=LABELS)
 # ------------------------- Scheduling Throughput
 
 TYPES = ['vanilla', 'eu-region', 'us-region']
-LABELS = {'eu-region': 'European Economic Area', 'us-region': 'United States', 'vanilla': 'Unconstrained'}
+LABELS = {'eu-region': 'EEA', 'us-region': 'US', 'vanilla': 'Unconstrained'}
 
 scheduling_throughput(use_case='data-sovereignty-test', types=TYPES, labels=LABELS)
 scheduling_latency(use_case='data-sovereignty-test', types=TYPES, labels=LABELS)
