@@ -25,109 +25,77 @@ def get_type(path, types=[]):
     return None
 
 
-def scheduling_throughput(use_case, types, labels):
-    data = {
-        'Average': {},
-        'Maximum': {},
-    }
+def grouped_bars(use_case, files, types, labels, value_transformers, bar_width=0.25, xticks_offset=0.25, ylabel='', ylim=None, output=''):
+    data = {}
+    for key, _ in value_transformers:
+        data[key] = {}
 
-    for path in (FOLDER / use_case).glob('SchedulingThroughputPrometheus_direct-scheduler*.json'):
+    for path in (FOLDER / use_case).glob(files):
         test_type = get_type(path, types)
         with open(path) as f:
             values = json.load(f)
-        data['Average'][test_type] = values['avg']
-        data['Maximum'][test_type] = values['max']
 
-    x = np.arange(len(types)) # label locations
+        for key, f in value_transformers:
+            data[key][test_type] = f(values)
+
+    x = np.arange(len(types))
 
     plt.figure()
-
-    width = 0.25
     for i, (attribute, measurements) in enumerate(data.items()):
-        offset = width * i
+        offset = bar_width * i
         values = [measurements[t] for t in types]
-        rects = plt.bar(x + offset, values, width, label=attribute)
+        plt.bar(x + offset, values, bar_width, label=attribute)
 
-    # Add some text for labels, title and custom x-axis tick labels, etc.
-    plt.ylabel('Throughput [qps]')
-    plt.xticks(x + width / 2, [labels[t] for t in types])
+    plt.ylabel(ylabel)
+    plt.xticks(x + xticks_offset, [labels[t] for t in types])
     plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.ylim(0, 75)
+    plt.ylim(ylim)
+    plt.savefig(f'out/{output}.pdf', bbox_inches='tight')
 
-    plt.savefig(f'out/{use_case}-scheduling-throughput.pdf', bbox_inches='tight')
+
+def scheduling_throughput(use_case, types, labels):
+    grouped_bars(use_case,
+                 files='SchedulingThroughputPrometheus*.json',
+                 types=types,
+                 labels=labels,
+                 value_transformers=[
+                     ('Average', lambda x: x['avg']),
+                     ('Maximum', lambda x: x['max']),
+                 ],
+                 xticks_offset=0.125,
+                 ylabel='Throughput [qps]',
+                 ylim=(0, 75),
+                 output=f'{use_case}-scheduling-throughput.pdf')
 
 
 def scheduling_latency(use_case, types, labels):
-    data = {
-        'P50': {},
-        'P90': {},
-        'P99': {},
-    }
-
-    for path in (FOLDER / use_case).glob('SchedulingMetrics*.json'):
-        test_type = get_type(path, types)
-        with open(path) as f:
-            values = json.load(f)
-
-        data['P50'][test_type] = values['schedulingLatency']['Perc50'] / 1e6
-        data['P90'][test_type] = values['schedulingLatency']['Perc90'] / 1e6
-        data['P99'][test_type] = values['schedulingLatency']['Perc99'] / 1e6
-
-    x = np.arange(len(types)) # label locations
-
-    plt.figure()
-
-    width = 0.25
-    for i, (attribute, measurements) in enumerate(data.items()):
-        offset = width * i
-        values = [measurements[t] for t in types]
-        rects = plt.bar(x + offset, values, width, label=attribute)
-
-    # Add some text for labels, title and custom x-axis tick labels, etc.
-    plt.ylabel('Scheduling Latency [ms]')
-    plt.xticks(x + width, [labels[t] for t in types])
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.ylim(0, 3.7)
-
-    plt.savefig(f'out/{use_case}-scheduling-latency.pdf', bbox_inches='tight')
+    grouped_bars(use_case,
+                 files='SchedulingMetrics*.json',
+                 types=types,
+                 labels=labels,
+                 value_transformers=[
+                     ('P50', lambda x: x['schedulingLatency']['Perc50'] / 1e6),
+                     ('P90', lambda x: x['schedulingLatency']['Perc90'] / 1e6),
+                     ('P99', lambda x: x['schedulingLatency']['Perc99'] / 1e6),
+                 ],
+                 ylabel='Latency [ms]',
+                 ylim=(0, 3.7),
+                 output=f'{use_case}-scheduling-latency.pdf')
 
 
 def prometheus_mutation_duration(use_case, types, labels):
-    data = {
-        'P50': {},
-        'P90': {},
-        'P99': {},
-    }
-
-    for path in (FOLDER / use_case).glob('GenericPrometheusQuery GatekeeperMutationRequestDuration*.json'):
-        test_type = get_type(path, types)
-        with open(path) as f:
-            values = json.load(f)
-
-        data['P50'][test_type] = values['dataItems'][0]['data']['Perc50'] * 1000
-        data['P90'][test_type] = values['dataItems'][0]['data']['Perc90'] * 1000
-        data['P99'][test_type] = values['dataItems'][0]['data']['Perc99'] * 1000
-
-    x = np.arange(len(types)) # label locations
-
-    plt.figure()
-    # fig, ax = plt.subplots(layout='constrained')
-
-    width = 0.25
-    for i, (attribute, measurements) in enumerate(data.items()):
-        offset = width * i
-        values = [measurements[t] for t in types]
-        rects = plt.bar(x + offset, values, width, label=attribute)
-
-    # Add some text for labels, title and custom x-axis tick labels, etc.
-    plt.ylabel('Duration [ms]')
-    plt.xticks(x + width, [labels[t] for t in types])
-    # ax.legend(loc='upper left')
-    # outside_legend(plt)
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.ylim(0, 1.3)
-
-    plt.savefig(f'out/{use_case}-prometheus-mutation-duration.pdf', bbox_inches='tight')
+    grouped_bars(use_case,
+                 files='GenericPrometheusQuery GatekeeperMutationRequestDuration*.json',
+                 types=types,
+                 labels=labels,
+                 value_transformers=[
+                     ('P50', lambda x: x['dataItems'][0]['data']['Perc50'] * 1000),
+                     ('P90', lambda x: x['dataItems'][0]['data']['Perc90'] * 1000),
+                     ('P99', lambda x: x['dataItems'][0]['data']['Perc99'] * 1000),
+                 ],
+                 ylabel='Duration [ms]',
+                 ylim=(0, 1.3),
+                 output=f'{use_case}-prometheus-mutation-duration.pdf')
 
 # ================================================ Multi tenancy
 
