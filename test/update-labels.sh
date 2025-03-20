@@ -30,23 +30,27 @@ readarray -t nodes <<<"${nodes}"
 if [ "$DELETE" = false ]; then
     echo -e '[*] Set node labels'
 
+    i=0
     case "$POLICY" in
         'data-sovereignty')
             for node in "${nodes[@]}"
             do
-                kubectl label nodes ${node} topology.kubernetes.io/region=${REGIONS[${RANDOM} % 3]} --overwrite
+                kubectl label nodes ${node} topology.kubernetes.io/region=${REGIONS[${i} % 3]} --overwrite
+                i=$((i+1))
             done
             ;;
         'multi-tenancy')
             for node in "${nodes[@]}"
             do
-                kubectl label nodes ${node} tenant=${TENANTS[${RANDOM} % 2]} --overwrite
+                kubectl label nodes ${node} tenant=${TENANTS[${i} % 2]} --overwrite
+                i=$((i+1))
             done
             ;;
         'workload-security-rings')
             for node in "${nodes[@]}"
             do
-                kubectl label nodes ${node} security-ring=${SECURITY_RINGS[${RANDOM} % 2]} --overwrite
+                kubectl label nodes ${node} security-ring=${SECURITY_RINGS[${i} % 2]} --overwrite
+                i=$((i+1))
             done
             ;;
         *)
