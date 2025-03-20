@@ -65,7 +65,7 @@ def scheduling_throughput(use_case, types, labels):
                  xticks_offset=0.125,
                  ylabel='Throughput [qps]',
                  ylim=(0, 75),
-                 output=f'{use_case}-scheduling-throughput.pdf')
+                 output=f'{use_case}-scheduling-throughput')
 
 
 def scheduling_latency(use_case, types, labels):
@@ -80,7 +80,7 @@ def scheduling_latency(use_case, types, labels):
                  ],
                  ylabel='Latency [ms]',
                  ylim=(0, 3.7),
-                 output=f'{use_case}-scheduling-latency.pdf')
+                 output=f'{use_case}-scheduling-latency')
 
 
 def prometheus_mutation_duration(use_case, types, labels):
@@ -95,7 +95,22 @@ def prometheus_mutation_duration(use_case, types, labels):
                  ],
                  ylabel='Duration [ms]',
                  ylim=(0, 1.3),
-                 output=f'{use_case}-prometheus-mutation-duration.pdf')
+                 output=f'{use_case}-prometheus-mutation-duration')
+
+
+def prometheus_validation_duration(use_case, types, labels):
+    grouped_bars(use_case,
+                 files='GenericPrometheusQuery GatekeeperValidationRequestDuration*.json',
+                 types=types,
+                 labels=labels,
+                 value_transformers=[
+                     ('P50', lambda x: x['dataItems'][0]['data']['Perc50'] * 1000),
+                     ('P90', lambda x: x['dataItems'][0]['data']['Perc90'] * 1000),
+                     ('P99', lambda x: x['dataItems'][0]['data']['Perc99'] * 1000),
+                 ],
+                 ylabel='Duration [ms]',
+                 ylim=(0, 1.3),
+                 output=f'{use_case}-prometheus-validation-duration')
 
 # ================================================ Multi tenancy
 
@@ -107,6 +122,7 @@ LABELS = {'uc1': 'Tenant A', 'uc2': 'Tenant B', 'vanilla': 'Unconstrained'}
 scheduling_throughput(use_case='multi-tenancy-test', types=TYPES, labels=LABELS)
 scheduling_latency(use_case='multi-tenancy-test', types=TYPES, labels=LABELS)
 prometheus_mutation_duration(use_case='multi-tenancy-test', types=TYPES, labels=LABELS)
+prometheus_validation_duration(use_case='multi-tenancy-test', types=TYPES, labels=LABELS)
  
 # ================================================ Data Sovereignty
 
@@ -118,6 +134,7 @@ LABELS = {'eu-region': 'EEA', 'us-region': 'US', 'vanilla': 'Unconstrained'}
 scheduling_throughput(use_case='data-sovereignty-test', types=TYPES, labels=LABELS)
 scheduling_latency(use_case='data-sovereignty-test', types=TYPES, labels=LABELS)
 prometheus_mutation_duration(use_case='data-sovereignty-test', types=TYPES, labels=LABELS)
+prometheus_validation_duration(use_case='data-sovereignty-test', types=TYPES, labels=LABELS)
 
 # ================================================ Workload Security Rings
 
@@ -129,3 +146,4 @@ LABELS = {'unhandened': 'Unhardened', 'sensitive': 'Sensitive', 'vanilla': 'Unco
 scheduling_throughput(use_case='workload-security-rings-test', types=TYPES, labels=LABELS)
 scheduling_latency(use_case='workload-security-rings-test', types=TYPES, labels=LABELS)
 prometheus_mutation_duration(use_case='workload-security-rings-test', types=TYPES, labels=LABELS)
+prometheus_validation_duration(use_case='workload-security-rings-test', types=TYPES, labels=LABELS)
