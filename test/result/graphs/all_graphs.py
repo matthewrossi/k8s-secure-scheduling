@@ -16,7 +16,7 @@ OUTSIDE_LEGEND_PARAMS = {
     'ncol': 3,
 }
 
-FOLDER = Path('../anthem-kind-3-control-1000-fake-worker-nodes-30k-pods')
+FOLDER = Path('../anthem-3cn-1000n-30kpods-uniform')
 
 def get_type(path, types=[]):
     for t in types:
@@ -79,7 +79,7 @@ def scheduling_latency(use_case, types, labels):
                      ('P99', lambda x: x['schedulingLatency']['Perc99'] / 1e6),
                  ],
                  ylabel='Latency [ms]',
-                 ylim=(0, 3.7),
+                 ylim=(0, 4.1),
                  output=f'{use_case}-scheduling-latency')
 
 
