@@ -1,0 +1,14 @@
+Running 5s test @ http://localhost:8001/api/v1/namespaces/default/pods/lighttpd-default/proxy/
+  12 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    20.26ms    9.60ms  82.43ms   75.13%
+    Req/Sec   400.74     86.40     2.17k    93.51%
+  Latency Distribution
+     50%   18.19ms
+     75%   24.62ms
+     90%   32.90ms
+     99%   51.30ms
+  23984 requests in 5.10s, 8.37MB read
+  Non-2xx or 3xx responses: 23984
+Requests/sec:   4702.18
+Transfer/sec:      1.64MB

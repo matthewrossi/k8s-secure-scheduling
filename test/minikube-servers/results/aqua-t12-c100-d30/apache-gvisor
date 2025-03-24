@@ -1,0 +1,13 @@
+Running 5s test @ http://localhost:8001/api/v1/namespaces/default/pods/apache-gvisor/proxy/
+  12 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    77.59ms   71.44ms 319.02ms   68.51%
+    Req/Sec   121.99     64.25   575.00     77.61%
+  Latency Distribution
+     50%   59.74ms
+     75%  111.73ms
+     90%  211.20ms
+     99%  250.92ms
+  7258 requests in 5.00s, 2.44MB read
+Requests/sec:   1450.49
+Transfer/sec:    498.61KB
