@@ -1,3 +1,4 @@
 .envrc
 .direnv
 *.pdf
+ycsb-0.17.0*

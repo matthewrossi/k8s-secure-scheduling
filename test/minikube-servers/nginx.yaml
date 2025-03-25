@@ -4,16 +4,20 @@ metadata:
   name: nginx-default
   labels:
     app: nginx
+    wrapper: none
+    type: web-server
     paper: secure-scheduling
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: nginx
+      wrapper: none
   template:
     metadata:
       labels:
         app: nginx
+        wrapper: none
     spec:
       containers:
       - name: nginx
@@ -25,18 +29,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-gvisor
+  wrapper: gvisor
   labels:
     app: nginx
+    type: web-server
     paper: secure-scheduling
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: nginx
+      wrapper: gvisor
   template:
     metadata:
       labels:
         app: nginx
+        wrapper: gvisor
     spec:
       runtimeClassName: gvisor
       containers:
@@ -51,16 +59,20 @@ metadata:
   name: nginx-qemu
   labels:
     app: nginx
+    wrapper: qemu
+    type: web-server
     paper: secure-scheduling
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: nginx
+      wrapper: qemu
   template:
     metadata:
       labels:
         app: nginx
+        wrapper: qemu
     spec:
       runtimeClassName: kata-qemu
       containers:

@@ -4,16 +4,20 @@ metadata:
   name: apache-default
   labels:
     app: apache
+    wrapper: none
+    type: web-server
     paper: secure-scheduling
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: apache
+      wrapper: none
   template:
     metadata:
       labels:
         app: apache
+        wrapper: none
     spec:
       containers:
       - name: apache
@@ -25,16 +29,20 @@ metadata:
   name: apache-gvisor
   labels:
     app: apache
+    wrapper: gvisor
+    type: web-server
     paper: secure-scheduling
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: apache
+      wrapper: gvisor
   template:
     metadata:
       labels:
         app: apache
+        wrapper: gvisor
     spec:
       runtimeClassName: gvisor
       containers:
@@ -47,16 +55,20 @@ metadata:
   name: apache-qemu
   labels:
     app: apache
+    wrapper: qemu
+    type: web-server
     paper: secure-scheduling
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: apache
+      wrapper: qemu
   template:
     metadata:
       labels:
         app: apache
+        wrapper: qemu
     spec:
       runtimeClassName: kata-qemu
       containers:

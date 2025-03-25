@@ -1,76 +1,76 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lighttpd-default
+  name: redis-default
   labels:
-    app: lighttpd
+    app: redis
     wrapper: none
-    type: web-server
+    type: db
     paper: secure-scheduling
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lighttpd
+      app: redis
       wrapper: none
   template:
     metadata:
       labels:
-        app: lighttpd
+        app: redis
         wrapper: none
     spec:
       containers:
-      - name: lighttpd
-        image: pdok/lighttpd
+      - name: redis
+        image: redis
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lighttpd-gvisor
+  name: redis-gvisor
   labels:
-    app: lighttpd
+    app: redis
     wrapper: gvisor
-    type: web-server
+    type: db
     paper: secure-scheduling
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lighttpd
+      app: redis
       wrapper: gvisor
   template:
     metadata:
       labels:
-        app: lighttpd
+        app: redis
         wrapper: gvisor
     spec:
       runtimeClassName: gvisor
       containers:
-      - name: lighttpd
-        image: pdok/lighttpd
+      - name: redis
+        image: redis
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lighttpd-qemu
+  name: redis-qemu
   labels:
-    app: lighttpd
+    app: redis
     wrapper: qemu
-    type: web-server
+    type: db
     paper: secure-scheduling
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lighttpd
+      app: redis
       wrapper: qemu
   template:
     metadata:
       labels:
-        app: lighttpd
+        app: redis
         wrapper: qemu
     spec:
       runtimeClassName: kata-qemu
       containers:
-      - name: lighttpd
-        image: pdok/lighttpd
+      - name: redis
+        image: redis

@@ -18,7 +18,7 @@ projroot=$(git rev-parse --show-toplevel)
 out="$projroot/test/minikube-servers/results/$(uname -n)-t$WRK_THREADS-c$WRK_CONNS-d$WRK_TIME"
 mkdir -p "$out"
 
-for service in $(kubectl get services -l paper=secure-scheduling -o name); do
+for service in $(kubectl get services -l type=web-server -o name); do
   port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
   echo "[*] Testing $service at $(minikube ip):$port"
   name=$(echo $service | cut -d'/' -f2)
