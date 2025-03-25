@@ -9,6 +9,7 @@ kubectl apply -f lighttpd.yaml
 # -------------- Databases
 
 kubectl apply -f redis.yaml
+kubectl apply -f mongodb.yaml
 
 # -------------- Expose everything
 
@@ -17,6 +18,9 @@ for dep in $(kubectl get deployments -l type=web-server -o name); do
 done
 for dep in $(kubectl get deployments -l app=redis -o name); do
   kubectl expose $dep --type=NodePort --port=6379
+done
+for dep in $(kubectl get deployments -l app=mongo -o name); do
+  kubectl expose $dep --type=NodePort --port=27017
 done
 
 # -------------- Check for YCSB
