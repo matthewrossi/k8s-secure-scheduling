@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-default
+  labels:
+    app: apache
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+      - name: apache
+        image: httpd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-gvisor
+  labels:
+    app: apache
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      runtimeClassName: gvisor
+      containers:
+      - name: apache
+        image: httpd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-qemu
+  labels:
+    app: apache
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      runtimeClassName: kata-qemu
+      containers:
+      - name: apache
+        image: httpd

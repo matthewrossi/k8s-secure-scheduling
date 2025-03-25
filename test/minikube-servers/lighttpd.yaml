@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lighttpd-default
+  labels:
+    app: lighttpd
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lighttpd
+  template:
+    metadata:
+      labels:
+        app: lighttpd
+    spec:
+      containers:
+      - name: lighttpd
+        image: pdok/lighttpd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lighttpd-gvisor
+  labels:
+    app: lighttpd
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lighttpd
+  template:
+    metadata:
+      labels:
+        app: lighttpd
+    spec:
+      runtimeClassName: gvisor
+      containers:
+      - name: lighttpd
+        image: pdok/lighttpd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lighttpd-qemu
+  labels:
+    app: lighttpd
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lighttpd
+  template:
+    metadata:
+      labels:
+        app: lighttpd
+    spec:
+      runtimeClassName: kata-qemu
+      containers:
+      - name: lighttpd
+        image: pdok/lighttpd
