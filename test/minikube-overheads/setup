@@ -11,8 +11,9 @@ fi
 # -------------- Databases
 
 if [[ "$1" = "db" || "$1" = "all" ]]; then
-  kubectl apply -f redis.yaml
-  kubectl apply -f mongodb.yaml
+  # kubectl apply -f redis.yaml
+  # kubectl apply -f mongodb.yaml
+  kubectl apply -f postgres.yaml
 fi
 
 # -------------- Expose everything
@@ -28,6 +29,9 @@ if [[ "$1" = "db" || "$1" = "all" ]]; then
   done
   for dep in $(kubectl get deployments -l app=mongo -o name); do
     kubectl expose $dep --type=NodePort --port=27017
+  done
+  for dep in $(kubectl get deployments -l app=postgres -o name); do
+    kubectl expose $dep --type=NodePort --port=5432
   done
 fi
 

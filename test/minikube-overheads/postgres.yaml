@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-default
+  labels:
+    app: postgres
+    wrapper: none
+    type: db
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+      wrapper: none
+  template:
+    metadata:
+      labels:
+        app: postgres
+        wrapper: none
+    spec:
+      containers:
+      - name: postgres
+        image: postgres
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "example"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-gvisor
+  labels:
+    app: postgres
+    wrapper: gvisor
+    type: db
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+      wrapper: gvisor
+  template:
+    metadata:
+      labels:
+        app: postgres
+        wrapper: gvisor
+    spec:
+      runtimeClassName: gvisor
+      containers:
+      - name: postgres
+        image: postgres
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "example"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-qemu
+  labels:
+    app: postgres
+    wrapper: qemu
+    type: db
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+      wrapper: qemu
+  template:
+    metadata:
+      labels:
+        app: postgres
+        wrapper: qemu
+    spec:
+      runtimeClassName: kata-qemu
+      containers:
+      - name: postgres
+        image: postgres
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "example"
