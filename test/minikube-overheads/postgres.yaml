@@ -24,7 +24,11 @@ spec:
         image: postgres
         env:
         - name: POSTGRES_PASSWORD
-          value: "example"
+          value: example
+        - name: POSTGRES_USER
+          value: sbtest
+        - name: POSTGRES_DB
+          value: sbtest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,7 +57,11 @@ spec:
         image: postgres
         env:
         - name: POSTGRES_PASSWORD
-          value: "example"
+          value: example
+        - name: POSTGRES_USER
+          value: sbtest
+        - name: POSTGRES_DB
+          value: sbtest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -82,4 +90,8 @@ spec:
         image: postgres
         env:
         - name: POSTGRES_PASSWORD
-          value: "example"
+          value: example
+        - name: POSTGRES_USER
+          value: sbtest
+        - name: POSTGRES_DB
+          value: sbtest

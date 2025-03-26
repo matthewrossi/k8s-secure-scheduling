@@ -19,3 +19,31 @@ for service in $(kubectl get services -l app=mongo -o name); do
   ./ycsb-0.17.0/bin/ycsb.sh load mongodb -P ./ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-load"
   ./ycsb-0.17.0/bin/ycsb.sh run  mongodb -P ./ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-run"
 done
+
+for service in $(kubectl get services -l app=postgres -o name); do
+  port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
+  echo "[*] Testing $service at $(minikube ip):$port"
+  name=$(echo $service | cut -d'/' -f2)
+  sysbench \
+    --db-driver=pgsql \
+    --pgsql-host="$(minikube ip)" \
+    --pgsql-port=$port \
+    --pgsql-password=example \
+    --pgsql-user=sbtest \
+    /usr/share/sysbench/oltp_read_write.lua prepare
+  sysbench \
+    --db-driver=pgsql \
+    --pgsql-host="$(minikube ip)" \
+    --pgsql-port=$port \
+    --pgsql-password=example \
+    --pgsql-user=sbtest \
+    --percentile=99 \
+    /usr/share/sysbench/oltp_read_write.lua run > "$out/$name-sysbench"
+  sysbench \
+    --db-driver=pgsql \
+    --pgsql-host="$(minikube ip)" \
+    --pgsql-port=$port \
+    --pgsql-password=example \
+    --pgsql-user=sbtest \
+    /usr/share/sysbench/oltp_read_write.lua cleanup
+done
