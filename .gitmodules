@@ -1,3 +1,6 @@
 [submodule "test/perf-tests"]
 	path = test/perf-tests
 	url = https://github.com/unibg-seclab/perf-tests
+[submodule "test/minikube-overheads/kata-containers"]
+	path = test/minikube-overheads/kata-containers
+	url = https://github.com/kata-containers/kata-containers.git

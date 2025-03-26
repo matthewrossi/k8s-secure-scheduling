@@ -15,7 +15,7 @@ WRK_CONNS=100
 WRK_TIME=30s
 
 projroot=$(git rev-parse --show-toplevel)
-out="$projroot/test/minikube-servers/results/$(uname -n)-t$WRK_THREADS-c$WRK_CONNS-d$WRK_TIME"
+out="$projroot/test/minikube-overheads/results/$(uname -n)-web-servers-t$WRK_THREADS-c$WRK_CONNS-d$WRK_TIME"
 mkdir -p "$out"
 
 for service in $(kubectl get services -l type=web-server -o name); do

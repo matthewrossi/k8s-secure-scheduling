@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 projroot=$(git rev-parse --show-toplevel)
-out="$projroot/test/minikube-servers/results/$(uname -n)-db"
+out="$projroot/test/minikube-overheads/results/$(uname -n)-db"
 mkdir -p "$out"
 
 for service in $(kubectl get services -l app=redis -o name); do
