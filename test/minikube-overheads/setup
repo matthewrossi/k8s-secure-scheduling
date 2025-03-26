@@ -11,8 +11,8 @@ fi
 # -------------- Databases
 
 if [[ "$1" = "db" || "$1" = "all" ]]; then
-  # kubectl apply -f redis.yaml
-  # kubectl apply -f mongodb.yaml
+  kubectl apply -f redis.yaml
+  kubectl apply -f mongodb.yaml
   kubectl apply -f postgres.yaml
 fi
 
