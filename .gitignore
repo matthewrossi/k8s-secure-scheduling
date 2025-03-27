@@ -3,6 +3,6 @@
 *.pdf
 ycsb-0.17.0*
 
-./test/minikube-overheads/deps/dbt3/*
-!./test/minikube-overheads/deps/dbt3/PKGBUILD
-!./test/minikube-overheads/deps/dbt3/dbt3-git
+test/minikube-overheads/deps/dbt3
+!test/minikube-overheads/deps/dbt3/PKGBUILD
+!test/minikube-overheads/deps/dbt3/dbt3-git
