@@ -1,5 +1,27 @@
 #!/usr/bin/env bash
 
+# -------------- Minikube
+
+if [[ "$1" = "minikube" || "$1" = "all" ]]; then
+  minikube \
+    --cpus=8 \
+    --memory=8192 \
+    --driver=kvm2 \
+    --container-runtime=containerd \
+    start
+
+  minikube addons enable gvisor
+  
+  pushd deps/kata-containers/tools/packaging/kata-deploy
+
+  kubectl apply -f kata-rbac/base/kata-rbac.yaml
+  kubectl apply -f kata-deploy/base/kata-deploy.yaml
+
+  kubectl apply -f runtimeclasses/kata-runtimeClasses.yaml
+
+  popd
+fi
+
 # -------------- Web servers
 
 if [[ "$1" = "web-servers" || "$1" = "all" ]]; then
