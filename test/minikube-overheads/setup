@@ -57,10 +57,20 @@ if [[ "$1" = "db" || "$1" = "all" ]]; then
   done
 fi
 
-# -------------- Check for YCSB
+# -------------- Check for YCSB and TPC-H
 
-if [[ ! -f 'ycsb-0.17.0.tar.gz' ]]; then
-  rm -rf ycsb-0.17.0
-  curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/ycsb-0.17.0.tar.gz
-  tar xfvz ycsb-0.17.0.tar.gz
+if [[ "$1" = "benchmarks" || "$1" = "all" ]]; then
+  pushd deps
+
+  if [[ ! -f 'ycsb-0.17.0.tar.gz' ]]; then
+    rm -rf ycsb-0.17.0
+    curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/ycsb-0.17.0.tar.gz
+    tar xfvz ycsb-0.17.0.tar.gz
+  fi
+
+  if [[ ! -d 'TPC-H V3.0.1' ]]; then
+    unzip tpc-h-tools.zip
+  fi
+
+  popd
 fi
