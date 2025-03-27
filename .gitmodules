@@ -4,3 +4,6 @@
 [submodule "test/minikube-overheads/deps/kata-containers"]
 	path = test/minikube-overheads/deps/kata-containers
 	url = https://github.com/kata-containers/kata-containers.git
+[submodule "test/minikube-overheads/deps/dbt3/dbt3-git"]
+	path = test/minikube-overheads/deps/dbt3/dbt3-git
+	url = https://github.com/osdldbt/dbt3.git
