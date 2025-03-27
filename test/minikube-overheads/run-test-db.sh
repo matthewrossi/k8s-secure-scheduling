@@ -56,5 +56,5 @@ for service in $(kubectl get services -l app=postgres -o name); do
   port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
   echo "[*] Testing $service at $(minikube ip):$port"
   name=$(echo $service | cut -d'/' -f2)
-  PGHOST="$(minikube ip)" PGPORT="$port" PGUSER=sbtest PGPASSWORD=example dbt3-run --tpchtools="deps/TPC-H V3.0.1" pgsql "$OUT"
+  PGHOST="$(minikube ip)" PGPORT="$port" PGUSER=sbtest PGPASSWORD=example dbt3-run --stats --tpchtools="deps/TPC-H V3.0.1" pgsql "$OUT"
 done
