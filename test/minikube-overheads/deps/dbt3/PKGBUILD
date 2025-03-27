@@ -1,0 +1,30 @@
+pkgname=dbt3
+pkgver=2.0.10
+pkgrel=1
+pkgdesc="Database Test 3: Fair Use TPC Benchmark(TM) H kit"
+arch=(x86_64)
+url="https://github.com/osdldbt/dbt3"
+license=('Artistic-2.0')
+groups=()
+depends=(sqlite bc)
+makedepends=(make cmake) # 'bzr', 'git', 'mercurial' or 'subversion'
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+source=("$pkgname-pacman::git+$url.git")
+noextract=()
+sha256sums=('SKIP')
+
+build() {
+	cd "$srcdir/$pkgname-pacman"
+	git checkout v2.0.10
+	make -f Makefile.cmake release
+}
+
+package() {
+	cd "$srcdir/$pkgname-pacman/builds/release"
+	cmake --install . --prefix "$pkgdir/usr/local/"
+}
