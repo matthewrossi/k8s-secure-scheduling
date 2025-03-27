@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+
+dbt3-build-dbgen --patch-dir deps/dbt3/dbt3-git/patches --query-dir deps/dbt3/dbt3-git/queries pgsql 'deps/TPC-H V3.0.1'
