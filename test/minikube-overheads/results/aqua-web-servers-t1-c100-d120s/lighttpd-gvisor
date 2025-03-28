@@ -1,0 +1,13 @@
+Running 2m test @ http://192.168.39.30:30951
+  1 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.87ms  455.98us  18.37ms   78.42%
+    Req/Sec    53.55k     5.24k   71.41k    72.25%
+  Latency Distribution
+     50%    1.87ms
+     75%    2.09ms
+     90%    2.31ms
+     99%    3.32ms
+  6393930 requests in 2.00m, 6.66GB read
+Requests/sec:  53282.34
+Transfer/sec:     56.81MB

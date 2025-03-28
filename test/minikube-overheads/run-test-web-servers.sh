@@ -1,18 +1,8 @@
 #!/usr/bin/env bash
 
-echo "[*] Ensure to"
-echo "    1. Have run ./setup.sh"
-
-read -p "Start? [Y/n] " ans
-if [[ "$ans" = "" ]]; then ans="yes"; fi
-case $ans in
-    Y|y|yes) ;;
-    *) exit 0 ;;
-esac
-
-WRK_THREADS=12
+WRK_THREADS=1
 WRK_CONNS=100
-WRK_TIME=30s
+WRK_TIME=120s
 
 projroot=$(git rev-parse --show-toplevel)
 out="$projroot/test/minikube-overheads/results/$(uname -n)-web-servers-t$WRK_THREADS-c$WRK_CONNS-d$WRK_TIME"
