@@ -1,0 +1,61 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	ps_partkey,
+	sum(ps_supplycost * ps_availqty) as value
+from
+	partsupp,
+	supplier,
+	nation
+where
+	ps_suppkey = s_suppkey
+	and s_nationkey = n_nationkey
+	and n_name = 'FRANCE'
+group by
+	ps_partkey having
+		sum(ps_supplycost * ps_availqty) > (
+			select
+				sum(ps_supplycost * ps_availqty) * 0.0001000000
+			from
+				partsupp,
+				supplier,
+				nation
+			where
+				ps_suppkey = s_suppkey
+				and s_nationkey = n_nationkey
+				and n_name = 'FRANCE'
+		)
+order by
+	value desc;
+                                                        QUERY PLAN                                                        
+--------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=5007.92..5012.64 rows=1888 width=36)
+   Sort Key: (sum((partsupp.ps_supplycost * (partsupp.ps_availqty)::numeric))) DESC
+   InitPlan 1
+     ->  Aggregate  (cost=2403.03..2403.04 rows=1 width=32)
+           ->  Nested Loop  (cost=1.75..2360.55 rows=5664 width=10)
+                 ->  Hash Join  (cost=1.32..90.95 rows=100 width=4)
+                       Hash Cond: (supplier_1.s_nationkey = nation_1.n_nationkey)
+                       ->  Seq Scan on supplier supplier_1  (cost=0.00..81.96 rows=2496 width=8)
+                       ->  Hash  (cost=1.31..1.31 rows=1 width=4)
+                             ->  Seq Scan on nation nation_1  (cost=0.00..1.31 rows=1 width=4)
+                                   Filter: (n_name = 'FRANCE'::bpchar)
+                 ->  Index Scan using partsupp_ps_suppkey_idx on partsupp partsupp_1  (cost=0.42..22.13 rows=57 width=14)
+                       Index Cond: (ps_suppkey = supplier_1.s_suppkey)
+   ->  HashAggregate  (cost=2417.19..2502.15 rows=1888 width=36)
+         Group Key: partsupp.ps_partkey
+         Filter: (sum((partsupp.ps_supplycost * (partsupp.ps_availqty)::numeric)) > (InitPlan 1).col1)
+         ->  Nested Loop  (cost=1.75..2360.55 rows=5664 width=14)
+               ->  Hash Join  (cost=1.32..90.95 rows=100 width=4)
+                     Hash Cond: (supplier.s_nationkey = nation.n_nationkey)
+                     ->  Seq Scan on supplier  (cost=0.00..81.96 rows=2496 width=8)
+                     ->  Hash  (cost=1.31..1.31 rows=1 width=4)
+                           ->  Seq Scan on nation  (cost=0.00..1.31 rows=1 width=4)
+                                 Filter: (n_name = 'FRANCE'::bpchar)
+               ->  Index Scan using partsupp_ps_suppkey_idx on partsupp  (cost=0.42..22.13 rows=57 width=18)
+                     Index Cond: (ps_suppkey = supplier.s_suppkey)
+(25 rows)
+
+COMMIT;
+COMMIT

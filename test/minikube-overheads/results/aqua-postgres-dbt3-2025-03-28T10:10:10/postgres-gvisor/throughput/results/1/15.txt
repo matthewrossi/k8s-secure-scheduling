@@ -1,0 +1,42 @@
+BEGIN;
+BEGIN
+create or replace view revenue1 (supplier_no, total_revenue) as
+	select
+		l_suppkey,
+		sum(l_extendedprice * (1 - l_discount))
+	from
+		lineitem
+	where
+		l_shipdate >= '1997-08-01'
+		and l_shipdate < date'1997-08-01' + interval '90 days'
+	group by
+		l_suppkey;
+CREATE VIEW
+select
+	s_suppkey,
+	s_name,
+	s_address,
+	s_phone,
+	total_revenue
+from
+	supplier,
+	revenue1
+where
+	s_suppkey = supplier_no
+	and total_revenue = (
+		select
+			max(total_revenue)
+		from
+			revenue1
+	)
+order by
+	s_suppkey;
+ s_suppkey |          s_name           |                s_address                 |     s_phone     | total_revenue 
+-----------+---------------------------+------------------------------------------+-----------------+---------------
+      8862 | Supplier#000008862        | uBkJv4e1 YsSjXYRl35EUDsLI1DOLdgPd5cXCgKI | 34-790-873-6844 |  1919361.9530
+(1 row)
+
+drop view revenue1;
+DROP VIEW
+COMMIT;
+COMMIT

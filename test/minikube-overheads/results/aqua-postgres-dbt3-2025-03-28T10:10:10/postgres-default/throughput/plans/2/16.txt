@@ -1,0 +1,57 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	p_brand,
+	p_type,
+	p_size,
+	count(distinct ps_suppkey) as supplier_cnt
+from
+	partsupp,
+	part
+where
+	p_partkey = ps_partkey
+	and p_brand <> 'Brand#25'
+	and p_type not like 'SMALL BURNISHED%'
+	and p_size in (19, 38, 23, 36, 44, 24, 43, 48)
+	and ps_suppkey not in (
+		select
+			s_suppkey
+		from
+			supplier
+		where
+			s_comment like '%Customer%Complaints%'
+	)
+group by
+	p_brand,
+	p_type,
+	p_size
+order by
+	supplier_cnt desc,
+	p_brand,
+	p_type,
+	p_size;
+                                                                                          QUERY PLAN                                                                                           
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=22778.25..22802.91 rows=9864 width=44)
+   Sort Key: (count(DISTINCT partsupp.ps_suppkey)) DESC, part.p_brand, part.p_type, part.p_size
+   ->  GroupAggregate  (cost=17534.03..22123.87 rows=9864 width=44)
+         Group Key: part.p_brand, part.p_type, part.p_size
+         ->  Gather Merge  (cost=17534.03..21670.10 rows=35513 width=40)
+               Workers Planned: 2
+               ->  Sort  (cost=16534.00..16571.00 rows=14797 width=40)
+                     Sort Key: part.p_brand, part.p_type, part.p_size, partsupp.ps_suppkey
+                     ->  Merge Join  (cost=6987.56..15509.09 rows=14797 width=40)
+                           Merge Cond: (partsupp.ps_partkey = part.p_partkey)
+                           ->  Parallel Index Only Scan using pk_partsupp on partsupp  (cost=8.57..11532.02 rows=118058 width=8)
+                                 Filter: (NOT (ANY (ps_suppkey = (hashed SubPlan 1).col1)))
+                                 SubPlan 1
+                                   ->  Index Only Scan using supplier_s_suppkey_idx_like on supplier  (cost=0.12..8.14 rows=1 width=4)
+                           ->  Sort  (cost=6978.49..7023.54 rows=18018 width=40)
+                                 Sort Key: part.p_partkey
+                                 ->  Seq Scan on part  (cost=0.00..5704.88 rows=18018 width=40)
+                                       Filter: ((p_brand <> 'Brand#25'::bpchar) AND ((p_type)::text !~~ 'SMALL BURNISHED%'::text) AND (p_size = ANY ('{19,38,23,36,44,24,43,48}'::integer[])))
+(18 rows)
+
+COMMIT;
+COMMIT

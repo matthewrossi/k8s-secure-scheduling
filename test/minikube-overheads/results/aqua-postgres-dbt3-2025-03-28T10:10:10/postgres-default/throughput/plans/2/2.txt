@@ -1,0 +1,87 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	s_acctbal,
+	s_name,
+	n_name,
+	p_partkey,
+	p_mfgr,
+	s_address,
+	s_phone,
+	s_comment
+from
+	part,
+	supplier,
+	partsupp,
+	nation,
+	region
+where
+	p_partkey = ps_partkey
+	and s_suppkey = ps_suppkey
+	and p_size = 1
+	and p_type like '%NICKEL'
+	and s_nationkey = n_nationkey
+	and n_regionkey = r_regionkey
+	and r_name = 'ASIA'
+	and ps_supplycost = (
+		select
+			min(ps_supplycost)
+		from
+			partsupp,
+			supplier,
+			nation,
+			region
+		where
+			p_partkey = ps_partkey
+			and s_suppkey = ps_suppkey
+			and s_nationkey = n_nationkey
+			and n_regionkey = r_regionkey
+			and r_name = 'ASIA'
+	)
+order by
+	s_acctbal desc,
+	n_name,
+	s_name,
+	p_partkey
+LIMIT 100;
+                                                             QUERY PLAN                                                              
+-------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=31632.68..31632.68 rows=1 width=193)
+   ->  Sort  (cost=31632.68..31632.68 rows=1 width=193)
+         Sort Key: supplier.s_acctbal DESC, nation.n_name, supplier.s_name, part.p_partkey
+         ->  Hash Join  (cost=12028.11..31632.67 rows=1 width=193)
+               Hash Cond: ((part.p_partkey = partsupp.ps_partkey) AND ((SubPlan 1) = partsupp.ps_supplycost))
+               ->  Seq Scan on part  (cost=0.00..4454.93 rows=572 width=30)
+                     Filter: (((p_type)::text ~~ '%NICKEL'::text) AND (p_size = 1))
+               ->  Hash  (cost=11603.31..11603.31 rows=28320 width=173)
+                     ->  Nested Loop  (cost=0.42..11603.31 rows=28320 width=173)
+                           ->  Nested Loop  (cost=0.00..278.02 rows=499 width=167)
+                                 Join Filter: (nation.n_nationkey = supplier.s_nationkey)
+                                 ->  Nested Loop  (cost=0.00..2.62 rows=5 width=30)
+                                       Join Filter: (region.r_regionkey = nation.n_regionkey)
+                                       ->  Seq Scan on region  (cost=0.00..1.06 rows=1 width=4)
+                                             Filter: (r_name = 'ASIA'::bpchar)
+                                       ->  Seq Scan on nation  (cost=0.00..1.25 rows=25 width=34)
+                                 ->  Materialize  (cost=0.00..94.44 rows=2496 width=145)
+                                       ->  Seq Scan on supplier  (cost=0.00..81.96 rows=2496 width=145)
+                           ->  Index Scan using partsupp_ps_suppkey_idx on partsupp  (cost=0.42..22.13 rows=57 width=14)
+                                 Index Cond: (ps_suppkey = supplier.s_suppkey)
+               SubPlan 1
+                 ->  Aggregate  (cost=52.95..52.96 rows=1 width=32)
+                       ->  Nested Loop  (cost=0.84..52.94 rows=1 width=6)
+                             Join Filter: (region_1.r_regionkey = nation_1.n_regionkey)
+                             ->  Nested Loop  (cost=0.84..51.87 rows=1 width=10)
+                                   ->  Nested Loop  (cost=0.71..51.71 rows=1 width=10)
+                                         ->  Index Scan using pk_partsupp on partsupp partsupp_1  (cost=0.42..18.51 rows=4 width=10)
+                                               Index Cond: (ps_partkey = part.p_partkey)
+                                         ->  Index Scan using pk_supplier on supplier supplier_1  (cost=0.28..8.30 rows=1 width=8)
+                                               Index Cond: (s_suppkey = partsupp_1.ps_suppkey)
+                                   ->  Index Scan using pk_nation on nation nation_1  (cost=0.14..0.16 rows=1 width=8)
+                                         Index Cond: (n_nationkey = supplier_1.s_nationkey)
+                             ->  Seq Scan on region region_1  (cost=0.00..1.06 rows=1 width=4)
+                                   Filter: (r_name = 'ASIA'::bpchar)
+(34 rows)
+
+COMMIT;
+COMMIT

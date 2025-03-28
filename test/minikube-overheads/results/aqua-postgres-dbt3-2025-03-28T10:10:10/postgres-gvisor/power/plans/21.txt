@@ -1,0 +1,83 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	s_name,
+	count(*) as numwait
+from
+	supplier,
+	lineitem l1,
+	orders,
+	nation
+where
+	s_suppkey = l1.l_suppkey
+	and o_orderkey = l1.l_orderkey
+	and o_orderstatus = 'F'
+	and l1.l_receiptdate > l1.l_commitdate
+	and exists (
+		select
+			*
+		from
+			lineitem l2
+		where
+			l2.l_orderkey = l1.l_orderkey
+			and l2.l_suppkey <> l1.l_suppkey
+	)
+	and not exists (
+		select
+			*
+		from
+			lineitem l3
+		where
+			l3.l_orderkey = l1.l_orderkey
+			and l3.l_suppkey <> l1.l_suppkey
+			and l3.l_receiptdate > l3.l_commitdate
+	)
+	and s_nationkey = n_nationkey
+	and n_name = 'MOZAMBIQUE'
+group by
+	s_name
+order by
+	numwait desc,
+	s_name
+LIMIT 100;
+                                                                                     QUERY PLAN                                                                                     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=90795.10..90795.10 rows=1 width=34)
+   ->  Sort  (cost=90795.10..90795.10 rows=1 width=34)
+         Sort Key: (count(*)) DESC, supplier.s_name
+         ->  GroupAggregate  (cost=90795.07..90795.09 rows=1 width=34)
+               Group Key: supplier.s_name
+               ->  Sort  (cost=90795.07..90795.07 rows=1 width=26)
+                     Sort Key: supplier.s_name
+                     ->  Nested Loop Semi Join  (cost=19180.70..90795.06 rows=1 width=26)
+                           Join Filter: (orders.o_orderkey = l2.l_orderkey)
+                           ->  Gather  (cost=19180.27..90794.03 rows=1 width=46)
+                                 Workers Planned: 2
+                                 ->  Nested Loop Anti Join  (cost=18180.27..89793.93 rows=1 width=46)
+                                       ->  Hash Join  (cost=18179.84..85272.10 rows=7978 width=46)
+                                             Hash Cond: (l1.l_suppkey = supplier.s_suppkey)
+                                             ->  Merge Join  (cost=17893.04..83961.43 rows=251742 width=20)
+                                                   Merge Cond: (l1.l_orderkey = orders.o_orderkey)
+                                                   ->  Parallel Index Only Scan using lineitem_l_orderkey_l_suppkey_idx on lineitem l1  (cost=0.43..482268.05 rows=798844 width=12)
+                                                   ->  Sort  (cost=17892.57..18197.15 rows=121833 width=8)
+                                                         Sort Key: orders.o_orderkey
+                                                         ->  Seq Scan on orders  (cost=0.00..7601.00 rows=121833 width=8)
+                                                               Filter: (o_orderstatus = 'F'::bpchar)
+                                             ->  Hash  (cost=282.84..282.84 rows=317 width=30)
+                                                   ->  Hash Join  (cost=1.32..282.84 rows=317 width=30)
+                                                         Hash Cond: (supplier.s_nationkey = nation.n_nationkey)
+                                                         ->  Seq Scan on supplier  (cost=0.00..257.20 rows=7920 width=34)
+                                                         ->  Hash  (cost=1.31..1.31 rows=1 width=4)
+                                                               ->  Seq Scan on nation  (cost=0.00..1.31 rows=1 width=4)
+                                                                     Filter: (n_name = 'MOZAMBIQUE'::bpchar)
+                                       ->  Index Only Scan using lineitem_l_orderkey_l_suppkey_idx on lineitem l3  (cost=0.43..0.79 rows=5 width=12)
+                                             Index Cond: (l_orderkey = l1.l_orderkey)
+                                             Filter: (l_suppkey <> l1.l_suppkey)
+                           ->  Index Scan using pk_lineitem on lineitem l2  (cost=0.43..1.01 rows=15 width=12)
+                                 Index Cond: (l_orderkey = l1.l_orderkey)
+                                 Filter: (l_suppkey <> l1.l_suppkey)
+(34 rows)
+
+COMMIT;
+COMMIT

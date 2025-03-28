@@ -1,0 +1,121 @@
+BEGIN;
+BEGIN
+select
+	s_name,
+	s_address
+from
+	supplier,
+	nation
+where
+	s_suppkey in (
+		select
+			ps_suppkey
+		from
+			partsupp
+		where
+			ps_partkey in (
+				select
+					p_partkey
+				from
+					part
+				where
+					p_name like 'peru%'
+			)
+			and ps_availqty > (
+				select
+					0.5 * sum(l_quantity)
+				from
+					lineitem
+				where
+					l_partkey = ps_partkey
+					and l_suppkey = ps_suppkey
+					and l_shipdate >= '1993-01-01'
+					and l_shipdate < cast(date '1993-01-01' + interval '1 year' as date)
+			)
+	)
+	and s_nationkey = n_nationkey
+	and n_name = 'BRAZIL'
+order by
+	s_name;
+          s_name           |                s_address                 
+---------------------------+------------------------------------------
+ Supplier#000000210        | eC5 e7DXYBWi8XlnFtBxF,tSWPyQAzqb8gAZ
+ Supplier#000000300        | YU QZvXHJC7,ZspUPGwaIOa
+ Supplier#000000342        | YgcA0MYOSB1ou
+ Supplier#000000483        | ncWfnroE1n639qMrW8
+ Supplier#000000564        | IufyqhG4fmo VkgQT w BF4
+ Supplier#000000727        | kc0Fnr5won8yJhzYC2j4H98m 59CRJTs
+ Supplier#000000737        | 5fna7sQRrNfLatMkl0Oy,Sps0IWTez
+ Supplier#000000895        | Tm5QKYFUhtY
+ Supplier#000000992        | iZPAlGecV0uUsxMikQG7s
+ Supplier#000001085        | BVrNbKyP0FyScBYOXaYVsCx6mPgT
+ Supplier#000001087        | z ckHESeMGv6QSd4gTp0G4Z2ckaUVvo82UyV
+ Supplier#000001183        | XcR1BiGZ0K8xnbF
+ Supplier#000001423        | NMfB5m6mUZaUrq5BQVixbffpKmHmLcZo
+ Supplier#000002662        | bYPKwBjGWKUWzEwrQ3s2a70Om Zly
+ Supplier#000002704        | WhpxJOQJQ3FDKvjjismQsy6uoGi
+ Supplier#000002744        | elDzXb5qPLhE1Ii8
+ Supplier#000002782        | 5bA3KjG,mlOK,G9FavM0UpAK3P8J75Uma
+ Supplier#000002798        | OYEhScazzY0d6B22YYByDoznCzVkdqwH
+ Supplier#000002807        | 2nGNpyXEobNolKSeuspKvc343Aw,ys
+ Supplier#000002828        | amuisQibvSRaYesfuCxr1CM4pt U,POx
+ Supplier#000002871        | 9ixHrIGvo8l4cDoJi1UxhLp
+ Supplier#000003069        | 3jzeLuounYUDGGv9bXg8RNd
+ Supplier#000003152        | d9ZAEF3wyNHGtg2RISyMYuA
+ Supplier#000003177        | rLL4NUAWv0uppq1AhG3W7Zip2UxN
+ Supplier#000003215        | pQWi1BS,ujQ0vmMg0iF7bRYtLzvqsdkQ
+ Supplier#000003253        | hTuJ0zR7KJWY4SonYtUChJpF iV39W
+ Supplier#000004602        | ndt1H2FutNtnKtrrNP1v
+ Supplier#000004772        | IPyqnSZVJWuh
+ Supplier#000004842        | haSlvnOC8BYCvcy27P4,2pwg9CD9FdvN58TLq
+ Supplier#000004890        | RctxkJvmWtQvwgddK46
+ Supplier#000004908        | VPCUfG8Q9AQpQwTEqfDRuJ
+ Supplier#000004940        | UcTbBNn0kUtVyIPeWxG cu3qznz
+ Supplier#000005145        | nyYvIMs7p WbgO,
+ Supplier#000005264        | DFumlUmaf2JgYDrslLKwYGcZs1lCQhC
+ Supplier#000005508        | vOoE35mRLE8atfruKcNS8r3LvJf7j4zZJjSw7Glv
+ Supplier#000005537        | rTFxbwb34STFZu8WyEr,ONh
+ Supplier#000005710        | , XxpudjGx53Q1N5RThZyn1CbXN6oPrfDwBS
+ Supplier#000005871        | cD8wU,pMUASUttBQy2o
+ Supplier#000006088        | PSHhyqTMumGuiYHR3
+ Supplier#000006262        | T9usrQ2LNhwdQB
+ Supplier#000006354        | ESd0lukbVG4EGNVMeHyjm7
+ Supplier#000006367        | DmcL2rx5XYWM9eJvokF6h,CejdFjCAO5K
+ Supplier#000006372        | FFKEAz5F QEhkDI0Yx RnPngOABPu
+ Supplier#000006433        | XFR4njr2MWVhePaXAXhoNqb,gJsyf,cK
+ Supplier#000006518        | 3ttN5q7Qk6y6F88PklDp
+ Supplier#000006765        | q3Y7IQR6N3tp Br04nwI4Rq
+ Supplier#000006842        | oR7e8UykKPlckXRecMqppxZG
+ Supplier#000007211        | OahNKPQEVUeuN1qltqI
+ Supplier#000007437        | OAXmJUfE1c7naS
+ Supplier#000007564        | hCfkBoEdgehPDK3LwO7jTYp
+ Supplier#000007646        | hcI56 dJu4yGCUv DlzkPHd6cVtK
+ Supplier#000007655        | puv4FgaAA1IK 1PSUFo9uF
+ Supplier#000007752        | Rz1JMCsGrIGvAJ,FkwTy ydL KwH
+ Supplier#000007876        | Mbu8yBOyJuBTnRgrydVRPdaULpLJENSpAQHVfCM
+ Supplier#000007879        | MXMejJ89ve
+ Supplier#000007953        | 0qNL 8Z858aPLRY
+ Supplier#000008160        |  741VGNtwIZgzKDMmVlvSqKfOn7RIF3V3uIP
+ Supplier#000008236        | 3P4fq3KXTHDlBl
+ Supplier#000008374        | rIi5HjxjPxn3aNJpBQIQ9qPmoa
+ Supplier#000008442        | So5,Vf93wcvoHpP7thm7KxK1F g3DKmXMKZR
+ Supplier#000008497        | xef7AF1FKfjml5HrGfEHtkhk3Tbeg0ms
+ Supplier#000008508        | TGpsTDKgtFc5aoFFyl,ImrYMjHjmV
+ Supplier#000008592        | UGki0J,dRb3umlbvRD,jkET0
+ Supplier#000008674        | jbo9baZXGbu5zo3WcKAzGvEebXDVNO
+ Supplier#000009365        | Ga98U7khv9saRWNZwHc
+ Supplier#000009370        | EaNQ6rs49m
+ Supplier#000009447        | 6FkKgpERpWPqKt2
+ Supplier#000009474        | PLSQC8RN6Pvmzi LFy14V 4SL,oQieryN2PD4G
+ Supplier#000009503        | ,zh2YkK0iw8H7
+ Supplier#000009521        | HBTeAVQRNCpt3ws
+ Supplier#000009600        | bNbzMM5yGeouk5a12O3Wb7keyDsB3tp1 A
+ Supplier#000009612        | oZpGwogaNBBnfzZUQVoobSq4T9m
+ Supplier#000009776        | ,E0Fmh7eiNfAlTe4uxGHP4typvxn1Cmtn8oC
+ Supplier#000009803        | GKARmvI6Npvph0Qm5WoqY3Q373gtzZT0xmh8fES
+ Supplier#000009867        | eWuVVObffkj xsIxj2O
+ Supplier#000009956        | UjhY8PHXciKIqo6srufRLZP,p,t7N8
+(76 rows)
+
+COMMIT;
+COMMIT

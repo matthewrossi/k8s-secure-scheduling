@@ -1,0 +1,44 @@
+BEGIN;
+BEGIN
+select
+	c_name,
+	c_custkey,
+	o_orderkey,
+	o_orderdate,
+	o_totalprice,
+	sum(l_quantity)
+from
+	customer,
+	orders,
+	lineitem
+where
+	o_orderkey in (
+		select
+			l_orderkey
+		from
+			lineitem
+		group by
+			l_orderkey having
+				sum(l_quantity) > 315
+	)
+	and c_custkey = o_custkey
+	and o_orderkey = l_orderkey
+group by
+	c_name,
+	c_custkey,
+	o_orderkey,
+	o_orderdate,
+	o_totalprice
+order by
+	o_totalprice desc,
+	o_orderdate
+LIMIT 100;
+       c_name       | c_custkey | o_orderkey | o_orderdate | o_totalprice | sum 
+--------------------+-----------+------------+-------------+--------------+-----
+ Customer#000128120 |    128120 |    4722021 | 1994-04-07  |    544089.09 | 323
+ Customer#000126865 |    126865 |    4702759 | 1994-11-07  |    447606.65 | 320
+ Customer#000119989 |    119989 |    1544643 | 1997-09-20  |    434568.25 | 320
+(3 rows)
+
+COMMIT;
+COMMIT

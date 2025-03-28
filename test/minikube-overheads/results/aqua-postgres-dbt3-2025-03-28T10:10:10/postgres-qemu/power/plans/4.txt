@@ -1,0 +1,43 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	o_orderpriority,
+	count(*) as order_count
+from
+	orders
+where
+	o_orderdate >= date '1995-10-01'
+	and o_orderdate < cast(date '1995-10-01' + interval '3 month' as date)
+	and exists (
+		select
+			*
+		from
+			lineitem
+		where
+			l_orderkey = o_orderkey
+			and l_commitdate < l_receiptdate
+	)
+group by
+	o_orderpriority
+order by
+	o_orderpriority;
+                                                              QUERY PLAN                                                              
+--------------------------------------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=63116.15..63160.09 rows=5 width=24)
+   Group Key: orders.o_orderpriority
+   ->  Gather Merge  (cost=63116.15..63159.99 rows=10 width=24)
+         Workers Planned: 2
+         ->  Partial GroupAggregate  (cost=62116.13..62158.82 rows=5 width=24)
+               Group Key: orders.o_orderpriority
+               ->  Sort  (cost=62116.13..62130.34 rows=5685 width=16)
+                     Sort Key: orders.o_orderpriority
+                     ->  Nested Loop Semi Join  (cost=0.43..61761.58 rows=5685 width=16)
+                           ->  Parallel Seq Scan on orders  (cost=0.00..16664.88 rows=10772 width=24)
+                                 Filter: ((o_orderdate >= '1995-10-01'::date) AND (o_orderdate < '1996-01-01'::date))
+                           ->  Index Only Scan using lineitem_l_orderkey_l_suppkey_idx on lineitem  (cost=0.43..12.34 rows=4 width=8)
+                                 Index Cond: (l_orderkey = orders.o_orderkey)
+(13 rows)
+
+COMMIT;
+COMMIT

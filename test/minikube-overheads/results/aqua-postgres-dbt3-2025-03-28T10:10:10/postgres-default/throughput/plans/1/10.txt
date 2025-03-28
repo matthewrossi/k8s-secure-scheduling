@@ -1,0 +1,70 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	c_custkey,
+	c_name,
+	sum(l_extendedprice * (1 - l_discount)) as revenue,
+	c_acctbal,
+	n_name,
+	c_address,
+	c_phone,
+	c_comment
+from
+	customer,
+	orders,
+	lineitem,
+	nation
+where
+	c_custkey = o_custkey
+	and l_orderkey = o_orderkey
+	and o_orderdate >= date '1994-03-01'
+	and o_orderdate < cast(date '1994-03-01' + interval '3 month' as date)
+	and l_returnflag = 'R'
+	and c_nationkey = n_nationkey
+group by
+	c_custkey,
+	c_name,
+	c_acctbal,
+	c_phone,
+	n_name,
+	c_address,
+	c_comment
+order by
+	revenue desc
+LIMIT 20;
+                                                                                 QUERY PLAN                                                                                 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=156011.78..156011.83 rows=20 width=202)
+   ->  Sort  (cost=156011.78..156115.34 rows=41421 width=202)
+         Sort Key: (sum((lineitem.l_extendedprice * ('1'::numeric - lineitem.l_discount)))) DESC
+         ->  Finalize GroupAggregate  (cost=148940.58..154909.59 rows=41421 width=202)
+               Group Key: customer.c_custkey, customer.c_name, customer.c_acctbal, customer.c_phone, nation.n_name, customer.c_address, customer.c_comment
+               ->  Gather Merge  (cost=148940.58..153615.17 rows=34518 width=202)
+                     Workers Planned: 2
+                     ->  Partial GroupAggregate  (cost=147940.55..148630.91 rows=17259 width=202)
+                           Group Key: customer.c_custkey, customer.c_name, customer.c_acctbal, customer.c_phone, nation.n_name, customer.c_address, customer.c_comment
+                           ->  Sort  (cost=147940.55..147983.70 rows=17259 width=182)
+                                 Sort Key: customer.c_custkey, customer.c_name, customer.c_acctbal, customer.c_phone, nation.n_name, customer.c_address, customer.c_comment
+                                 ->  Hash Join  (cost=142182.83..146725.94 rows=17259 width=182)
+                                       Hash Cond: (customer.c_nationkey = nation.n_nationkey)
+                                       ->  Parallel Hash Join  (cost=142181.27..146671.40 rows=17259 width=160)
+                                             Hash Cond: (customer.c_custkey = orders.o_custkey)
+                                             ->  Parallel Seq Scan on customer  (cost=0.00..3916.92 rows=57292 width=148)
+                                             ->  Parallel Hash  (cost=141965.53..141965.53 rows=17259 width=16)
+                                                   ->  Parallel Hash Join  (cost=30476.89..141965.53 rows=17259 width=16)
+                                                         Hash Cond: (lineitem.l_orderkey = orders.o_orderkey)
+                                                         ->  Parallel Seq Scan on lineitem  (cost=0.00..110273.49 rows=462914 width=20)
+                                                               Filter: (l_returnflag = 'R'::bpchar)
+                                                         ->  Parallel Hash  (cost=30233.88..30233.88 rows=19441 width=12)
+                                                               ->  Parallel Seq Scan on orders  (cost=0.00..30233.88 rows=19441 width=12)
+                                                                     Filter: ((o_orderdate >= '1994-03-01'::date) AND (o_orderdate < '1994-06-01'::date))
+                                       ->  Hash  (cost=1.25..1.25 rows=25 width=30)
+                                             ->  Seq Scan on nation  (cost=0.00..1.25 rows=25 width=30)
+ JIT:
+   Functions: 41
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(29 rows)
+
+COMMIT;
+COMMIT

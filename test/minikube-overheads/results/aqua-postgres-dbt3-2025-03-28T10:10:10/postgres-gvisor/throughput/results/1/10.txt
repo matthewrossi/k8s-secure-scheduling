@@ -1,0 +1,60 @@
+BEGIN;
+BEGIN
+select
+	c_custkey,
+	c_name,
+	sum(l_extendedprice * (1 - l_discount)) as revenue,
+	c_acctbal,
+	n_name,
+	c_address,
+	c_phone,
+	c_comment
+from
+	customer,
+	orders,
+	lineitem,
+	nation
+where
+	c_custkey = o_custkey
+	and l_orderkey = o_orderkey
+	and o_orderdate >= date '1994-08-01'
+	and o_orderdate < cast(date '1994-08-01' + interval '3 month' as date)
+	and l_returnflag = 'R'
+	and c_nationkey = n_nationkey
+group by
+	c_custkey,
+	c_name,
+	c_acctbal,
+	c_phone,
+	n_name,
+	c_address,
+	c_comment
+order by
+	revenue desc
+LIMIT 20;
+ c_custkey |       c_name       |   revenue   | c_acctbal |          n_name           |                c_address                 |     c_phone     |                                                      c_comment                                                       
+-----------+--------------------+-------------+-----------+---------------------------+------------------------------------------+-----------------+----------------------------------------------------------------------------------------------------------------------
+     16754 | Customer#000016754 | 451916.8942 |    -84.53 | INDIA                     | Q4Ti7F2T3JOZ0NW8SDvbaFyzxEEGyXB3         | 18-602-680-6779 |  somas sleep furiously ironic platelets. carefully ironic accounts x-ray quickly across the deposits. slyly s
+      2965 | Customer#000002965 | 434631.7648 |   3386.15 | ROMANIA                   | NSm2eG1f4dqnX5jJgAKY7o7yq669,P4WuIM8VCj  | 29-819-111-1464 | n instructions play quickly. quickly unusual requests thrash always. blithely even frays cajole among the express ac
+      5381 | Customer#000005381 | 426944.8782 |   4130.88 | ETHIOPIA                  | Q3a0gyIKhp,Dq83eTXbnwdcw3piGBV           | 15-700-184-7619 | posits cajole slyly pending requests. special, expres
+    108730 | Customer#000108730 | 371886.4123 |   4897.54 | ARGENTINA                 | Ig2CfRNH2kKDq1hZFW                       | 11-492-498-8506 | en patterns haggle. quickly even packages haggle carefully above the ideas. bo
+     73153 | Customer#000073153 | 369350.0134 |   5724.40 | INDONESIA                 | XwBOdi2g7F5o64mJKpBepLZN6AXhZQG0UqR 8vMf | 19-644-456-4494 | , regular packages haggle quickly along the qui
+     95659 | Customer#000095659 | 353801.8700 |   6156.87 | INDIA                     | BHQSBkTeRhdFyYTcFRoED3ZUYN               | 18-791-399-3374 |  theodolites. carefully final
+    124336 | Customer#000124336 | 351909.4549 |   4190.24 | CANADA                    | 9FPnkG4z5XcLvYkJ3 tx5z9DqoEpzAoC,zOPN    | 13-265-872-2672 | kly final accounts. ironic patte
+    117952 | Customer#000117952 | 350972.2244 |   -887.59 | PERU                      | 2PnoGWewld10I3aYntuiuOUOXL4WgyYop9ap9 FE | 27-394-666-4968 | its. deposits haggle. even warhorses sleep according to the regular ideas. slyly 
+    133363 | Customer#000133363 | 342044.2312 |   4791.47 | EGYPT                     | zX7jdkzGbp 95qaHreZ6Pa70,                | 14-653-769-7908 | low packages are furiously regular, special accounts. regular accounts cajole blithely. stealth
+    111208 | Customer#000111208 | 339782.5971 |   6949.74 | MOROCCO                   | 5sNAr3nDwwfkW6p3sW2FOF17CJ0b7BDS         | 25-973-798-3007 | ts haggle furiously: furiously even deposits sleep silently: slyly pending instructions serve. slyly pending notorni
+    111673 | Customer#000111673 | 332351.0254 |   -292.56 | ALGERIA                   | eAc9t2T07qc4SR                           | 10-651-240-3263 | cajole blithely around the ironic accounts? accounts after the furiously regular tithes could have to
+     98290 | Customer#000098290 | 329759.9539 |   -711.76 | ETHIOPIA                  | vuvVu1rYvih60W6hAGmLZK4                  | 15-768-903-4029 |  even deposits alongside of the ideas hang furiously even accounts. even dependencies are regularl
+       695 | Customer#000000695 | 329214.2180 |   9126.54 | INDIA                     | fbT9dQCc,su7JboB5FWI6                    | 18-131-151-7466 | ly express deposits according to the fina
+    123526 | Customer#000123526 | 327473.0338 |   3418.24 | MOROCCO                   |  eMEJnHBZqMX7zJM0                        | 25-651-901-9600 | . furiously pending theodolites haggle. evenly final foxes sleep against 
+     91439 | Customer#000091439 | 320814.7750 |    828.51 | CHINA                     | ZC I36fVHPvphMY1kUfmYXQjDA6pY            | 28-468-978-6791 | iously regular deposits alongside of 
+     90643 | Customer#000090643 | 319047.0412 |   8865.95 | INDIA                     | ,ad78KOYjsrNrc,Pemlq7E81stzy4JBH9eFb     | 18-204-287-4176 | the furiously express packages; bold foxes are quickly along the furiously final theodolites. f
+    105091 | Customer#000105091 | 316268.8658 |     79.12 | IRAQ                      | d5Zr,uk6caUzCfK4D,tJbbKK                 | 21-220-263-8173 | es special requests. even, special theodolites serve against the express, regular packages. unusual pains are sly
+     24193 | Customer#000024193 | 315507.3844 |   8530.15 | EGYPT                     | EOMP,lgJ3YuM,C                           | 14-976-711-7792 | d pinto beans. pending pinto beans poach sometimes express ideas. ironic, re
+    121636 | Customer#000121636 | 312635.6812 |   1940.43 | CANADA                    | cVSN1pydTmTZ0G3nD                        | 13-374-783-1898 | stealthy, regular requests cajole quickl
+     63775 | Customer#000063775 | 311038.7828 |   5598.68 | VIETNAM                   | GSHm4R2exAiU9KRGfvfppi9mNW3VwlOzqKPHbHCf | 31-571-698-5650 | final, regular foxes haggle before the ironic dependencies. furiously even
+(20 rows)
+
+COMMIT;
+COMMIT

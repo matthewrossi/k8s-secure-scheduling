@@ -1,0 +1,84 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	s_name,
+	count(*) as numwait
+from
+	supplier,
+	lineitem l1,
+	orders,
+	nation
+where
+	s_suppkey = l1.l_suppkey
+	and o_orderkey = l1.l_orderkey
+	and o_orderstatus = 'F'
+	and l1.l_receiptdate > l1.l_commitdate
+	and exists (
+		select
+			*
+		from
+			lineitem l2
+		where
+			l2.l_orderkey = l1.l_orderkey
+			and l2.l_suppkey <> l1.l_suppkey
+	)
+	and not exists (
+		select
+			*
+		from
+			lineitem l3
+		where
+			l3.l_orderkey = l1.l_orderkey
+			and l3.l_suppkey <> l1.l_suppkey
+			and l3.l_receiptdate > l3.l_commitdate
+	)
+	and s_nationkey = n_nationkey
+	and n_name = 'ARGENTINA'
+group by
+	s_name
+order by
+	numwait desc,
+	s_name
+LIMIT 100;
+                                                                        QUERY PLAN                                                                         
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=116981.04..116981.05 rows=1 width=34)
+   ->  Sort  (cost=116981.04..116981.05 rows=1 width=34)
+         Sort Key: (count(*)) DESC, supplier.s_name
+         ->  GroupAggregate  (cost=116981.01..116981.03 rows=1 width=34)
+               Group Key: supplier.s_name
+               ->  Sort  (cost=116981.01..116981.02 rows=1 width=26)
+                     Sort Key: supplier.s_name
+                     ->  Nested Loop  (cost=1115.77..116981.00 rows=1 width=26)
+                           ->  Nested Loop Semi Join  (cost=1115.35..116980.49 rows=1 width=42)
+                                 ->  Gather  (cost=1114.91..116979.52 rows=1 width=38)
+                                       Workers Planned: 2
+                                       ->  Nested Loop Anti Join  (cost=114.92..115979.42 rows=1 width=38)
+                                             ->  Hash Join  (cost=114.49..112379.26 rows=6248 width=38)
+                                                   Hash Cond: (supplier.s_nationkey = nation.n_nationkey)
+                                                   ->  Hash Join  (cost=113.16..111898.37 rows=156212 width=42)
+                                                         Hash Cond: (l1.l_suppkey = supplier.s_suppkey)
+                                                         ->  Parallel Seq Scan on lineitem l1  (cost=0.00..110143.47 rows=625159 width=12)
+                                                               Filter: (l_receiptdate > l_commitdate)
+                                                         ->  Hash  (cost=81.96..81.96 rows=2496 width=34)
+                                                               ->  Seq Scan on supplier  (cost=0.00..81.96 rows=2496 width=34)
+                                                   ->  Hash  (cost=1.31..1.31 rows=1 width=4)
+                                                         ->  Seq Scan on nation  (cost=0.00..1.31 rows=1 width=4)
+                                                               Filter: (n_name = 'ARGENTINA'::bpchar)
+                                             ->  Index Only Scan using lineitem_l_orderkey_l_suppkey_idx on lineitem l3  (cost=0.43..0.77 rows=4 width=12)
+                                                   Index Cond: (l_orderkey = l1.l_orderkey)
+                                                   Filter: (l_suppkey <> l1.l_suppkey)
+                                 ->  Index Scan using pk_lineitem on lineitem l2  (cost=0.43..0.95 rows=12 width=12)
+                                       Index Cond: (l_orderkey = l1.l_orderkey)
+                                       Filter: (l_suppkey <> l1.l_suppkey)
+                           ->  Index Scan using pk_orders on orders  (cost=0.43..0.52 rows=1 width=8)
+                                 Index Cond: (o_orderkey = l1.l_orderkey)
+                                 Filter: (o_orderstatus = 'F'::bpchar)
+ JIT:
+   Functions: 41
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(35 rows)
+
+COMMIT;
+COMMIT

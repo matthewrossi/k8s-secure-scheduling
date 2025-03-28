@@ -1,0 +1,64 @@
+BEGIN;
+BEGIN
+select
+	s_name,
+	s_address
+from
+	supplier,
+	nation
+where
+	s_suppkey in (
+		select
+			ps_suppkey
+		from
+			partsupp
+		where
+			ps_partkey in (
+				select
+					p_partkey
+				from
+					part
+				where
+					p_name like 'puff%'
+			)
+			and ps_availqty > (
+				select
+					0.5 * sum(l_quantity)
+				from
+					lineitem
+				where
+					l_partkey = ps_partkey
+					and l_suppkey = ps_suppkey
+					and l_shipdate >= '1995-01-01'
+					and l_shipdate < cast(date '1995-01-01' + interval '1 year' as date)
+			)
+	)
+	and s_nationkey = n_nationkey
+	and n_name = 'PERU'
+order by
+	s_name;
+          s_name           |                s_address                 
+---------------------------+------------------------------------------
+ Supplier#000000541        | Nxggufcm ,hR
+ Supplier#000000732        | 3Q117DJd7vC3cBv,L4DAiVqWZNa,nBBoA
+ Supplier#000000763        | rpZRD,h5XXPIOe6bX1KqgwvBPoN
+ Supplier#000000779        | iAtd5nxCjii
+ Supplier#000000879        | 6DGZ6o7FNRspPhM B1nZiMOAgq9fZT8UHW
+ Supplier#000000905        | WAGJHr1OUm95U5
+ Supplier#000000955        | 7OFLXDHjSgGrFlHTg8VHFS4glUuN
+ Supplier#000001261        | cDxqWVt0QNlfIdZRciz
+ Supplier#000001307        | MPZXf,9fmn0H5Bgtfyv2c74pCy
+ Supplier#000001478        | b6TLE65sryHFVFjTIukGqvuefvY5
+ Supplier#000001653        | BgzbkhhpoAtd2kEQ8ogc9HPNwuKNF2tMdOOFtQAe
+ Supplier#000001849        | j2lGnzQaxOKwO
+ Supplier#000001911        | myRVbhhM7cDpErcA
+ Supplier#000001980        | ZRmkzXoXZR5yT bdwUU2iQOGN
+ Supplier#000002164        | dHpsS5Q u3APFpi03kXi ouPsMd3nozIi
+ Supplier#000002223        | cFqPbhaW4Nwm2cGw,vY
+ Supplier#000002327        | CgGSbx3j1aowZNq
+ Supplier#000002361        | 1p U8A z36oRmNfqN
+ Supplier#000002385        | ZoMa,NXhLAlQ
+(19 rows)
+
+COMMIT;
+COMMIT

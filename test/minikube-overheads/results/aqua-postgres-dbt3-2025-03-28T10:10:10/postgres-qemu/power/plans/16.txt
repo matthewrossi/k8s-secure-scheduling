@@ -1,0 +1,56 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	p_brand,
+	p_type,
+	p_size,
+	count(distinct ps_suppkey) as supplier_cnt
+from
+	partsupp,
+	part
+where
+	p_partkey = ps_partkey
+	and p_brand <> 'Brand#42'
+	and p_type not like 'STANDARD BURNISHED%'
+	and p_size in (28, 6, 37, 17, 12, 43, 21, 19)
+	and ps_suppkey not in (
+		select
+			s_suppkey
+		from
+			supplier
+		where
+			s_comment like '%Customer%Complaints%'
+	)
+group by
+	p_brand,
+	p_type,
+	p_size
+order by
+	supplier_cnt desc,
+	p_brand,
+	p_type,
+	p_size;
+                                                                                           QUERY PLAN                                                                                            
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=31946.58..31978.22 rows=12654 width=44)
+   Sort Key: (count(DISTINCT partsupp.ps_suppkey)) DESC, part.p_brand, part.p_type, part.p_size
+   ->  GroupAggregate  (cost=25114.71..31084.38 rows=12654 width=44)
+         Group Key: part.p_brand, part.p_type, part.p_size
+         ->  Gather Merge  (cost=25114.71..30495.81 rows=46203 width=40)
+               Workers Planned: 2
+               ->  Sort  (cost=24114.69..24162.82 rows=19251 width=40)
+                     Sort Key: part.p_brand, part.p_type, part.p_size, partsupp.ps_suppkey
+                     ->  Parallel Hash Join  (cost=5191.71..22744.73 rows=19251 width=40)
+                           Hash Cond: (partsupp.ps_partkey = part.p_partkey)
+                           ->  Parallel Seq Scan on partsupp  (cost=8.15..17214.79 rows=131946 width=8)
+                                 Filter: (NOT (ANY (ps_suppkey = (hashed SubPlan 1).col1)))
+                                 SubPlan 1
+                                   ->  Index Only Scan using supplier_s_suppkey_idx_like on supplier  (cost=0.13..8.14 rows=1 width=4)
+                           ->  Parallel Hash  (cost=5061.24..5061.24 rows=9786 width=40)
+                                 ->  Parallel Seq Scan on part  (cost=0.00..5061.24 rows=9786 width=40)
+                                       Filter: ((p_brand <> 'Brand#42'::bpchar) AND ((p_type)::text !~~ 'STANDARD BURNISHED%'::text) AND (p_size = ANY ('{28,6,37,17,12,43,21,19}'::integer[])))
+(17 rows)
+
+COMMIT;
+COMMIT

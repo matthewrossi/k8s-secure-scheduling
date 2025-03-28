@@ -1,0 +1,72 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	c_name,
+	c_custkey,
+	o_orderkey,
+	o_orderdate,
+	o_totalprice,
+	sum(l_quantity)
+from
+	customer,
+	orders,
+	lineitem
+where
+	o_orderkey in (
+		select
+			l_orderkey
+		from
+			lineitem
+		group by
+			l_orderkey having
+				sum(l_quantity) > 314
+	)
+	and c_custkey = o_custkey
+	and o_orderkey = l_orderkey
+group by
+	c_name,
+	c_custkey,
+	o_orderkey,
+	o_orderdate,
+	o_totalprice
+order by
+	o_totalprice desc,
+	o_orderdate
+LIMIT 100;
+                                                                          QUERY PLAN                                                                           
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=292962.80..292984.50 rows=100 width=75)
+   ->  GroupAggregate  (cost=292962.80..709367.28 rows=1919284 width=75)
+         Group Key: orders.o_totalprice, orders.o_orderdate, customer.c_name, customer.c_custkey, orders.o_orderkey
+         ->  Incremental Sort  (cost=292962.80..656586.97 rows=1919284 width=48)
+               Sort Key: orders.o_totalprice DESC, orders.o_orderdate, customer.c_name, customer.c_custkey, orders.o_orderkey
+               Presorted Key: orders.o_totalprice, orders.o_orderdate
+               ->  Nested Loop  (cost=292961.45..599324.14 rows=1919284 width=48)
+                     ->  Gather Merge  (cost=292961.02..516493.27 rows=1919284 width=29)
+                           Workers Planned: 2
+                           ->  Sort  (cost=291961.00..293960.25 rows=799702 width=29)
+                                 Sort Key: orders.o_totalprice DESC, orders.o_orderdate
+                                 ->  Merge Join  (cost=2.80..194419.31 rows=799702 width=29)
+                                       Merge Cond: (orders.o_orderkey = lineitem.l_orderkey)
+                                       ->  Parallel Index Scan using pk_orders on orders  (cost=0.42..22386.13 rows=104792 width=24)
+                                       ->  Materialize  (cost=0.86..1276751.61 rows=1919284 width=21)
+                                             ->  Nested Loop  (cost=0.86..1271953.40 rows=1919284 width=21)
+                                                   ->  GroupAggregate  (cost=0.43..640655.57 rows=128870 width=8)
+                                                         Group Key: lineitem_1.l_orderkey
+                                                         Filter: (sum(lineitem_1.l_quantity) > '314'::numeric)
+                                                         ->  Index Scan using pk_lineitem on lineitem lineitem_1  (cost=0.43..606067.26 rows=5757836 width=13)
+                                                   ->  Index Scan using pk_lineitem on lineitem  (cost=0.43..4.75 rows=15 width=13)
+                                                         Index Cond: (l_orderkey = lineitem_1.l_orderkey)
+                     ->  Memoize  (cost=0.43..0.50 rows=1 width=23)
+                           Cache Key: orders.o_custkey
+                           Cache Mode: logical
+                           ->  Index Scan using pk_customer on customer  (cost=0.42..0.49 rows=1 width=23)
+                                 Index Cond: (c_custkey = orders.o_custkey)
+ JIT:
+   Functions: 32
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(30 rows)
+
+COMMIT;
+COMMIT

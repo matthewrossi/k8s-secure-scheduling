@@ -1,0 +1,59 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	sum(l_extendedprice* (1 - l_discount)) as revenue
+from
+	lineitem,
+	part
+where
+	(
+		p_partkey = l_partkey
+		and p_brand = 'Brand#25'
+		and p_container in ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')
+		and l_quantity >= 8 and l_quantity <= 8+10
+		and p_size between 1 and 5
+		and l_shipmode in ('AIR', 'AIR REG')
+		and l_shipinstruct = 'DELIVER IN PERSON'
+	)
+	or
+	(
+		p_partkey = l_partkey
+		and p_brand = 'Brand#13'
+		and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK')
+		and l_quantity >= 18 and l_quantity <= 18+10
+		and p_size between 1 and 10
+		and l_shipmode in ('AIR', 'AIR REG')
+		and l_shipinstruct = 'DELIVER IN PERSON'
+	)
+	or
+	(
+		p_partkey = l_partkey
+		and p_brand = 'Brand#54'
+		and p_container in ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')
+		and l_quantity >= 27 and l_quantity <= 27+10
+		and p_size between 1 and 15
+		and l_shipmode in ('AIR', 'AIR REG')
+		and l_shipinstruct = 'DELIVER IN PERSON'
+	);
+                                                                                                                                                                                                                                                                                                                                                                           QUERY PLAN                                                                                                                                                                                                                                                                                                                                                                           
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize Aggregate  (cost=149766.25..149766.26 rows=1 width=32)
+   ->  Gather  (cost=149766.03..149766.24 rows=2 width=32)
+         Workers Planned: 2
+         ->  Partial Aggregate  (cost=148766.03..148766.04 rows=1 width=32)
+               ->  Parallel Hash Join  (cost=5707.09..148765.86 rows=23 width=12)
+                     Hash Cond: (lineitem.l_partkey = part.p_partkey)
+                     Join Filter: (((part.p_brand = 'Brand#25'::bpchar) AND (part.p_container = ANY ('{"SM CASE","SM BOX","SM PACK","SM PKG"}'::bpchar[])) AND (lineitem.l_quantity >= '8'::numeric) AND (lineitem.l_quantity <= '18'::numeric) AND (part.p_size <= 5)) OR ((part.p_brand = 'Brand#13'::bpchar) AND (part.p_container = ANY ('{"MED BAG","MED BOX","MED PKG","MED PACK"}'::bpchar[])) AND (lineitem.l_quantity >= '18'::numeric) AND (lineitem.l_quantity <= '28'::numeric) AND (part.p_size <= 10)) OR ((part.p_brand = 'Brand#54'::bpchar) AND (part.p_container = ANY ('{"LG CASE","LG BOX","LG PACK","LG PKG"}'::bpchar[])) AND (lineitem.l_quantity >= '27'::numeric) AND (lineitem.l_quantity <= '37'::numeric) AND (part.p_size <= 15)))
+                     ->  Parallel Seq Scan on lineitem  (cost=0.00..142964.33 rows=35979 width=21)
+                           Filter: ((l_shipmode = ANY ('{AIR,"AIR REG"}'::bpchar[])) AND (l_shipinstruct = 'DELIVER IN PERSON'::bpchar) AND (((l_quantity >= '8'::numeric) AND (l_quantity <= '18'::numeric)) OR ((l_quantity >= '18'::numeric) AND (l_quantity <= '28'::numeric)) OR ((l_quantity >= '27'::numeric) AND (l_quantity <= '37'::numeric))))
+                     ->  Parallel Hash  (cost=5704.88..5704.88 rows=177 width=30)
+                           ->  Parallel Seq Scan on part  (cost=0.00..5704.88 rows=177 width=30)
+                                 Filter: ((p_size >= 1) AND (((p_brand = 'Brand#25'::bpchar) AND (p_container = ANY ('{"SM CASE","SM BOX","SM PACK","SM PKG"}'::bpchar[])) AND (p_size <= 5)) OR ((p_brand = 'Brand#13'::bpchar) AND (p_container = ANY ('{"MED BAG","MED BOX","MED PKG","MED PACK"}'::bpchar[])) AND (p_size <= 10)) OR ((p_brand = 'Brand#54'::bpchar) AND (p_container = ANY ('{"LG CASE","LG BOX","LG PACK","LG PKG"}'::bpchar[])) AND (p_size <= 15))))
+ JIT:
+   Functions: 21
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(15 rows)
+
+COMMIT;
+COMMIT

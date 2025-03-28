@@ -1,0 +1,87 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	s_acctbal,
+	s_name,
+	n_name,
+	p_partkey,
+	p_mfgr,
+	s_address,
+	s_phone,
+	s_comment
+from
+	part,
+	supplier,
+	partsupp,
+	nation,
+	region
+where
+	p_partkey = ps_partkey
+	and s_suppkey = ps_suppkey
+	and p_size = 14
+	and p_type like '%STEEL'
+	and s_nationkey = n_nationkey
+	and n_regionkey = r_regionkey
+	and r_name = 'MIDDLE EAST'
+	and ps_supplycost = (
+		select
+			min(ps_supplycost)
+		from
+			partsupp,
+			supplier,
+			nation,
+			region
+		where
+			p_partkey = ps_partkey
+			and s_suppkey = ps_suppkey
+			and s_nationkey = n_nationkey
+			and n_regionkey = r_regionkey
+			and r_name = 'MIDDLE EAST'
+	)
+order by
+	s_acctbal desc,
+	n_name,
+	s_name,
+	p_partkey
+LIMIT 100;
+                                                             QUERY PLAN                                                              
+-------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=36817.87..36817.87 rows=1 width=193)
+   ->  Sort  (cost=36817.87..36817.87 rows=1 width=193)
+         Sort Key: supplier.s_acctbal DESC, nation.n_name, supplier.s_name, part.p_partkey
+         ->  Hash Join  (cost=15445.32..36817.86 rows=1 width=193)
+               Hash Cond: ((part.p_partkey = partsupp.ps_partkey) AND ((SubPlan 1) = partsupp.ps_supplycost))
+               ->  Seq Scan on part  (cost=0.00..4784.04 rows=530 width=30)
+                     Filter: (((p_type)::text ~~ '%STEEL'::text) AND (p_size = 14))
+               ->  Hash  (cost=12326.31..12326.31 rows=79134 width=173)
+                     ->  Nested Loop  (cost=1.98..12326.31 rows=79134 width=173)
+                           ->  Nested Loop  (cost=1.56..383.14 rows=1584 width=167)
+                                 Join Filter: (region.r_regionkey = nation.n_regionkey)
+                                 ->  Seq Scan on region  (cost=0.00..1.06 rows=1 width=4)
+                                       Filter: (r_name = 'MIDDLE EAST'::bpchar)
+                                 ->  Hash Join  (cost=1.56..283.08 rows=7920 width=171)
+                                       Hash Cond: (supplier.s_nationkey = nation.n_nationkey)
+                                       ->  Seq Scan on supplier  (cost=0.00..257.20 rows=7920 width=145)
+                                       ->  Hash  (cost=1.25..1.25 rows=25 width=34)
+                                             ->  Seq Scan on nation  (cost=0.00..1.25 rows=25 width=34)
+                           ->  Index Scan using partsupp_ps_suppkey_idx on partsupp  (cost=0.42..7.04 rows=50 width=14)
+                                 Index Cond: (ps_suppkey = supplier.s_suppkey)
+               SubPlan 1
+                 ->  Aggregate  (cost=55.25..55.26 rows=1 width=32)
+                       ->  Nested Loop  (cost=0.84..55.25 rows=1 width=6)
+                             Join Filter: (region_1.r_regionkey = nation_1.n_regionkey)
+                             ->  Seq Scan on region region_1  (cost=0.00..1.06 rows=1 width=4)
+                                   Filter: (r_name = 'MIDDLE EAST'::bpchar)
+                             ->  Nested Loop  (cost=0.84..54.15 rows=3 width=10)
+                                   ->  Nested Loop  (cost=0.70..53.68 rows=3 width=10)
+                                         ->  Index Scan using pk_partsupp on partsupp partsupp_1  (cost=0.42..20.48 rows=4 width=10)
+                                               Index Cond: (ps_partkey = part.p_partkey)
+                                         ->  Index Scan using pk_supplier on supplier supplier_1  (cost=0.28..8.30 rows=1 width=8)
+                                               Index Cond: (s_suppkey = partsupp_1.ps_suppkey)
+                                   ->  Index Scan using pk_nation on nation nation_1  (cost=0.14..0.16 rows=1 width=8)
+                                         Index Cond: (n_nationkey = supplier_1.s_nationkey)
+(34 rows)
+
+COMMIT;
+COMMIT

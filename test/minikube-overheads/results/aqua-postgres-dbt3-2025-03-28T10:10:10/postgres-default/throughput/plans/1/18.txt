@@ -1,0 +1,76 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	c_name,
+	c_custkey,
+	o_orderkey,
+	o_orderdate,
+	o_totalprice,
+	sum(l_quantity)
+from
+	customer,
+	orders,
+	lineitem
+where
+	o_orderkey in (
+		select
+			l_orderkey
+		from
+			lineitem
+		group by
+			l_orderkey having
+				sum(l_quantity) > 315
+	)
+	and c_custkey = o_custkey
+	and o_orderkey = l_orderkey
+group by
+	c_name,
+	c_custkey,
+	o_orderkey,
+	o_orderdate,
+	o_totalprice
+order by
+	o_totalprice desc,
+	o_orderdate
+LIMIT 100;
+                                                                QUERY PLAN                                                                 
+-------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=576653.06..576704.92 rows=100 width=75)
+   ->  GroupAggregate  (cost=576653.06..800919.92 rows=432445 width=75)
+         Group Key: orders.o_totalprice, orders.o_orderdate, customer.c_name, customer.c_custkey, orders.o_orderkey
+         ->  Incremental Sort  (cost=576653.06..789027.68 rows=432445 width=48)
+               Sort Key: orders.o_totalprice DESC, orders.o_orderdate, customer.c_name, customer.c_custkey, orders.o_orderkey
+               Presorted Key: orders.o_totalprice, orders.o_orderdate
+               ->  Nested Loop  (cost=576652.60..769567.65 rows=432445 width=48)
+                     ->  Nested Loop  (cost=576652.17..635378.28 rows=120063 width=51)
+                           ->  Gather Merge  (cost=576651.74..590635.05 rows=120063 width=32)
+                                 Workers Planned: 2
+                                 ->  Sort  (cost=575651.71..575776.78 rows=50026 width=32)
+                                       Sort Key: orders.o_totalprice DESC, orders.o_orderdate
+                                       ->  Merge Join  (cost=568039.22..571747.09 rows=50026 width=32)
+                                             Merge Cond: (orders.o_orderkey = lineitem_1.l_orderkey)
+                                             ->  Sort  (cost=87840.73..89144.38 rows=521458 width=24)
+                                                   Sort Key: orders.o_orderkey
+                                                   ->  Parallel Seq Scan on orders  (cost=0.00..27626.58 rows=521458 width=24)
+                                             ->  Sort  (cost=480198.49..480498.65 rows=120063 width=8)
+                                                   Sort Key: lineitem_1.l_orderkey
+                                                   ->  HashAggregate  (cost=420645.98..470069.11 rows=120063 width=8)
+                                                         Group Key: lineitem_1.l_orderkey
+                                                         Filter: (sum(lineitem_1.l_quantity) > '315'::numeric)
+                                                         Planned Partitions: 16
+                                                         ->  Seq Scan on lineitem lineitem_1  (cost=0.00..131872.79 rows=4507679 width=13)
+                           ->  Memoize  (cost=0.43..0.46 rows=1 width=23)
+                                 Cache Key: orders.o_custkey
+                                 Cache Mode: logical
+                                 ->  Index Scan using pk_customer on customer  (cost=0.42..0.45 rows=1 width=23)
+                                       Index Cond: (c_custkey = orders.o_custkey)
+                     ->  Index Scan using pk_lineitem on lineitem  (cost=0.43..0.99 rows=13 width=13)
+                           Index Cond: (l_orderkey = orders.o_orderkey)
+ JIT:
+   Functions: 33
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+(34 rows)
+
+COMMIT;
+COMMIT

@@ -1,0 +1,71 @@
+BEGIN;
+BEGIN
+create or replace view revenue0 (supplier_no, total_revenue) as
+	select
+		l_suppkey,
+		sum(l_extendedprice * (1 - l_discount))
+	from
+		lineitem
+	where
+		l_shipdate >= '1993-09-01'
+		and l_shipdate < date'1993-09-01' + interval '90 days'
+	group by
+		l_suppkey;
+CREATE VIEW
+EXPLAIN
+select
+	s_suppkey,
+	s_name,
+	s_address,
+	s_phone,
+	total_revenue
+from
+	supplier,
+	revenue0
+where
+	s_suppkey = supplier_no
+	and total_revenue = (
+		select
+			max(total_revenue)
+		from
+			revenue0
+	)
+order by
+	s_suppkey;
+                                                                         QUERY PLAN                                                                         
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=237364.85..240186.55 rows=50 width=104)
+   InitPlan 1
+     ->  Aggregate  (cost=120047.52..120047.53 rows=1 width=32)
+           ->  Finalize GroupAggregate  (cost=117317.03..119922.66 rows=9989 width=36)
+                 Group Key: lineitem_1.l_suppkey
+                 ->  Gather Merge  (cost=117317.03..119647.96 rows=19978 width=36)
+                       Workers Planned: 2
+                       ->  Sort  (cost=116317.01..116341.98 rows=9989 width=36)
+                             Sort Key: lineitem_1.l_suppkey
+                             ->  Partial HashAggregate  (cost=115528.57..115653.43 rows=9989 width=36)
+                                   Group Key: lineitem_1.l_suppkey
+                                   ->  Parallel Seq Scan on lineitem lineitem_1  (cost=0.00..114832.16 rows=69641 width=16)
+                                         Filter: ((l_shipdate >= '1993-09-01'::date) AND (l_shipdate < '1993-11-30 00:00:00'::timestamp without time zone))
+   ->  Finalize GroupAggregate  (cost=117317.03..119947.63 rows=50 width=36)
+         Group Key: lineitem.l_suppkey
+         Filter: (sum((lineitem.l_extendedprice * ('1'::numeric - lineitem.l_discount))) = (InitPlan 1).col1)
+         ->  Gather Merge  (cost=117317.03..119647.96 rows=19978 width=36)
+               Workers Planned: 2
+               ->  Sort  (cost=116317.01..116341.98 rows=9989 width=36)
+                     Sort Key: lineitem.l_suppkey
+                     ->  Partial HashAggregate  (cost=115528.57..115653.43 rows=9989 width=36)
+                           Group Key: lineitem.l_suppkey
+                           ->  Parallel Seq Scan on lineitem  (cost=0.00..114832.16 rows=69641 width=16)
+                                 Filter: ((l_shipdate >= '1993-09-01'::date) AND (l_shipdate < '1993-11-30 00:00:00'::timestamp without time zone))
+   ->  Index Scan using pk_supplier on supplier  (cost=0.28..3.82 rows=1 width=72)
+         Index Cond: (s_suppkey = lineitem.l_suppkey)
+ JIT:
+   Functions: 25
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(29 rows)
+
+drop view revenue0;
+DROP VIEW
+COMMIT;
+COMMIT

@@ -1,0 +1,141 @@
+BEGIN;
+BEGIN
+select
+	s_name,
+	s_address
+from
+	supplier,
+	nation
+where
+	s_suppkey in (
+		select
+			ps_suppkey
+		from
+			partsupp
+		where
+			ps_partkey in (
+				select
+					p_partkey
+				from
+					part
+				where
+					p_name like 'drab%'
+			)
+			and ps_availqty > (
+				select
+					0.5 * sum(l_quantity)
+				from
+					lineitem
+				where
+					l_partkey = ps_partkey
+					and l_suppkey = ps_suppkey
+					and l_shipdate >= '1994-01-01'
+					and l_shipdate < cast(date '1994-01-01' + interval '1 year' as date)
+			)
+	)
+	and s_nationkey = n_nationkey
+	and n_name = 'JAPAN'
+order by
+	s_name;
+          s_name           |                s_address                 
+---------------------------+------------------------------------------
+ Supplier#000000175        | Lgv gYbBdu S9
+ Supplier#000000366        | AtIdvjsMt9peVyEbpoDerNTteRF
+ Supplier#000000420        | kLWtAMtbSn
+ Supplier#000000497        | iLAqlCKDLUGqHrjuOcId7 uYoTmpA
+ Supplier#000000548        | btRiQsq qEK0qg0T
+ Supplier#000000552        | JP3ebtH5epPwpU2lVQqKNZC3NTvnTlrhLy5eeGN
+ Supplier#000000576        | Plc2DypORn4qNOTpZ
+ Supplier#000000600        | YHyUzea88sXoNmqmCMamiEfGC54xpdX
+ Supplier#000000747        | 0XGddxTld5cBDIN4Z30Je siitSCbFC
+ Supplier#000000907        | Y79rRfd5UhgXi6Ahj9ooM0vNHts
+ Supplier#000000960        | yk1dgGaQlbTN1YhnJjyM3ULEDDf
+ Supplier#000001182        | mSIDktpv g4FhMuhXWjugfe
+ Supplier#000001430        | H7JZy,Px156gtqkfZGSK4PzX8ciU
+ Supplier#000001444        | fQ3e8q0dg 
+ Supplier#000001461        | k88iU7GXk707r9eKF9Jc9LMHGyumYWsFGpH 
+ Supplier#000001499        | 2k vqZ85Unw,PPeD7e8j
+ Supplier#000001524        | aqGwAL1xCDiPhixZzS47IR2rfuXCa7o
+ Supplier#000001539        | taspo8MUN0dFhw
+ Supplier#000001570        | QF2XhOAWwJeg21avqIRl8E2gi1mXAN75U9a
+ Supplier#000001631        | 3JwfERzppDc6h7BV0I
+ Supplier#000001638        | Kvwg58SG5NmUo1Ovy
+ Supplier#000001661        | 86KqLVZL5YoGn2Q9l,n11J6T2V
+ Supplier#000002508        | rolzg7UZ3KxV6U
+ Supplier#000002589        | RXJleJvDsIZ2xeVXri8Vy
+ Supplier#000002682        | bmgSMI5JAAg
+ Supplier#000002708        | RN5tqUQEsdJw3LvTd4F4
+ Supplier#000002885        | 7wgc,Ccw1HNHeJZSWhmubwW,HK1Yy8ADe
+ Supplier#000002905        | 8MZyNigmh0f bGbvLkFTRd8MNu1E 31JXgb8pk
+ Supplier#000002912        | Mool9qTbSd,c8hnQw
+ Supplier#000003077        | RXoE5UdenTMwvmqDmkI8XL,WPT
+ Supplier#000003282        | ZYRZsEp8l,kp3h6LsFiDk
+ Supplier#000003309        | zxjUE,0eR7cIyqKj88gzjSS
+ Supplier#000004802        | wR6LjrKenZOk5w68CmmjZ6Ub
+ Supplier#000004980        |  02Q4zPvy2fluiMZSpr
+ Supplier#000004983        | Q1D7GuqSwvlR4TKJzm1KdyYacBpvAi,HToOyVHic
+ Supplier#000005048        | CS5vRYbcZu7UjNt5nU57jIpqtDh5l0Ls
+ Supplier#000005099        | kAzKSYipEE1wYMQmewdjxnl9,npiaH
+ Supplier#000005227        | qy3Uc0MZfrkDNG13pPXi73qyxuxzBiaLD
+ Supplier#000005233        | LVx2tybap3pho04RYVA,
+ Supplier#000005355        | 4PjyW,Ua1KgEZmsEv1tmtKoOvkziBKzSRhLN N
+ Supplier#000005543        | NTw0R,YuX0KBzDbVhdu7oynMdAA2svLkpG
+ Supplier#000005602        | wj6nyIWETvfxVbnqm
+ Supplier#000005826        | UBUkU3Qj vj ejTvBrm1nmlFEc4ycHH2U5fvcK6
+ Supplier#000005957        | whhWEWU7QbD6TJGw5hfzcoTfZJOnuXP
+ Supplier#000006289        | W3Q 0yQkF790P5Xb
+ Supplier#000006302        | siCR7A0n7no
+ Supplier#000006313        | KSl8lI,tC19,,
+ Supplier#000006329        | pS,19ulEFGhc2dc6q
+ Supplier#000006395        | NANvpbrsuGCWyV7q
+ Supplier#000006451        | cabW,blwKcgfkjfzb
+ Supplier#000006479        | MmGZ6AAzGQ5,ue1hU4G2zxoiZxCfBdIz
+ Supplier#000006482        | o4,qxBTiDQAF9SD5GbbGl3tB5,7jnQArlvUU0
+ Supplier#000006486        | MPI18JUSDV
+ Supplier#000006487        | G0UqR 8vMfI,YBcHlwydjJtqwvW
+ Supplier#000006532        | Yqg7SYRlEiQHeGB3rrxy3MoD
+ Supplier#000006661        | hq78u t,hA8yGLnlgdTLuoTwTXuxR
+ Supplier#000006687        | b7NzEGGTXOcdi9V0W2csyOijvEypK
+ Supplier#000006820        | kvj8tFQ2RKa4mzpWbqSgYeIY6a0LMRcKTP2xSGve
+ Supplier#000006955        | A4APIhGkOaWcFVGtI wU4aq8ppd
+ Supplier#000007073        | 6PzKtod4BPf2krTkukFc EwBYJ 08cC1EebwXzSM
+ Supplier#000007089        | 8hF9PhLPVk,CIOzgksixLR8a
+ Supplier#000007111        | C35CxrTQwtIONArKz
+ Supplier#000007119        | XhWMs0ow6WYtZvE1gGdc
+ Supplier#000007124        | TX,pTg39EO62N
+ Supplier#000007197        | ToRFrjcWLhrKm87NBYbznpivq
+ Supplier#000007288        | SBPQKok8avYzretytWCTiU5LYnx5swhu
+ Supplier#000007327        | uZGHBo4xgx W2sT8oA5drPwqQL8Bw5YU,ZNb 
+ Supplier#000007353        | ka8HKKDbjI, Ok8TBMPf,lk
+ Supplier#000007576        | 6KzBGPBzNqnl  ixFx11VZxKSqwe5zxgv MxHEc
+ Supplier#000007660        | q0w4EwU7MseVbhDR1A
+ Supplier#000007739        | sJhH0TQQyGbrmEaXPQ,LOpwgdG
+ Supplier#000007787        | jFzI0KxRKWWPkojrmk5pkU8z3bS0
+ Supplier#000008044        | uVZlh XFXzpo
+ Supplier#000008228        | WyCUGJa30D
+ Supplier#000008254        | 0lLFVM oUMDv
+ Supplier#000008255        | qU4odHKWII0zA UP7a0Sfm9yat
+ Supplier#000008363        | 7tLHZjjFDr,nLXiG1C3hBv 
+ Supplier#000008381        | UNI,edNdjZ9IT8DfyjzQqT0va4
+ Supplier#000008471        | yby8sR0,75PDNPOJmWtHFu8eCMPEkLpctO
+ Supplier#000008525        | NBzAj3RpEG5 ,168
+ Supplier#000008593        | 72,y1RTZma WYsp oxb61sQGWt
+ Supplier#000008657        | FopH1MYnZM6Ns7OWC nEy8KiI3KBnjZt9YrySp1n
+ Supplier#000008658        | 4gKA7Jmxr7GihkcbLX8vjldaCkVg
+ Supplier#000008663        | XYM5S,1Z4f2zUYxkxrj6xh5wo5w
+ Supplier#000008666        | D5NfQ1NwF3QDH6h6mkPQuEOa
+ Supplier#000008716        | UvYM29P,cel1kaSnsBfQY5xTjG
+ Supplier#000008794        | 5PTH0cbNWbwhmQ0VDb
+ Supplier#000008861        | 5KfqtN,gqndgsAN7Cwu6
+ Supplier#000009105        | hnymiJjaqsJ8Y8q4nUJAgykpZahHvG2KcyfO
+ Supplier#000009120        | Bynpx5CVPcMADbs5qigOBUWhVruh9XzXbcCso8l
+ Supplier#000009171        | 72JDVZIEgr7BzWM7oF0ftJtTRZJ
+ Supplier#000009488        | Sh0ia0he7Z9jiOqTgtaiN0Sa
+ Supplier#000009576        | uNdNymD,2MKa
+ Supplier#000009679        | ueTQ9bUt0 iZfFRxiF8hFPwpU4PzVq4SUi8
+ Supplier#000009801        | loKjUMxr,JZC
+ Supplier#000009908        | YCdG0YZN6k8GLR4z8bD8rFI3JFOuchhSbJ q
+(96 rows)
+
+COMMIT;
+COMMIT

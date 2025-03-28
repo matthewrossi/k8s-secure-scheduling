@@ -1,0 +1,69 @@
+BEGIN;
+BEGIN
+select
+	s_name,
+	s_address
+from
+	supplier,
+	nation
+where
+	s_suppkey in (
+		select
+			ps_suppkey
+		from
+			partsupp
+		where
+			ps_partkey in (
+				select
+					p_partkey
+				from
+					part
+				where
+					p_name like 'frosted%'
+			)
+			and ps_availqty > (
+				select
+					0.5 * sum(l_quantity)
+				from
+					lineitem
+				where
+					l_partkey = ps_partkey
+					and l_suppkey = ps_suppkey
+					and l_shipdate >= '1996-01-01'
+					and l_shipdate < cast(date '1996-01-01' + interval '1 year' as date)
+			)
+	)
+	and s_nationkey = n_nationkey
+	and n_name = 'BRAZIL'
+order by
+	s_name;
+          s_name           |                s_address                 
+---------------------------+------------------------------------------
+ Supplier#000000103        | hBpQ4GYblzpHKTgATLPAS6ph3
+ Supplier#000000125        | XG eO4Xb4TSF7rj4R6WRQ1v2seTlyga3tvFZaC
+ Supplier#000000210        | eC5 e7DXYBWi8XlnFtBxF,tSWPyQAzqb8gAZ
+ Supplier#000000211        | acmexYmhAZhFyM
+ Supplier#000000300        | YU QZvXHJC7,ZspUPGwaIOa
+ Supplier#000000315        | HRLhxvqBP,f,NjeUiT
+ Supplier#000000632        | pSP0SwLWVUKjWyzZtT
+ Supplier#000000743        | ccFQShf qHch yPwbryx12DfnIYAp83,F
+ Supplier#000000775        | tmhWTbbv9lv
+ Supplier#000000992        | iZPAlGecV0uUsxMikQG7s
+ Supplier#000000993        | z2NwUJ TPfd9MP8K3Blp1prYQ116 
+ Supplier#000001012        | WSwwbhWWo7eU6xAdlrppKUro HEj7d7R UULrYVZ
+ Supplier#000001085        | BVrNbKyP0FyScBYOXaYVsCx6mPgT
+ Supplier#000001268        | W6nIT0xqfg1
+ Supplier#000001291        | fUt0REYwFPK2rR8wjESb dZ,1sBn
+ Supplier#000001324        | DZCfy2VGbQK9iSfAK
+ Supplier#000001433        | y4BL0GSGtpaJCG2036cdt9V7zsz7SMMID
+ Supplier#000001490        | pK,FClsQ8cq wa sGQJ3ra
+ Supplier#000001612        | 79DAQCPIgHZ
+ Supplier#000001779        | BG4Zfkyg,QFtyf
+ Supplier#000002012        | eckc4QQiaZyIQp1jW5DDDamHTp,,L5M6uP6zT0eY
+ Supplier#000002089        | n9HUt4McToc1CwevdABlCIPQ6wCOAw4
+ Supplier#000002092        | ZykceCxEC5HdQ9KgWsQZo b,6nyURU7RG,,hD
+ Supplier#000002389        | R3IfcKKa2LBWVj9F4PoePbMim8KjNqyhWsh
+(24 rows)
+
+COMMIT;
+COMMIT

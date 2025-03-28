@@ -1,0 +1,41 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	c_count,
+	count(*) as custdist
+from
+	(
+		select
+			c_custkey,
+			count(o_orderkey)
+		from
+			customer left outer join orders on
+				c_custkey = o_custkey
+				and o_comment not like '%unusual%requests%'
+		group by
+			c_custkey
+	) as c_orders (c_custkey, c_count)
+group by
+	c_count
+order by
+	custdist desc,
+	c_count desc;
+                                         QUERY PLAN                                          
+---------------------------------------------------------------------------------------------
+ Sort  (cost=29825.73..29826.23 rows=200 width=16)
+   Sort Key: (count(*)) DESC, (count(orders.o_orderkey)) DESC
+   ->  HashAggregate  (cost=29816.09..29818.09 rows=200 width=16)
+         Group Key: count(orders.o_orderkey)
+         ->  HashAggregate  (cost=28253.59..28878.59 rows=62500 width=12)
+               Group Key: customer.c_custkey
+               ->  Hash Right Join  (cost=2910.25..25658.55 rows=519008 width=12)
+                     Hash Cond: (orders.o_custkey = customer.c_custkey)
+                     ->  Seq Scan on orders  (cost=0.00..20961.75 rows=680556 width=12)
+                           Filter: ((o_comment)::text !~~ '%unusual%requests%'::text)
+                     ->  Hash  (cost=2129.00..2129.00 rows=62500 width=4)
+                           ->  Seq Scan on customer  (cost=0.00..2129.00 rows=62500 width=4)
+(12 rows)
+
+COMMIT;
+COMMIT

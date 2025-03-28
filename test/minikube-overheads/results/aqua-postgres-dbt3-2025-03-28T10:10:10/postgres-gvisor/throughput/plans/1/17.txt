@@ -1,0 +1,41 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	sum(l_extendedprice) / 7.0 as avg_yearly
+from
+	lineitem,
+	part
+where
+	p_partkey = l_partkey
+	and p_brand = 'Brand#44'
+	and p_container = 'JUMBO PKG'
+	and l_quantity < (
+		select
+			0.2 * avg(l_quantity)
+		from
+			lineitem
+		where
+			l_partkey = p_partkey
+	);
+                                              QUERY PLAN                                              
+------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=2017156.32..2017156.33 rows=1 width=32)
+   ->  Hash Join  (cost=4785.77..2017152.96 rows=1343 width=8)
+         Hash Cond: (lineitem.l_partkey = part.p_partkey)
+         Join Filter: (lineitem.l_quantity < (SubPlan 1))
+         ->  Seq Scan on lineitem  (cost=0.00..168482.36 rows=5757836 width=17)
+         ->  Hash  (cost=4784.04..4784.04 rows=138 width=4)
+               ->  Seq Scan on part  (cost=0.00..4784.04 rows=138 width=4)
+                     Filter: ((p_brand = 'Brand#44'::bpchar) AND (p_container = 'JUMBO PKG'::bpchar))
+         SubPlan 1
+           ->  Aggregate  (cost=182877.03..182877.04 rows=1 width=32)
+                 ->  Seq Scan on lineitem lineitem_1  (cost=0.00..182876.95 rows=29 width=5)
+                       Filter: (l_partkey = part.p_partkey)
+ JIT:
+   Functions: 24
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+(15 rows)
+
+COMMIT;
+COMMIT

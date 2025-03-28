@@ -1,0 +1,60 @@
+BEGIN;
+BEGIN
+select
+	c_custkey,
+	c_name,
+	sum(l_extendedprice * (1 - l_discount)) as revenue,
+	c_acctbal,
+	n_name,
+	c_address,
+	c_phone,
+	c_comment
+from
+	customer,
+	orders,
+	lineitem,
+	nation
+where
+	c_custkey = o_custkey
+	and l_orderkey = o_orderkey
+	and o_orderdate >= date '1994-03-01'
+	and o_orderdate < cast(date '1994-03-01' + interval '3 month' as date)
+	and l_returnflag = 'R'
+	and c_nationkey = n_nationkey
+group by
+	c_custkey,
+	c_name,
+	c_acctbal,
+	c_phone,
+	n_name,
+	c_address,
+	c_comment
+order by
+	revenue desc
+LIMIT 20;
+ c_custkey |       c_name       |   revenue   | c_acctbal |          n_name           |                c_address                |     c_phone     |                                                     c_comment                                                      
+-----------+--------------------+-------------+-----------+---------------------------+-----------------------------------------+-----------------+--------------------------------------------------------------------------------------------------------------------
+     20782 | Customer#000020782 | 615939.9862 |   5379.43 | INDIA                     | A5fHyrW0JenaOQle4yezwY0kY0pm8jEKWKQYyr  | 18-532-941-2752 |  blithely about the furiously silent orbits. ironic deposits haggle quickly requests. bli
+     36955 | Customer#000036955 | 603466.1055 |   4273.83 | JORDAN                    | Qm SAp,zHzT                             | 23-358-928-3932 | ly. special, regular deposits cajole slyly quickly thin ideas. final, pe
+     14497 | Customer#000014497 | 591470.3444 |   6236.16 | UNITED STATES             | PaRzyjxgBORClX                          | 34-734-123-8911 |  above the furiously special platelets. carefully ironic pla
+    120640 | Customer#000120640 | 583789.7308 |   9010.67 | JORDAN                    | BmEaT65HMOieGJY1hMoH5NDMsvOOcK8HiTc     | 23-975-945-1368 | etect fluffily. slyly silent accounts boost about the carefully ironic theodolites. ironic 
+     71042 | Customer#000071042 | 533424.4928 |    103.23 | UNITED KINGDOM            | Yc0W0MA7N6vMcCjy                        | 33-987-158-3255 | packages. bold, ironic instructions integrate. express ideas
+     76528 | Customer#000076528 | 528940.8029 |   7924.08 | KENYA                     | eIWG846uc9Ig6OEAD9                      | 24-182-139-4774 | . dogged warhorses are across 
+     41176 | Customer#000041176 | 518062.2777 |   5307.67 | FRANCE                    | C4r1WgglHNtZ                            | 16-201-303-1724 | the slyly regular accounts. blithely regular packages impress after the i
+     76786 | Customer#000076786 | 509692.2766 |    462.37 | JAPAN                     | KoLhQm5IU9rAkJguPIvPonGUPS              | 22-775-169-5533 | ic packages play slyly ironic packages. furiously ironic accounts try to wake blithely pen
+    109600 | Customer#000109600 | 500735.5419 |   2418.90 | UNITED STATES             | QP4rY15dghIEuqRMkpC                     | 34-505-715-2191 | nic dugouts above the courts might haggle among the carefully final warhorses. regularly regular 
+    120571 | Customer#000120571 | 499921.3340 |   4392.71 | IRAQ                      | LYWgyY7iOdUUysmcfdiy3ocirxLYK6nMb       | 21-365-231-5235 | ely according to the accounts. ironic braids sleep slyly unusual realms. quickly regular 
+     69274 | Customer#000069274 | 494509.6182 |   4338.45 | RUSSIA                    | lUc82SVwNSGL0zNCgIs8O,y                 | 32-103-453-8529 | s are according to the evenly r
+     12004 | Customer#000012004 | 476368.7488 |   3877.21 | MOZAMBIQUE                | iq2QaU,1cJUEJwpNDUWxvx1tUu60WPgmwnNNCNK | 26-771-863-2556 | riously even accounts. final instructions wake slyly. slyly final foxes affix c
+     15208 | Customer#000015208 | 475723.4599 |   -543.78 | MOZAMBIQUE                | yaIBlLfCuC                              | 26-190-803-8949 | e of the quickly final deposits eat carefully alongside of the blithely ironic foxes. regular
+    125746 | Customer#000125746 | 474427.1475 |   9835.69 | GERMANY                   | 5nFot2rhsSGohzxs2zFQ JinTZs,RHxRfhtSc   | 17-243-642-4853 | pendencies. boldly even requests according to the carefully ironic requests use furiously careful 
+     23345 | Customer#000023345 | 472656.2831 |   3828.12 | JORDAN                    | bbIdISbeiFZGb                           | 23-431-652-9983 | long the final requests. quickly special packages haggle carefully. final theodolites are fluffily at the furiousl
+    107482 | Customer#000107482 | 469632.8047 |   8437.28 | JORDAN                    | 7nL Hr74oDHfRw7XSf53iIBbnfZWx           | 23-317-568-9645 | s wake quickly pending, unusual packages. furiously bold accounts sleep quickly at the ironi
+     78997 | Customer#000078997 | 467198.3751 |   5600.80 | JAPAN                     | dJeYSr77ALQzIKxWMoATLIteyTnmt4GQjuSqqM  | 22-769-246-4412 |  nag? regular, special requests sublate slyly. bold, even ide
+     84610 | Customer#000084610 | 466013.8565 |   5878.33 | CHINA                     | q1pSk3SXbuuKqrkBi bHddcChtJr            | 28-384-733-4458 | ts. furiously regular hockey pl
+     11885 | Customer#000011885 | 453243.4238 |   9232.55 | ARGENTINA                 | M,Ks m h0VP                             | 11-924-406-1050 | al dependencies use fluffily ironic pinto beans. accounts haggle. express, regular epitaphs nag afte
+     96427 | Customer#000096427 | 452150.0098 |   9322.03 | UNITED STATES             | 9PFjQgewg0,8XYI6                        | 34-722-972-7295 | ts are carefully thin deposits. regular, final requests after the silently pending deposits
+(20 rows)
+
+COMMIT;
+COMMIT

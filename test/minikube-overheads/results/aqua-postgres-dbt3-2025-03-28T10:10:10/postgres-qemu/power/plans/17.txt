@@ -1,0 +1,43 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	sum(l_extendedprice) / 7.0 as avg_yearly
+from
+	lineitem,
+	part
+where
+	p_partkey = l_partkey
+	and p_brand = 'Brand#21'
+	and p_container = 'MED CAN'
+	and l_quantity < (
+		select
+			0.2 * avg(l_quantity)
+		from
+			lineitem
+		where
+			l_partkey = p_partkey
+	);
+                                                QUERY PLAN                                                
+----------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=1363930.21..1363930.23 rows=1 width=32)
+   ->  Hash Join  (cost=5417.97..1363927.23 rows=1191 width=8)
+         Hash Cond: (lineitem.l_partkey = part.p_partkey)
+         Join Filter: (lineitem.l_quantity < (SubPlan 1))
+         ->  Seq Scan on lineitem  (cost=0.00..139002.53 rows=4750753 width=17)
+         ->  Hash  (cost=5416.14..5416.14 rows=146 width=4)
+               ->  Gather  (cost=1000.00..5416.14 rows=146 width=4)
+                     Workers Planned: 2
+                     ->  Parallel Seq Scan on part  (cost=0.00..4401.54 rows=61 width=4)
+                           Filter: ((p_brand = 'Brand#21'::bpchar) AND (p_container = 'MED CAN'::bpchar))
+         SubPlan 1
+           ->  Aggregate  (cost=150879.48..150879.49 rows=1 width=32)
+                 ->  Seq Scan on lineitem lineitem_1  (cost=0.00..150879.41 rows=24 width=5)
+                       Filter: (l_partkey = part.p_partkey)
+ JIT:
+   Functions: 24
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+(17 rows)
+
+COMMIT;
+COMMIT

@@ -1,0 +1,147 @@
+BEGIN;
+BEGIN
+select
+	s_name,
+	count(*) as numwait
+from
+	supplier,
+	lineitem l1,
+	orders,
+	nation
+where
+	s_suppkey = l1.l_suppkey
+	and o_orderkey = l1.l_orderkey
+	and o_orderstatus = 'F'
+	and l1.l_receiptdate > l1.l_commitdate
+	and exists (
+		select
+			*
+		from
+			lineitem l2
+		where
+			l2.l_orderkey = l1.l_orderkey
+			and l2.l_suppkey <> l1.l_suppkey
+	)
+	and not exists (
+		select
+			*
+		from
+			lineitem l3
+		where
+			l3.l_orderkey = l1.l_orderkey
+			and l3.l_suppkey <> l1.l_suppkey
+			and l3.l_receiptdate > l3.l_commitdate
+	)
+	and s_nationkey = n_nationkey
+	and n_name = 'IRAN'
+group by
+	s_name
+order by
+	numwait desc,
+	s_name
+LIMIT 100;
+          s_name           | numwait 
+---------------------------+---------
+ Supplier#000001981        |      12
+ Supplier#000001445        |      11
+ Supplier#000001997        |      11
+ Supplier#000001102        |      10
+ Supplier#000001264        |      10
+ Supplier#000001273        |      10
+ Supplier#000001424        |      10
+ Supplier#000002278        |      10
+ Supplier#000002329        |      10
+ Supplier#000000009        |       9
+ Supplier#000000218        |       9
+ Supplier#000000930        |       9
+ Supplier#000001552        |       9
+ Supplier#000001577        |       9
+ Supplier#000001630        |       9
+ Supplier#000001953        |       9
+ Supplier#000000034        |       8
+ Supplier#000000286        |       8
+ Supplier#000000396        |       8
+ Supplier#000000535        |       8
+ Supplier#000000644        |       8
+ Supplier#000001101        |       8
+ Supplier#000001523        |       8
+ Supplier#000001636        |       8
+ Supplier#000002198        |       8
+ Supplier#000000171        |       7
+ Supplier#000000190        |       7
+ Supplier#000000443        |       7
+ Supplier#000000489        |       7
+ Supplier#000000529        |       7
+ Supplier#000000734        |       7
+ Supplier#000000932        |       7
+ Supplier#000001003        |       7
+ Supplier#000001233        |       7
+ Supplier#000001392        |       7
+ Supplier#000001536        |       7
+ Supplier#000001652        |       7
+ Supplier#000001949        |       7
+ Supplier#000000249        |       6
+ Supplier#000000259        |       6
+ Supplier#000000398        |       6
+ Supplier#000000432        |       6
+ Supplier#000000504        |       6
+ Supplier#000000830        |       6
+ Supplier#000001024        |       6
+ Supplier#000001059        |       6
+ Supplier#000001151        |       6
+ Supplier#000001293        |       6
+ Supplier#000001441        |       6
+ Supplier#000001622        |       6
+ Supplier#000001989        |       6
+ Supplier#000001996        |       6
+ Supplier#000000299        |       5
+ Supplier#000000401        |       5
+ Supplier#000000422        |       5
+ Supplier#000000449        |       5
+ Supplier#000000694        |       5
+ Supplier#000000712        |       5
+ Supplier#000000982        |       5
+ Supplier#000001232        |       5
+ Supplier#000001348        |       5
+ Supplier#000001548        |       5
+ Supplier#000001762        |       5
+ Supplier#000001974        |       5
+ Supplier#000002050        |       5
+ Supplier#000002145        |       5
+ Supplier#000002279        |       5
+ Supplier#000002292        |       5
+ Supplier#000002446        |       5
+ Supplier#000000267        |       4
+ Supplier#000000568        |       4
+ Supplier#000000880        |       4
+ Supplier#000000897        |       4
+ Supplier#000001061        |       4
+ Supplier#000001075        |       4
+ Supplier#000001128        |       4
+ Supplier#000001171        |       4
+ Supplier#000001228        |       4
+ Supplier#000001677        |       4
+ Supplier#000002183        |       4
+ Supplier#000002205        |       4
+ Supplier#000002266        |       4
+ Supplier#000000141        |       3
+ Supplier#000000240        |       3
+ Supplier#000000979        |       3
+ Supplier#000001004        |       3
+ Supplier#000001236        |       3
+ Supplier#000001634        |       3
+ Supplier#000002486        |       3
+ Supplier#000000176        |       2
+ Supplier#000000288        |       2
+ Supplier#000000923        |       2
+ Supplier#000000926        |       2
+ Supplier#000001266        |       2
+ Supplier#000002028        |       2
+ Supplier#000002459        |       2
+ Supplier#000000635        |       1
+ Supplier#000002374        |       1
+ Supplier#000002457        |       1
+(99 rows)
+
+COMMIT;
+COMMIT

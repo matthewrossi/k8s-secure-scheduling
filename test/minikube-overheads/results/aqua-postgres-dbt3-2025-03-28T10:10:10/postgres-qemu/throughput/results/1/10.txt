@@ -1,0 +1,60 @@
+BEGIN;
+BEGIN
+select
+	c_custkey,
+	c_name,
+	sum(l_extendedprice * (1 - l_discount)) as revenue,
+	c_acctbal,
+	n_name,
+	c_address,
+	c_phone,
+	c_comment
+from
+	customer,
+	orders,
+	lineitem,
+	nation
+where
+	c_custkey = o_custkey
+	and l_orderkey = o_orderkey
+	and o_orderdate >= date '1995-01-01'
+	and o_orderdate < cast(date '1995-01-01' + interval '3 month' as date)
+	and l_returnflag = 'R'
+	and c_nationkey = n_nationkey
+group by
+	c_custkey,
+	c_name,
+	c_acctbal,
+	c_phone,
+	n_name,
+	c_address,
+	c_comment
+order by
+	revenue desc
+LIMIT 20;
+ c_custkey |       c_name       |   revenue   | c_acctbal |          n_name           |                c_address                 |     c_phone     |                                                   c_comment                                                    
+-----------+--------------------+-------------+-----------+---------------------------+------------------------------------------+-----------------+----------------------------------------------------------------------------------------------------------------
+     30523 | Customer#000030523 | 537346.6920 |   3463.98 | PERU                      | 3A8vNPnR5e0Kz9ytD87XIfSGQZpVThT6RMTkd7   | 27-228-232-7684 | s x-ray slyly. quickly unusual requests nag slyly at the unusual foxes. regular asymptotes haggle. brave, ir
+     16195 | Customer#000016195 | 481238.0520 |   5647.78 | ROMANIA                   | QPvSNnKE6czmiWBUdugrnD                   | 29-692-341-5614 | re. fluffily ironic pinto beans cajole carefully according to the requests. ir
+      6673 | Customer#000006673 | 468395.1339 |    751.90 | UNITED KINGDOM            | heXKQ2V3L0uxVhdWxCvr42                   | 33-166-738-4873 | packages sleep fluffily final grouches? fur
+     12655 | Customer#000012655 | 455432.2423 |   8151.35 | FRANCE                    | HwiQ6yd4gkZ1X17VbCWdD5BKxkd              | 16-474-264-8896 | rmanently regular patterns use carefully: even ideas use slyly. slyly bold instructions are slyly along the
+     33859 | Customer#000033859 | 426051.7880 |    736.03 | ETHIOPIA                  | gKSkGmDoUQo                              | 15-777-264-6894 | lithely ironic pinto beans. blithely special theodolites wake. requests sleep? express pack
+      8191 | Customer#000008191 | 411084.6546 |   -152.32 | BRAZIL                    |  dbm7qMiqge1GSDNga2PDuVkzgsY89dY3,frZ    | 12-372-859-4863 |  slyly bold foxes sleep carefully across the furiously i
+     46510 | Customer#000046510 | 408280.6128 |    234.59 | RUSSIA                    | RrOhAN7iqB,BTc0d 1BSo                    | 32-246-713-4100 | riously ironic theodolites. slyly special theodolites impress furious, pe
+      7321 | Customer#000007321 | 405430.2064 |   4010.78 | CHINA                     | FcLSzBH8i6tQNE4ClK WHGjbId9QtPZp         | 28-187-897-3400 | of the slyly regular accounts-- quickly quick platelets sleep aroun
+     15955 | Customer#000015955 | 391873.3812 |   7886.50 | RUSSIA                    | IZKvrfdTLJvSoTA0QfaW                     | 32-218-400-5575 | ideas after the regular deposits cajole slyly above the carefully express requests! regular, final instruction
+     63920 | Customer#000063920 | 381224.4392 |   -244.97 | FRANCE                    | mAlUGS7,iuoSCZbVkYmFErV2O                | 16-717-975-4437 | le. carefully ironic sentiments sleep. quickly express Tiresias haggle carefully blithely ironic as
+     31279 | Customer#000031279 | 380358.1300 |    810.24 | INDONESIA                 | hgHwalKv5f9c2iH2C1YOx                    | 19-248-215-6515 | y about the fluffily regular foxes. furiously pending theodolites besides the blithely even sent
+     44341 | Customer#000044341 | 370303.1317 |   1390.29 | FRANCE                    | QMirgIOpwKi9mpBtxu6aOkvUFvJbhv           | 16-719-777-2927 | uests about the furiously final packages haggle fluffily carefully final ac
+     65710 | Customer#000065710 | 370100.8023 |   -751.05 | ALGERIA                   | DT65eFBXivwsaEDBC1Rhba1z2ldi5VnR         | 10-167-707-1840 | yly. dependencies sleep. enticingly pending packages sleep. carefully even asymptote
+     37634 | Customer#000037634 | 369310.0028 |   7609.65 | ETHIOPIA                  | 65MzU9qJIv                               | 15-390-929-3246 | c instructions. even, bold accounts cajole blithely special instructions. quickly fina
+     48781 | Customer#000048781 | 360821.0235 |   1656.92 | FRANCE                    | t3oKIVbLlPr                              | 16-523-346-4048 | ly brave accounts cajole furiously at the quickly special theodolites. enticin
+     13387 | Customer#000013387 | 358748.2610 |   6985.40 | ARGENTINA                 | zuHnumP8xwxUBiuY39AD8oHJMC,N7tV          | 11-250-987-7921 | ep according to the furiously ironic accounts. furiously 
+     18676 | Customer#000018676 | 358654.9975 |   3125.54 | ETHIOPIA                  | PTTpVVgdF hSh18er4V7a34wyiSl7iyR Z5HzF   | 15-921-658-5537 |  deposits haggle fluffily. requests cajole quickly fluffily even requests
+     49334 | Customer#000049334 | 354158.6251 |   5055.45 | JORDAN                    | V5CNqINXSwA7BY489                        | 23-628-445-7790 | ach. carefully even instructions haggle quietly. sometimes final deposits promis
+     40423 | Customer#000040423 | 347943.3855 |   6191.55 | BRAZIL                    | OcfKAVGB0o0SgK6yGpPAIPO3 7sku wRu9mmPR4k | 12-232-478-1830 | ter the excuses boost ironically blithely unusual theodolites. carefully silent depende
+     66001 | Customer#000066001 | 346466.2896 |   3442.89 | ROMANIA                   | odG5KXR4mWJUPlyUuuShNDZA,Ex7 e           | 29-280-114-2150 | l, ironic multipliers use slyly among the regular, thin packages. somas promise blithely. always special as
+(20 rows)
+
+COMMIT;
+COMMIT

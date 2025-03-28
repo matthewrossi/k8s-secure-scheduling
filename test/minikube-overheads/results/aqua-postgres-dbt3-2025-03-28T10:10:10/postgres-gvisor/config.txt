@@ -1,0 +1,17 @@
+date: Fri Mar 28 12:24:43 CET 2025
+node: 
+kernel: Linux 6.13.8-arch1-1
+distribution: fixme
+dbver: PostgreSQL 17.2
+sysstat: 74:
+CPUS: 24
+MHz:  5355.485
+model:  AMD Ryzen 9 7900X 12-Core Processor
+memory:        64960112 kB
+scale_factor: 1
+num_stream: 2
+load_parameters: 
+power_parameters: 
+throughput_parameters: 
+shmmax: 18446744073692774399
+dbms: pgsql

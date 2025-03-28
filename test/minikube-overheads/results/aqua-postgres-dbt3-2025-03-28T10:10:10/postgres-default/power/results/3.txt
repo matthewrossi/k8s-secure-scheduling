@@ -1,0 +1,41 @@
+BEGIN;
+BEGIN
+select
+	l_orderkey,
+	sum(l_extendedprice * (1 - l_discount)) as revenue,
+	o_orderdate,
+	o_shippriority
+from
+	customer,
+	orders,
+	lineitem
+where
+	c_mktsegment = 'FURNITURE'
+	and c_custkey = o_custkey
+	and l_orderkey = o_orderkey
+	and o_orderdate < date '1995-03-15'
+	and l_shipdate > date '1995-03-15'
+group by
+	l_orderkey,
+	o_orderdate,
+	o_shippriority
+order by
+	revenue desc,
+	o_orderdate
+LIMIT 10;
+ l_orderkey |   revenue   | o_orderdate | o_shippriority 
+------------+-------------+-------------+----------------
+    1670759 | 394096.6203 | 1995-02-20  |              0
+    4613219 | 388942.5848 | 1995-03-10  |              0
+    2351270 | 387236.6330 | 1995-03-03  |              0
+     389344 | 380222.0038 | 1995-03-13  |              0
+     593952 | 372618.7257 | 1995-03-05  |              0
+     568514 | 370778.6535 | 1995-02-18  |              0
+    1000004 | 367563.8124 | 1995-03-02  |              0
+    3355202 | 364993.2543 | 1995-03-04  |              0
+    4736070 | 363448.3771 | 1995-03-05  |              0
+    3182468 | 358332.4305 | 1995-02-11  |              0
+(10 rows)
+
+COMMIT;
+COMMIT

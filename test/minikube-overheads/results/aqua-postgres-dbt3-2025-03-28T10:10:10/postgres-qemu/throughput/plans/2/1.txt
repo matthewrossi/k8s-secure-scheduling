@@ -1,0 +1,43 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	l_returnflag,
+	l_linestatus,
+	sum(l_quantity) as sum_qty,
+	sum(l_extendedprice) as sum_base_price,
+	sum(l_extendedprice * (1 - l_discount)) as sum_disc_price,
+	sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) as sum_charge,
+	avg(l_quantity) as avg_qty,
+	avg(l_extendedprice) as avg_price,
+	avg(l_discount) as avg_disc,
+	count(*) as count_order
+from
+	lineitem
+where
+	l_shipdate <= date '1998-12-01' - interval '61 days'
+group by
+	l_returnflag,
+	l_linestatus
+order by
+	l_returnflag,
+	l_linestatus;
+                                              QUERY PLAN                                              
+------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=186200.17..186202.13 rows=6 width=236)
+   Group Key: l_returnflag, l_linestatus
+   ->  Gather Merge  (cost=186200.17..186201.57 rows=12 width=236)
+         Workers Planned: 2
+         ->  Sort  (cost=185200.15..185200.16 rows=6 width=236)
+               Sort Key: l_returnflag, l_linestatus
+               ->  Partial HashAggregate  (cost=185199.93..185200.07 rows=6 width=236)
+                     Group Key: l_returnflag, l_linestatus
+                     ->  Parallel Seq Scan on lineitem  (cost=0.00..116395.11 rows=1965852 width=25)
+                           Filter: (l_shipdate <= '1998-10-01 00:00:00'::timestamp without time zone)
+ JIT:
+   Functions: 9
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(13 rows)
+
+COMMIT;
+COMMIT

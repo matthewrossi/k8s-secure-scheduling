@@ -1,0 +1,72 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	nation,
+	o_year,
+	sum(amount) as sum_profit
+from
+	(
+		select
+			n_name as nation,
+			extract(year from o_orderdate) as o_year,
+			l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount
+		from
+			part,
+			supplier,
+			lineitem,
+			partsupp,
+			orders,
+			nation
+		where
+			s_suppkey = l_suppkey
+			and ps_suppkey = l_suppkey
+			and ps_partkey = l_partkey
+			and p_partkey = l_partkey
+			and o_orderkey = l_orderkey
+			and s_nationkey = n_nationkey
+			and p_name like '%navy%'
+	) as profit
+group by
+	nation,
+	o_year
+order by
+	nation,
+	o_year desc;
+                                                                         QUERY PLAN                                                                          
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=139756.21..139760.39 rows=31 width=90)
+   Group Key: nation.n_name, (EXTRACT(year FROM orders.o_orderdate))
+   ->  Gather Merge  (cost=139756.21..139759.67 rows=26 width=90)
+         Workers Planned: 2
+         ->  Partial GroupAggregate  (cost=138756.19..138756.64 rows=13 width=90)
+               Group Key: nation.n_name, (EXTRACT(year FROM orders.o_orderdate))
+               ->  Sort  (cost=138756.19..138756.22 rows=13 width=81)
+                     Sort Key: nation.n_name, (EXTRACT(year FROM orders.o_orderdate)) DESC
+                     ->  Hash Join  (cost=124157.59..138755.95 rows=13 width=81)
+                           Hash Cond: (supplier.s_nationkey = nation.n_nationkey)
+                           ->  Nested Loop  (cost=124156.03..138754.30 rows=13 width=31)
+                                 ->  Parallel Hash Join  (cost=124155.75..138749.50 rows=16 width=35)
+                                       Hash Cond: ((partsupp.ps_suppkey = lineitem.l_suppkey) AND (partsupp.ps_partkey = lineitem.l_partkey))
+                                       ->  Parallel Seq Scan on partsupp  (cost=0.00..13031.25 rows=208325 width=14)
+                                       ->  Parallel Hash  (cost=123196.83..123196.83 rows=63928 width=33)
+                                             ->  Parallel Hash Join  (cost=3826.25..123196.83 rows=63928 width=33)
+                                                   Hash Cond: (lineitem.l_partkey = part.p_partkey)
+                                                   ->  Merge Join  (cost=2.41..115276.11 rows=1560681 width=29)
+                                                         Merge Cond: (lineitem.l_orderkey = orders.o_orderkey)
+                                                         ->  Parallel Index Scan using pk_lineitem on lineitem  (cost=0.43..572479.88 rows=2399098 width=33)
+                                                         ->  Index Scan using pk_orders on orders  (cost=0.42..23853.21 rows=251500 width=12)
+                                                   ->  Parallel Hash  (cost=3764.41..3764.41 rows=4754 width=4)
+                                                         ->  Parallel Seq Scan on part  (cost=0.00..3764.41 rows=4754 width=4)
+                                                               Filter: ((p_name)::text ~~ '%navy%'::text)
+                                 ->  Index Scan using pk_supplier on supplier  (cost=0.28..0.30 rows=1 width=8)
+                                       Index Cond: (s_suppkey = lineitem.l_suppkey)
+                           ->  Hash  (cost=1.25..1.25 rows=25 width=30)
+                                 ->  Seq Scan on nation  (cost=0.00..1.25 rows=25 width=30)
+ JIT:
+   Functions: 49
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(31 rows)
+
+COMMIT;
+COMMIT

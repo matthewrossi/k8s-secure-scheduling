@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+if [[ "$#" = 0 ]]; then
+  echo "USAGE: setup COMMAND"
+  echo ""
+  echo "Available commands:"
+  echo "  minikube             Set up minikube with gVisor and Kata Containers"
+  echo "  web-servers          Set up nginx, apache, and lighttpd"
+  echo "  db                   Set up redis, mongodb, and postgres"
+  echo "  benchmarks           Downloads and patches YCSB and TPC-H"
+  echo "  all                  All of the above"
+  exit 1
+fi
+
 # -------------- Minikube
 
 if [[ "$1" = "minikube" || "$1" = "all" ]]; then
@@ -70,6 +82,7 @@ if [[ "$1" = "benchmarks" || "$1" = "all" ]]; then
 
   if [[ ! -d 'TPC-H V3.0.1' ]]; then
     unzip tpc-h-tools.zip
+    ./prepare-postgres
   fi
 
   popd

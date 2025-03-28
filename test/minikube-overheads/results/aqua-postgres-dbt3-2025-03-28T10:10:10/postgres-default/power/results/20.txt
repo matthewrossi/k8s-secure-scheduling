@@ -1,0 +1,67 @@
+BEGIN;
+BEGIN
+select
+	s_name,
+	s_address
+from
+	supplier,
+	nation
+where
+	s_suppkey in (
+		select
+			ps_suppkey
+		from
+			partsupp
+		where
+			ps_partkey in (
+				select
+					p_partkey
+				from
+					part
+				where
+					p_name like 'spring%'
+			)
+			and ps_availqty > (
+				select
+					0.5 * sum(l_quantity)
+				from
+					lineitem
+				where
+					l_partkey = ps_partkey
+					and l_suppkey = ps_suppkey
+					and l_shipdate >= '1993-01-01'
+					and l_shipdate < cast(date '1993-01-01' + interval '1 year' as date)
+			)
+	)
+	and s_nationkey = n_nationkey
+	and n_name = 'JORDAN'
+order by
+	s_name;
+          s_name           |               s_address               
+---------------------------+---------------------------------------
+ Supplier#000000334        | NHMGXoP 8cWsNXvV46AkZZJuptUm4mFo8
+ Supplier#000000488        | AzfObar4VYwnQvsGbISGCshVM AIWYq9
+ Supplier#000000494        | 6hAiQHDGTy6,8bjpxI i3f
+ Supplier#000000537        | KsYYPIw2kWP
+ Supplier#000000577        | kn5oGAnFD1CQjet8awWorC,UMf37MP71yNcVD
+ Supplier#000000626        | uaYN3Mg6sVtD
+ Supplier#000000661        | lZGFurTW1snIqk0oLWMMaeq3L
+ Supplier#000000677        | 8mhrffG7D2WJBSQbOGstQ
+ Supplier#000001100        | WXvtvdCRMWZVJXwNHX5Iokh7Q
+ Supplier#000001197        | 8DWD2Hby2bbzEu6p fMqSks
+ Supplier#000001214        | 33rk3mcWaDeMzZcSF
+ Supplier#000001217        | iwoHJbL2n9kAPj2lAJlzIK9Xujbbz6JP1c
+ Supplier#000001302        | CnA5dkqpoQq cUp
+ Supplier#000001315        | tG2KWW3xDZaTc22
+ Supplier#000001663        | DNIbw7A8B Ll6nq
+ Supplier#000001695        | SWxXwwAGOSIA4W Ah6
+ Supplier#000001769        | u4FB5bCSMFbef3ef4hiPPzH,Dc
+ Supplier#000001879        | NHWlAv4FLyCE
+ Supplier#000001914        | wFmRY6QNUcQhjjt7JIGSdv
+ Supplier#000002163        | 7,2jkkF7Ql
+ Supplier#000002224        | 08hDtcJ8EUZ0nMxMrZiEiNH9RM08gIqt0DAst
+ Supplier#000002469        | 5D30kvreTqsqgl
+(22 rows)
+
+COMMIT;
+COMMIT

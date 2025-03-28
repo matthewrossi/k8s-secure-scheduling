@@ -1,0 +1,41 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	sum(l_extendedprice) / 7.0 as avg_yearly
+from
+	lineitem,
+	part
+where
+	p_partkey = l_partkey
+	and p_brand = 'Brand#52'
+	and p_container = 'LG DRUM'
+	and l_quantity < (
+		select
+			0.2 * avg(l_quantity)
+		from
+			lineitem
+		where
+			l_partkey = p_partkey
+	);
+                                             QUERY PLAN                                             
+----------------------------------------------------------------------------------------------------
+ Aggregate  (cost=1293300.79..1293300.81 rows=1 width=32)
+   ->  Hash Join  (cost=4456.44..1293298.47 rows=927 width=8)
+         Hash Cond: (lineitem.l_partkey = part.p_partkey)
+         Join Filter: (lineitem.l_quantity < (SubPlan 1))
+         ->  Seq Scan on lineitem  (cost=0.00..131872.79 rows=4507679 width=17)
+         ->  Hash  (cost=4454.93..4454.93 rows=121 width=4)
+               ->  Seq Scan on part  (cost=0.00..4454.93 rows=121 width=4)
+                     Filter: ((p_brand = 'Brand#52'::bpchar) AND (p_container = 'LG DRUM'::bpchar))
+         SubPlan 1
+           ->  Aggregate  (cost=143142.05..143142.06 rows=1 width=32)
+                 ->  Seq Scan on lineitem lineitem_1  (cost=0.00..143141.99 rows=23 width=5)
+                       Filter: (l_partkey = part.p_partkey)
+ JIT:
+   Functions: 24
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+(15 rows)
+
+COMMIT;
+COMMIT

@@ -1,0 +1,146 @@
+BEGIN;
+BEGIN
+select
+	s_name,
+	s_address
+from
+	supplier,
+	nation
+where
+	s_suppkey in (
+		select
+			ps_suppkey
+		from
+			partsupp
+		where
+			ps_partkey in (
+				select
+					p_partkey
+				from
+					part
+				where
+					p_name like 'tomato%'
+			)
+			and ps_availqty > (
+				select
+					0.5 * sum(l_quantity)
+				from
+					lineitem
+				where
+					l_partkey = ps_partkey
+					and l_suppkey = ps_suppkey
+					and l_shipdate >= '1993-01-01'
+					and l_shipdate < cast(date '1993-01-01' + interval '1 year' as date)
+			)
+	)
+	and s_nationkey = n_nationkey
+	and n_name = 'IRAQ'
+order by
+	s_name;
+          s_name           |                s_address                 
+---------------------------+------------------------------------------
+ Supplier#000000101        | 8KUTzVw32Pw3PD7 h,YJ0ysOoBtz9JfZI
+ Supplier#000000200        | MNqafnV52UKvwuk3jFCn,AJkL
+ Supplier#000000280        | MZAJPsr3TS62ocxtRc
+ Supplier#000000442        | PJSCHXMAsqyRr5aPD9lp4tUl1B1WytbosVY8EdNZ
+ Supplier#000000672        | iu9d66fGNBYX
+ Supplier#000000772        | GxfKyTzgm 6bVmhZPQ6nUMCx5NSsl0 ATg1WccX
+ Supplier#000000782        | z5xIc71Rb5CsrmE0kO11P
+ Supplier#000000796        | xre srJq9Ivai94OkW0yhsfrx
+ Supplier#000000867        | WTM7RpRoZPk5MKGEtE2dsh
+ Supplier#000000872        | oJQEy8xyrptE
+ Supplier#000000909        | BXuLybzUeFLI0GJqMG8xewTuKFqk8n
+ Supplier#000001028        | nOkvPq5WfeN87ASUIgQNKT2U0TUX 4WzZQ3f
+ Supplier#000001119        | EmB2voA2Bz34yLqrzj1,t5
+ Supplier#000001127        | 5LRB7nY9PHnTdzPf59icKT
+ Supplier#000001129        | DV4fcTLWjb2mu
+ Supplier#000001167        | ErCT6PR9WY8
+ Supplier#000001184        | gKEtnB,QWGHCcwL2P9i
+ Supplier#000001259        | 32cJBGFFpGEkEjx1sF8JZAy0A72uXL5qU
+ Supplier#000001330        | SId6O3H5X kgMUvmNMQWAzpACakbqenDohX4Acr
+ Supplier#000001365        | NysYJeiKia3El,ZtdccG,fwqe
+ Supplier#000001397        | 8EdI75YBpNagM4ztO6yU7PKDGcIq
+ Supplier#000001449        | NFQzLwdOyj0LqRnlVKF
+ Supplier#000001565        | bOwKHdBteMkZoZcxdigk4Tnu07w1gDztmV7hvCw
+ Supplier#000001599        | rjcb4JsZbnkwBX90NGz90GjZUE01wp00eEB
+ Supplier#000001625        | yKlKMbENR6bfmIu7aCFmbs
+ Supplier#000001648        | u8gBXkSvmx1zO9rJcI,GH
+ Supplier#000001715        | zeMs3O9v3TNv
+ Supplier#000001807        | AHdxwZCPjNpG
+ Supplier#000001825        | 0Vn07MtX5Op
+ Supplier#000002000        | b1,LW1CcQX7Mp2RQgKXLrKGvuJmM
+ Supplier#000002102        | 1kuyUn5q6czLOGB60fAVgpv68M2suwchpmp2nK
+ Supplier#000002221        | 2VMpv3tW0Gvg6Y0gTeRHa7jYlRXVA
+ Supplier#000002234        | ,Cb2T41MV4W4au vEhDGOuyNtVs4Y2O2
+ Supplier#000002678        | nnZNHDMCnZKTm
+ Supplier#000002930        | wMqzw,9XbQeExyiZVbMD
+ Supplier#000003056        | I8fnZ5uR787YgM5P1urcBhFF1ZeJ3FMesySwkE
+ Supplier#000003066        | rbLg0pp3sKYeZ,Knk8L8oKmon,LKWX
+ Supplier#000003078        | WM2MwAU0hKWYd3tY5Y8
+ Supplier#000003202        | pK duW8oGZXScgMkf
+ Supplier#000003233        |  aVFqnCFgVXU3CJUnzNj3vlC
+ Supplier#000003242        | wywbFKk3ePvF
+ Supplier#000003302        | 6XW,uY7xlDDOJIFJxRuf
+ Supplier#000003303        | 0E3ihSr0VseYg85LJVsY2Va3Qt9bAjz3ui7,C
+ Supplier#000003342        | qraFBSkyoax9iuMkr0L7OI20gj659WD
+ Supplier#000003349        | wtTK9df9kY7mQ5QUM0Xe5bHLMRLgwE
+ Supplier#000003381        | LjhuSMgpjJgc,eCYaEPg5QSCLwkj
+ Supplier#000003700        | q1xYaKyPFw4xacddUJtQ1H
+ Supplier#000003736        | PU4sZv3Fb,e
+ Supplier#000003758        | KRy66SUhGwhqLF5pGYevJGaCiCsrB
+ Supplier#000003802        | PjcKEJb 9DODZXC
+ Supplier#000003909        | TjJ21ZlzfN
+ Supplier#000003912        | Op7,1zt3MAxs34Qo4O W
+ Supplier#000004195        | NHCu,qYwb21TrXtL8iXEI4QZ
+ Supplier#000004208        | x3jZYF7ZYN 8a4LY1c1kEsh
+ Supplier#000004224        | czIAOSaOsPxmB1S
+ Supplier#000004300        | qZSf W  P4g
+ Supplier#000004312        | qFuileVgNCS0DR0
+ Supplier#000004361        | VpieNNJe36AlthVOrdKZwGZLv4resSU
+ Supplier#000004362        | fBx,Kkc,fj5URrbe 5H0mjBEU5Bv9rtv78qGCh
+ Supplier#000004437        | wuRnnRe0zTDSUhLQ5XOIHTrEyjG0qK
+ Supplier#000004586        | IdiDj6697TbZsAr0L9r8,t
+ Supplier#000004632        | pESjh91jVTYjgolst zkE7GW8I
+ Supplier#000004662        | t5bDsOR1SUvZs8yD1sMpFtGR506QfqzsU,NFg
+ Supplier#000004832        | M5CojlGp1 qu0ZGthJJDEzBU5vElXp
+ Supplier#000004857        | XGMR6l 7NqtVjxv
+ Supplier#000004921        | UTT9MiyzVrXqZ9JYtjCYiUuEstt
+ Supplier#000004978        | Ho8kbrr7BjnPLDZWY3H2bjT51EHL3KfwqE4o
+ Supplier#000005312        | M7fSgSLXzpnE,EKcN39Ya 
+ Supplier#000005389        | 9ahcfntXIusWZvO8pD6kxBqppWkSoxSf
+ Supplier#000006409        | eO8JDNM19HrlQMR
+ Supplier#000006523        | QYA7LJ8f3qcqUW70f8x2 7nU9Xf1BRh20iV
+ Supplier#000006675        | r86gT qdVa1SToXdwSWGMcEHR
+ Supplier#000006681        | oHMogYLVxq0jaf1f 1p
+ Supplier#000006688        | 7la7usoFEFhQRTyE7t71,u,KcY5u8fCJ
+ Supplier#000006723        | zPUrD,ylISpYlQy6MEpB9FqCqOkK9AI
+ Supplier#000006852        | x1v6PqA4Yi8KSZzq S
+ Supplier#000006886        | sN0BeIMWowAvTUOshFyAvm6bMb5TLphY
+ Supplier#000007008        | BXISIGR033SlhlceM,XAOqjeQGIvd,iNg
+ Supplier#000007052        | EvvMY80H5gifhB5a82U4Q0FtttnZ3npEYJ
+ Supplier#000007077        | kQ6qLdSpTnD 
+ Supplier#000007226        | Aw6lbwDjwiSaI3y6PYaWt6UJXGvblZveDY
+ Supplier#000007233        | ja32YcV2cAkJY
+ Supplier#000007309        | BmjrvlihSVhZzs8pLNF4xW,R1Dn eiuGR
+ Supplier#000007457        | 5aSV83RQFpd,2y1uGvZjGQcM0bFuyT
+ Supplier#000007481        | YFrAFgdH5cYR7sFEt
+ Supplier#000007554        | Huq0k qKET hByp3RcMcr
+ Supplier#000007557        | udLvpjNvIx9qeRNdjL1ZAO0OZNOBo6h
+ Supplier#000007617        | eX9oIlq qy74YfKC ,H6W4
+ Supplier#000007724        | 6IpJsjVfwtw9j
+ Supplier#000007745        | jVuyRb0vzpQU yQRSd9bup2qxxmIGX
+ Supplier#000007805        | 6LxaWLIsA9kAJn97S6aR5WMfowcg,n7i,Q
+ Supplier#000008178        | Kzuv9PrThE56fWmNR3UtwZAz
+ Supplier#000008198        | xQS Ge363wHc
+ Supplier#000009184        | u7qqtlgu02DWf9aBjKR2qvZ0
+ Supplier#000009264        | d7GINn8JkTi0lu9O3UtW
+ Supplier#000009608        | xYoUMT40amiTZpsYQ
+ Supplier#000009611        | QkgF16C9A,OnUZPvWncMeD
+ Supplier#000009621        | gDrxt1WAuR5LHTrZB4L
+ Supplier#000009660        | ex4DrVoJVSMmeHuypWIK1bG96XXnDmpo0F4
+ Supplier#000009907        | PsLwoo7rj23MGQVg0tTC
+ Supplier#000009945        | iq0VGL3Q1eKbFk27A
+(101 rows)
+
+COMMIT;
+COMMIT

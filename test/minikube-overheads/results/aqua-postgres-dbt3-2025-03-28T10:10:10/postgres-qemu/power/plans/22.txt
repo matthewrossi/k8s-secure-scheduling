@@ -1,0 +1,61 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	cntrycode,
+	count(*) as numcust,
+	sum(c_acctbal) as totacctbal
+from
+	(
+		select
+			substring(c_phone from 1 for 2) as cntrycode,
+			c_acctbal
+		from
+			customer
+		where
+			substring(c_phone from 1 for 2) in
+				('17', '15', '31', '20', '19', '33', '22')
+			and c_acctbal > (
+				select
+					avg(c_acctbal)
+				from
+					customer
+				where
+					c_acctbal > 0.00
+					and substring(c_phone from 1 for 2) in
+						('17', '15', '31', '20', '19', '33', '22')
+			)
+			and not exists (
+				select
+					*
+				from
+					orders
+				where
+					o_custkey = c_custkey
+			)
+	) as vip
+group by
+	cntrycode
+order by
+	cntrycode;
+                                                                     QUERY PLAN                                                                     
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=9439.65..9439.68 rows=1 width=72)
+   Group Key: (SUBSTRING(customer.c_phone FROM 1 FOR 2))
+   InitPlan 1
+     ->  Aggregate  (cost=3149.60..3149.61 rows=1 width=32)
+           ->  Seq Scan on customer customer_1  (cost=0.00..3144.62 rows=1987 width=6)
+                 Filter: ((c_acctbal > 0.00) AND (SUBSTRING(c_phone FROM 1 FOR 2) = ANY ('{17,15,31,20,19,33,22}'::text[])))
+   ->  Sort  (cost=6290.05..6290.05 rows=1 width=38)
+         Sort Key: (SUBSTRING(customer.c_phone FROM 1 FOR 2))
+         ->  Gather  (cost=1000.42..6290.04 rows=1 width=38)
+               Workers Planned: 1
+               ->  Nested Loop Anti Join  (cost=0.42..5289.94 rows=1 width=38)
+                     ->  Parallel Seq Scan on customer  (cost=0.00..2469.07 rows=429 width=26)
+                           Filter: ((c_acctbal > (InitPlan 1).col1) AND (SUBSTRING(c_phone FROM 1 FOR 2) = ANY ('{17,15,31,20,19,33,22}'::text[])))
+                     ->  Index Only Scan using orders_o_custkey_idx on orders  (cost=0.42..29.22 rows=8 width=4)
+                           Index Cond: (o_custkey = customer.c_custkey)
+(15 rows)
+
+COMMIT;
+COMMIT

@@ -1,0 +1,79 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	supp_nation,
+	cust_nation,
+	l_year,
+	sum(volume) as revenue
+from
+	(
+		select
+			n1.n_name as supp_nation,
+			n2.n_name as cust_nation,
+			extract(year from l_shipdate) as l_year,
+			l_extendedprice * (1 - l_discount) as volume
+		from
+			supplier,
+			lineitem,
+			orders,
+			customer,
+			nation n1,
+			nation n2
+		where
+			s_suppkey = l_suppkey
+			and o_orderkey = l_orderkey
+			and c_custkey = o_custkey
+			and s_nationkey = n1.n_nationkey
+			and c_nationkey = n2.n_nationkey
+			and (
+				(n1.n_name = 'RUSSIA' and n2.n_name = 'JAPAN')
+				or (n1.n_name = 'JAPAN' and n2.n_name = 'RUSSIA')
+			)
+			and l_shipdate between date '1995-01-01' and date '1996-12-31'
+	) as shipping
+group by
+	supp_nation,
+	cust_nation,
+	l_year
+order by
+	supp_nation,
+	cust_nation,
+	l_year;
+                                                                                    QUERY PLAN                                                                                     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=57838.61..57991.72 rows=1134 width=116)
+   Group Key: n1.n_name, n2.n_name, (EXTRACT(year FROM lineitem.l_shipdate))
+   ->  Gather Merge  (cost=57838.61..57962.91 rows=944 width=116)
+         Workers Planned: 2
+         ->  Partial GroupAggregate  (cost=56838.58..56853.92 rows=472 width=116)
+               Group Key: n1.n_name, n2.n_name, (EXTRACT(year FROM lineitem.l_shipdate))
+               ->  Sort  (cost=56838.58..56839.76 rows=472 width=96)
+                     Sort Key: n1.n_name, n2.n_name, (EXTRACT(year FROM lineitem.l_shipdate))
+                     ->  Hash Join  (cost=116.82..56817.62 rows=472 width=96)
+                           Hash Cond: (supplier.s_nationkey = n1.n_nationkey)
+                           Join Filter: (((n1.n_name = 'RUSSIA'::bpchar) AND (n2.n_name = 'JAPAN'::bpchar)) OR ((n1.n_name = 'JAPAN'::bpchar) AND (n2.n_name = 'RUSSIA'::bpchar)))
+                           ->  Hash Join  (cost=115.42..56785.22 rows=11352 width=46)
+                                 Hash Cond: (lineitem.l_suppkey = supplier.s_suppkey)
+                                 ->  Nested Loop  (cost=2.26..56552.75 rows=45432 width=46)
+                                       ->  Nested Loop  (cost=1.83..10970.33 rows=41717 width=34)
+                                             ->  Hash Join  (cost=1.40..4094.21 rows=4583 width=30)
+                                                   Hash Cond: (customer.c_nationkey = n2.n_nationkey)
+                                                   ->  Parallel Seq Scan on customer  (cost=0.00..3916.92 rows=57292 width=8)
+                                                   ->  Hash  (cost=1.38..1.38 rows=2 width=30)
+                                                         ->  Seq Scan on nation n2  (cost=0.00..1.38 rows=2 width=30)
+                                                               Filter: ((n_name = 'JAPAN'::bpchar) OR (n_name = 'RUSSIA'::bpchar))
+                                             ->  Index Scan using orders_o_custkey_idx on orders  (cost=0.43..1.36 rows=14 width=12)
+                                                   Index Cond: (o_custkey = customer.c_custkey)
+                                       ->  Index Scan using pk_lineitem on lineitem  (cost=0.43..1.05 rows=4 width=28)
+                                             Index Cond: (l_orderkey = orders.o_orderkey)
+                                             Filter: ((l_shipdate >= '1995-01-01'::date) AND (l_shipdate <= '1996-12-31'::date))
+                                 ->  Hash  (cost=81.96..81.96 rows=2496 width=8)
+                                       ->  Seq Scan on supplier  (cost=0.00..81.96 rows=2496 width=8)
+                           ->  Hash  (cost=1.38..1.38 rows=2 width=30)
+                                 ->  Seq Scan on nation n1  (cost=0.00..1.38 rows=2 width=30)
+                                       Filter: ((n_name = 'RUSSIA'::bpchar) OR (n_name = 'JAPAN'::bpchar))
+(31 rows)
+
+COMMIT;
+COMMIT

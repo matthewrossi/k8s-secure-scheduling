@@ -1,0 +1,60 @@
+BEGIN;
+BEGIN
+select
+	c_custkey,
+	c_name,
+	sum(l_extendedprice * (1 - l_discount)) as revenue,
+	c_acctbal,
+	n_name,
+	c_address,
+	c_phone,
+	c_comment
+from
+	customer,
+	orders,
+	lineitem,
+	nation
+where
+	c_custkey = o_custkey
+	and l_orderkey = o_orderkey
+	and o_orderdate >= date '1993-05-01'
+	and o_orderdate < cast(date '1993-05-01' + interval '3 month' as date)
+	and l_returnflag = 'R'
+	and c_nationkey = n_nationkey
+group by
+	c_custkey,
+	c_name,
+	c_acctbal,
+	c_phone,
+	n_name,
+	c_address,
+	c_comment
+order by
+	revenue desc
+LIMIT 20;
+ c_custkey |       c_name       |   revenue   | c_acctbal |          n_name           |                c_address                 |     c_phone     |                                                      c_comment                                                       
+-----------+--------------------+-------------+-----------+---------------------------+------------------------------------------+-----------------+----------------------------------------------------------------------------------------------------------------------
+     64042 | Customer#000064042 | 458558.9023 |   2702.13 | VIETNAM                   | VloUzHTvCMkdvBWSNudTzUYhsL               | 31-920-171-1006 | foxes wake slyly according to the furiously final packages. regular, special excuses are. regular pat
+    138235 | Customer#000138235 | 414787.4798 |   3593.32 | KENYA                     | gEQ9DyPwBKNC0QFKccR6plyY0Vmt3wPnEiHYHEJ  | 24-250-180-3381 | requests cajole above the ideas. final foxes wake around the pending, regular requests. silent, final packages 
+    122326 | Customer#000122326 | 384369.3818 |   5711.43 | CHINA                     | f6D82eeWpC5cif9I4wMclsMtrR35zCLCO5Ia     | 28-788-392-2675 |  final packages. regular, special pinto beans det
+    147697 | Customer#000147697 | 356031.4321 |   2260.33 | UNITED STATES             | PMBdXD3x2p9                              | 34-175-529-5741 |  the doggedly ironic epitaphs. ironic packages sleep slyly special foxes. regular, sp
+     19477 | Customer#000019477 | 355636.3422 |   2313.54 | UNITED KINGDOM            | Valdd9txNCQPFK4sdjn2kNE                  | 33-608-166-5114 | le furiously. blithely express accounts was blithely ironic reques
+     14897 | Customer#000014897 | 350647.5075 |   7128.52 | INDIA                     | A85xqFvebAhkobC                          | 18-636-699-2206 |  sleep according to the even deposits. permanent warhorses 
+     74155 | Customer#000074155 | 338934.8234 |   1268.56 | BRAZIL                    | dpbbxHA6tZm,gIcc1E839RNbiwnBlnNYx        | 12-850-640-4028 |  slyly above the blithely regular instructions-- carefully unusual deposits could doze quickly above the ca
+     63973 | Customer#000063973 | 338181.5445 |   2024.96 | INDIA                     | 9lbT9t,qC,Bk                             | 18-811-789-5429 | ilent packages believe furiously about the fluffily final packages. foxes cajole blithely special account
+    120883 | Customer#000120883 | 331565.9392 |   8877.01 | JAPAN                     | Ok0HeCPh965Sc                            | 22-961-322-3349 | he attainments. quiet requests wake. quickly r
+     14981 | Customer#000014981 | 321352.5346 |   -540.14 | IRAN                      | 6oPjckyvvDFZDiBSit7EhS0uAXqLPHWnKn       | 20-961-899-8957 | ronic theodolites above the special, even ideas unwin
+     68257 | Customer#000068257 | 319882.1444 |   1761.43 | ROMANIA                   | u0jIi4BsqQrbdbPU3LMFd                    | 29-957-520-8113 |  ironic packages cajole furiously de
+     11081 | Customer#000011081 | 319604.4190 |   8261.77 | MOZAMBIQUE                | vaCF37nLiGO44qaQW3 2hti5c                | 26-313-661-9459 | nts boost ruthlessly regular warthogs. furiously special instructions according to the silent packages need to wake 
+     99631 | Customer#000099631 | 316524.8480 |   6511.71 | VIETNAM                   |  2PviBubrw59cz1X,x90hvp,6                | 31-563-966-7161 | es wake about the slyly idle instructions: quickly regular
+    107018 | Customer#000107018 | 309619.9696 |   1919.41 | ROMANIA                   |  MVVLI2Gw0b                              | 29-726-458-3393 | quests. daringly even ideas sleep quickly along the express t
+    116785 | Customer#000116785 | 308583.7680 |   2319.88 | JORDAN                    | xGjlkea5zCo                              | 23-360-419-4787 | r the furiously express deposits. sly
+     82174 | Customer#000082174 | 307661.7442 |   6156.78 | CANADA                    | hp6Jt2UjhQe                              | 13-105-587-6237 | nts. carefully pending accounts at the regular ideas haggle blithely even reques
+    116578 | Customer#000116578 | 306292.0581 |   7804.49 | MOROCCO                   | lIj3bbUyHhJo                             | 25-746-734-7694 | nto beans. furiously regular dependencies boost carefully. carefully ironic instructions alo
+    114448 | Customer#000114448 | 305863.8526 |   -476.97 | JORDAN                    | K9C9FxAF82cZvCMPz3YW6xKMudCoQohOriGTaO2R | 23-796-978-9961 | r theodolites. final somas will are according to the ironic r
+     81256 | Customer#000081256 | 305372.5748 |   6848.22 | VIETNAM                   | q4lgC5lScMHQ,lEm7GKf7XhzLiKYW0           | 31-342-327-7273 | deposits around the deposits nag among the regularl
+     95962 | Customer#000095962 | 302278.3668 |     -9.33 | MOZAMBIQUE                | 83wOMt9iAb9OJ0HbkQ1PaX3odXVBNEIMXaE      | 26-127-693-7436 | nusual theodolites maintain furiously fluffily iro
+(20 rows)
+
+COMMIT;
+COMMIT

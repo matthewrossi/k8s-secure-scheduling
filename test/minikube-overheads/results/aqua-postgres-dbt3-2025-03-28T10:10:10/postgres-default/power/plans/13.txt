@@ -1,0 +1,51 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	c_count,
+	count(*) as custdist
+from
+	(
+		select
+			c_custkey,
+			count(o_orderkey)
+		from
+			customer left outer join orders on
+				c_custkey = o_custkey
+				and o_comment not like '%special%accounts%'
+		group by
+			c_custkey
+	) as c_orders (c_custkey, c_count)
+group by
+	c_count
+order by
+	custdist desc,
+	c_count desc;
+                                                       QUERY PLAN                                                       
+------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=125940.13..125940.63 rows=200 width=16)
+   Sort Key: (count(*)) DESC, (count(orders.o_orderkey)) DESC
+   ->  HashAggregate  (cost=125930.48..125932.48 rows=200 width=16)
+         Group Key: count(orders.o_orderkey)
+         ->  Finalize GroupAggregate  (cost=89032.41..123867.98 rows=137500 width=12)
+               Group Key: customer.c_custkey
+               ->  Gather Merge  (cost=89032.41..121117.98 rows=275000 width=12)
+                     Workers Planned: 2
+                     ->  Sort  (cost=88032.39..88376.14 rows=137500 width=12)
+                           Sort Key: customer.c_custkey
+                           ->  Partial HashAggregate  (cost=67586.89..73945.40 rows=137500 width=12)
+                                 Group Key: customer.c_custkey
+                                 Planned Partitions: 4
+                                 ->  Parallel Hash Right Join  (cost=4633.07..34895.09 rows=510311 width=12)
+                                       Hash Cond: (orders.o_custkey = customer.c_custkey)
+                                       ->  Parallel Seq Scan on orders  (cost=0.00..28922.42 rows=510311 width=12)
+                                             Filter: ((o_comment)::text !~~ '%special%accounts%'::text)
+                                       ->  Parallel Hash  (cost=3916.92..3916.92 rows=57292 width=4)
+                                             ->  Parallel Seq Scan on customer  (cost=0.00..3916.92 rows=57292 width=4)
+ JIT:
+   Functions: 20
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(22 rows)
+
+COMMIT;
+COMMIT

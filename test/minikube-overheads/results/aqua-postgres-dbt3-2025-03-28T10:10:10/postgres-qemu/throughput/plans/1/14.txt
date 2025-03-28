@@ -1,0 +1,35 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	100.00 * sum(case
+		when p_type like 'PROMO%'
+			then l_extendedprice * (1 - l_discount)
+		else 0
+	end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue
+from
+	lineitem,
+	part
+where
+	l_partkey = p_partkey
+	and l_shipdate >= date '1994-11-01'
+	and l_shipdate < cast(date '1994-11-01' + interval '1 month' as date);
+                                                  QUERY PLAN                                                  
+--------------------------------------------------------------------------------------------------------------
+ Finalize Aggregate  (cost=127639.58..127639.59 rows=1 width=32)
+   ->  Gather  (cost=127639.34..127639.55 rows=2 width=64)
+         Workers Planned: 2
+         ->  Partial Aggregate  (cost=126639.34..126639.35 rows=1 width=64)
+               ->  Parallel Hash Join  (cost=4896.32..126306.98 rows=18992 width=33)
+                     Hash Cond: (lineitem.l_partkey = part.p_partkey)
+                     ->  Parallel Seq Scan on lineitem  (cost=0.00..121349.54 rows=23284 width=16)
+                           Filter: ((l_shipdate >= '1994-11-01'::date) AND (l_shipdate < '1994-12-01'::date))
+                     ->  Parallel Hash  (cost=4071.70..4071.70 rows=65970 width=25)
+                           ->  Parallel Seq Scan on part  (cost=0.00..4071.70 rows=65970 width=25)
+ JIT:
+   Functions: 17
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(13 rows)
+
+COMMIT;
+COMMIT

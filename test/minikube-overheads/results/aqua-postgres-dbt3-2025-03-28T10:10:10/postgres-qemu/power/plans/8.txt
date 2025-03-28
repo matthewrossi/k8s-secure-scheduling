@@ -1,0 +1,83 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	o_year,
+	sum(case
+		when nation = 'ARGENTINA' then volume
+		else 0
+	end) / sum(volume) as mkt_share
+from
+	(
+		select
+			extract(year from o_orderdate) as o_year,
+			l_extendedprice * (1 - l_discount) as volume,
+			n2.n_name as nation
+		from
+			part,
+			supplier,
+			lineitem,
+			orders,
+			customer,
+			nation n1,
+			nation n2,
+			region
+		where
+			p_partkey = l_partkey
+			and s_suppkey = l_suppkey
+			and l_orderkey = o_orderkey
+			and o_custkey = c_custkey
+			and c_nationkey = n1.n_nationkey
+			and n1.n_regionkey = r_regionkey
+			and r_name = 'AMERICA'
+			and s_nationkey = n2.n_nationkey
+			and o_orderdate between date '1995-01-01' and date '1996-12-31'
+			and p_type = 'SMALL BRUSHED COPPER'
+	) as all_nations
+group by
+	o_year
+order by
+	o_year;
+                                                                  QUERY PLAN                                                                   
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=72290.25..72405.86 rows=987 width=64)
+   Group Key: (EXTRACT(year FROM orders.o_orderdate))
+   ->  Gather Merge  (cost=72290.25..72378.86 rows=581 width=96)
+         Workers Planned: 1
+         ->  Partial GroupAggregate  (cost=71290.24..71313.48 rows=581 width=96)
+               Group Key: (EXTRACT(year FROM orders.o_orderdate))
+               ->  Sort  (cost=71290.24..71291.70 rows=581 width=70)
+                     Sort Key: (EXTRACT(year FROM orders.o_orderdate))
+                     ->  Hash Join  (cost=4247.28..71263.57 rows=581 width=70)
+                           Hash Cond: (supplier.s_nationkey = n2.n_nationkey)
+                           ->  Nested Loop  (cost=4245.72..71258.77 rows=581 width=20)
+                                 ->  Parallel Hash Join  (cost=4245.44..71048.11 rows=696 width=20)
+                                       Hash Cond: (lineitem.l_partkey = part.p_partkey)
+                                       ->  Nested Loop  (cost=3.37..66467.25 rows=129059 width=24)
+                                             ->  Nested Loop  (cost=2.93..12951.94 rows=18676 width=12)
+                                                   ->  Hash Join  (cost=2.51..2085.55 rows=7353 width=4)
+                                                         Hash Cond: (customer.c_nationkey = n1.n_nationkey)
+                                                         ->  Parallel Seq Scan on customer  (cost=0.00..1871.65 rows=36765 width=8)
+                                                         ->  Hash  (cost=2.45..2.45 rows=5 width=4)
+                                                               ->  Hash Join  (cost=1.07..2.45 rows=5 width=4)
+                                                                     Hash Cond: (n1.n_regionkey = region.r_regionkey)
+                                                                     ->  Seq Scan on nation n1  (cost=0.00..1.25 rows=25 width=8)
+                                                                     ->  Hash  (cost=1.06..1.06 rows=1 width=4)
+                                                                           ->  Seq Scan on region  (cost=0.00..1.06 rows=1 width=4)
+                                                                                 Filter: (r_name = 'AMERICA'::bpchar)
+                                                   ->  Index Scan using orders_o_custkey_idx on orders  (cost=0.42..1.45 rows=3 width=16)
+                                                         Index Cond: (o_custkey = customer.c_custkey)
+                                                         Filter: ((o_orderdate >= '1995-01-01'::date) AND (o_orderdate <= '1996-12-31'::date))
+                                             ->  Index Scan using pk_lineitem on lineitem  (cost=0.43..2.74 rows=13 width=28)
+                                                   Index Cond: (l_orderkey = orders.o_orderkey)
+                                       ->  Parallel Hash  (cost=4236.62..4236.62 rows=436 width=4)
+                                             ->  Parallel Seq Scan on part  (cost=0.00..4236.62 rows=436 width=4)
+                                                   Filter: ((p_type)::text = 'SMALL BRUSHED COPPER'::text)
+                                 ->  Index Scan using pk_supplier on supplier  (cost=0.29..0.30 rows=1 width=8)
+                                       Index Cond: (s_suppkey = lineitem.l_suppkey)
+                           ->  Hash  (cost=1.25..1.25 rows=25 width=30)
+                                 ->  Seq Scan on nation n2  (cost=0.00..1.25 rows=25 width=30)
+(37 rows)
+
+COMMIT;
+COMMIT

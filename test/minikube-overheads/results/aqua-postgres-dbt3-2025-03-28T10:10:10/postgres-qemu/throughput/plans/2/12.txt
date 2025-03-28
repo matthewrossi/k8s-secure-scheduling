@@ -1,0 +1,56 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	l_shipmode,
+	sum(case
+		when o_orderpriority = '1-URGENT'
+			or o_orderpriority = '2-HIGH'
+			then 1
+		else 0
+	end) as high_line_count,
+	sum(case
+		when o_orderpriority <> '1-URGENT'
+			and o_orderpriority <> '2-HIGH'
+			then 1
+		else 0
+	end) as low_line_count
+from
+	orders,
+	lineitem
+where
+	o_orderkey = l_orderkey
+	and l_shipmode in ('AIR', 'MAIL')
+	and l_commitdate < l_receiptdate
+	and l_shipdate < l_commitdate
+	and l_receiptdate >= date '1995-01-01'
+	and l_receiptdate < date '1995-01-01' + interval '1 year'
+group by
+	l_shipmode
+order by
+	l_shipmode;
+                                                                                                   QUERY PLAN                                                                                                   
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=149152.76..149352.02 rows=7 width=27)
+   Group Key: lineitem.l_shipmode
+   ->  Gather Merge  (cost=149152.76..149351.85 rows=14 width=27)
+         Workers Planned: 2
+         ->  Partial GroupAggregate  (cost=148152.74..148350.21 rows=7 width=27)
+               Group Key: lineitem.l_shipmode
+               ->  Sort  (cost=148152.74..148177.41 rows=9870 width=27)
+                     Sort Key: lineitem.l_shipmode
+                     ->  Parallel Hash Join  (cost=129717.71..147497.92 rows=9870 width=27)
+                           Hash Cond: (orders.o_orderkey = lineitem.l_orderkey)
+                           ->  Parallel Seq Scan on orders  (cost=0.00..15232.58 rows=286458 width=24)
+                           ->  Parallel Hash  (cost=129594.34..129594.34 rows=9870 width=19)
+                                 ->  Parallel Bitmap Heap Scan on lineitem  (cost=7556.71..129594.34 rows=9870 width=19)
+                                       Recheck Cond: ((l_commitdate < l_receiptdate) AND (l_shipdate < l_commitdate))
+                                       Filter: ((l_shipmode = ANY ('{AIR,MAIL}'::bpchar[])) AND (l_receiptdate >= '1995-01-01'::date) AND (l_receiptdate < '1996-01-01 00:00:00'::timestamp without time zone))
+                                       ->  Bitmap Index Scan on lineitem_l_orderkey_idx_part2  (cost=0.00..7550.79 rows=528472 width=0)
+ JIT:
+   Functions: 23
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(19 rows)
+
+COMMIT;
+COMMIT

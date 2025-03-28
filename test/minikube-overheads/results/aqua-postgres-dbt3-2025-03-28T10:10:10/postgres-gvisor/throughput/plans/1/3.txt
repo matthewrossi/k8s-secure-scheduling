@@ -1,0 +1,57 @@
+BEGIN;
+BEGIN
+EXPLAIN
+select
+	l_orderkey,
+	sum(l_extendedprice * (1 - l_discount)) as revenue,
+	o_orderdate,
+	o_shippriority
+from
+	customer,
+	orders,
+	lineitem
+where
+	c_mktsegment = 'HOUSEHOLD'
+	and c_custkey = o_custkey
+	and l_orderkey = o_orderkey
+	and o_orderdate < date '1995-03-12'
+	and l_shipdate > date '1995-03-12'
+group by
+	l_orderkey,
+	o_orderdate,
+	o_shippriority
+order by
+	revenue desc,
+	o_orderdate
+LIMIT 10;
+                                                          QUERY PLAN                                                          
+------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=103269.37..103269.39 rows=10 width=48)
+   ->  Sort  (cost=103269.37..103770.08 rows=200285 width=48)
+         Sort Key: (sum((lineitem.l_extendedprice * ('1'::numeric - lineitem.l_discount)))) DESC, orders.o_orderdate
+         ->  Finalize GroupAggregate  (cost=72582.99..98941.28 rows=200285 width=48)
+               Group Key: lineitem.l_orderkey, orders.o_orderdate, orders.o_shippriority
+               ->  Gather Merge  (cost=72582.99..94351.42 rows=166904 width=48)
+                     Workers Planned: 2
+                     ->  Partial GroupAggregate  (cost=71582.97..74086.53 rows=83452 width=48)
+                           Group Key: lineitem.l_orderkey, orders.o_orderdate, orders.o_shippriority
+                           ->  Sort  (cost=71582.97..71791.60 rows=83452 width=28)
+                                 Sort Key: lineitem.l_orderkey, orders.o_orderdate, orders.o_shippriority
+                                 ->  Nested Loop  (cost=4031.41..62762.83 rows=83452 width=28)
+                                       ->  Parallel Hash Join  (cost=4030.98..9992.02 rows=10342 width=16)
+                                             Hash Cond: (orders.o_custkey = customer.c_custkey)
+                                             ->  Parallel Seq Scan on orders  (cost=0.00..5827.90 rows=50723 width=20)
+                                                   Filter: (o_orderdate < '1995-03-12'::date)
+                                             ->  Parallel Hash  (cost=3891.59..3891.59 rows=11151 width=4)
+                                                   ->  Parallel Seq Scan on customer  (cost=0.00..3891.59 rows=11151 width=4)
+                                                         Filter: (c_mktsegment = 'HOUSEHOLD'::bpchar)
+                                       ->  Index Scan using pk_lineitem on lineitem  (cost=0.43..5.02 rows=8 width=20)
+                                             Index Cond: (l_orderkey = orders.o_orderkey)
+                                             Filter: (l_shipdate > '1995-03-12'::date)
+ JIT:
+   Functions: 29
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+(25 rows)
+
+COMMIT;
+COMMIT

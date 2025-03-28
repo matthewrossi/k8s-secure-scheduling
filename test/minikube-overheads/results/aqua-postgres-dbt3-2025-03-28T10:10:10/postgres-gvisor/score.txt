@@ -1,0 +1,4 @@
+       Composite Score:      564.65
+Load Test Time (hours):           0
+      Power Test Score:     6303.54
+ Throughput Test Score:       50.58

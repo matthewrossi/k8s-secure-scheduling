@@ -1,0 +1,215 @@
+BEGIN;
+BEGIN
+select
+	nation,
+	o_year,
+	sum(amount) as sum_profit
+from
+	(
+		select
+			n_name as nation,
+			extract(year from o_orderdate) as o_year,
+			l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount
+		from
+			part,
+			supplier,
+			lineitem,
+			partsupp,
+			orders,
+			nation
+		where
+			s_suppkey = l_suppkey
+			and ps_suppkey = l_suppkey
+			and ps_partkey = l_partkey
+			and p_partkey = l_partkey
+			and o_orderkey = l_orderkey
+			and s_nationkey = n_nationkey
+			and p_name like '%orange%'
+	) as profit
+group by
+	nation,
+	o_year
+order by
+	nation,
+	o_year desc;
+          nation           | o_year |  sum_profit  
+---------------------------+--------+--------------
+ ALGERIA                   |   1998 | 1934192.4104
+ ALGERIA                   |   1997 | 3545857.7702
+ ALGERIA                   |   1996 | 3570665.3800
+ ALGERIA                   |   1995 | 2926286.4482
+ ALGERIA                   |   1994 | 3306204.3909
+ ALGERIA                   |   1993 | 2839020.8019
+ ALGERIA                   |   1992 | 2769201.9521
+ ARGENTINA                 |   1998 | 1821741.0543
+ ARGENTINA                 |   1997 | 3215298.9661
+ ARGENTINA                 |   1996 | 3099339.9990
+ ARGENTINA                 |   1995 | 3632089.0368
+ ARGENTINA                 |   1994 | 2721221.1746
+ ARGENTINA                 |   1993 | 3046879.6714
+ ARGENTINA                 |   1992 | 2765822.6337
+ BRAZIL                    |   1998 | 1688540.7665
+ BRAZIL                    |   1997 | 2805105.8635
+ BRAZIL                    |   1996 | 2506938.8578
+ BRAZIL                    |   1995 | 3069952.8956
+ BRAZIL                    |   1994 | 3554314.7586
+ BRAZIL                    |   1993 | 2328525.1285
+ BRAZIL                    |   1992 | 2658418.6356
+ CANADA                    |   1998 | 1241173.9773
+ CANADA                    |   1997 | 2787283.8179
+ CANADA                    |   1996 | 2777333.3502
+ CANADA                    |   1995 | 2679740.6054
+ CANADA                    |   1994 | 3194827.2082
+ CANADA                    |   1993 | 2919269.3472
+ CANADA                    |   1992 | 2868297.6866
+ CHINA                     |   1998 | 2332848.1076
+ CHINA                     |   1997 | 3933628.1745
+ CHINA                     |   1996 | 3957518.9255
+ CHINA                     |   1995 | 3228303.8975
+ CHINA                     |   1994 | 3590772.0520
+ CHINA                     |   1993 | 3146525.2072
+ CHINA                     |   1992 | 3719358.0127
+ EGYPT                     |   1998 | 2477378.2319
+ EGYPT                     |   1997 | 3621190.0602
+ EGYPT                     |   1996 | 3648200.4219
+ EGYPT                     |   1995 | 3702227.0943
+ EGYPT                     |   1994 | 3545136.6195
+ EGYPT                     |   1993 | 3748757.5291
+ EGYPT                     |   1992 | 3498134.0304
+ ETHIOPIA                  |   1998 | 1763739.2466
+ ETHIOPIA                  |   1997 | 2885879.7240
+ ETHIOPIA                  |   1996 | 2960377.0180
+ ETHIOPIA                  |   1995 | 2775537.3226
+ ETHIOPIA                  |   1994 | 3103135.0111
+ ETHIOPIA                  |   1993 | 2806527.4884
+ ETHIOPIA                  |   1992 | 3038830.0725
+ FRANCE                    |   1998 | 1538602.3312
+ FRANCE                    |   1997 | 3454420.7678
+ FRANCE                    |   1996 | 3140251.9782
+ FRANCE                    |   1995 | 2958711.4624
+ FRANCE                    |   1994 | 2787454.3245
+ FRANCE                    |   1993 | 2947738.3675
+ FRANCE                    |   1992 | 3196924.5598
+ GERMANY                   |   1998 | 1664807.6783
+ GERMANY                   |   1997 | 3118000.6426
+ GERMANY                   |   1996 | 2884879.9320
+ GERMANY                   |   1995 | 3242805.6890
+ GERMANY                   |   1994 | 2997127.6385
+ GERMANY                   |   1993 | 3084337.7016
+ GERMANY                   |   1992 | 3154710.8530
+ INDIA                     |   1998 | 2135710.0402
+ INDIA                     |   1997 | 3706193.9854
+ INDIA                     |   1996 | 3452497.7073
+ INDIA                     |   1995 | 4193247.8495
+ INDIA                     |   1994 | 3477163.4791
+ INDIA                     |   1993 | 3249627.8544
+ INDIA                     |   1992 | 3191301.4253
+ INDONESIA                 |   1998 | 1445006.2832
+ INDONESIA                 |   1997 | 2865548.3529
+ INDONESIA                 |   1996 | 3062549.8675
+ INDONESIA                 |   1995 | 2625597.6279
+ INDONESIA                 |   1994 | 2425540.1678
+ INDONESIA                 |   1993 | 2210175.7452
+ INDONESIA                 |   1992 | 3029831.5855
+ IRAN                      |   1998 | 2037352.4796
+ IRAN                      |   1997 | 2635326.5702
+ IRAN                      |   1996 | 2583372.5627
+ IRAN                      |   1995 | 3128637.3493
+ IRAN                      |   1994 | 2798013.5243
+ IRAN                      |   1993 | 2518690.7435
+ IRAN                      |   1992 | 3094830.0642
+ IRAQ                      |   1998 | 1437966.0057
+ IRAQ                      |   1997 | 2940002.4703
+ IRAQ                      |   1996 | 2329873.7327
+ IRAQ                      |   1995 | 2394644.3727
+ IRAQ                      |   1994 | 2416890.4798
+ IRAQ                      |   1993 | 2511728.9167
+ IRAQ                      |   1992 | 2294191.9594
+ JAPAN                     |   1998 | 1292037.4654
+ JAPAN                     |   1997 | 2262945.7327
+ JAPAN                     |   1996 | 2382540.7202
+ JAPAN                     |   1995 | 2935824.4594
+ JAPAN                     |   1994 | 2595387.4242
+ JAPAN                     |   1993 | 2873244.5432
+ JAPAN                     |   1992 | 3280440.8443
+ JORDAN                    |   1998 | 1555310.4868
+ JORDAN                    |   1997 | 2934514.9736
+ JORDAN                    |   1996 | 3683213.0777
+ JORDAN                    |   1995 | 2712826.4671
+ JORDAN                    |   1994 | 2952513.6159
+ JORDAN                    |   1993 | 3369861.7458
+ JORDAN                    |   1992 | 3026385.9184
+ KENYA                     |   1998 | 1766937.2374
+ KENYA                     |   1997 | 3278231.0574
+ KENYA                     |   1996 | 2891563.5347
+ KENYA                     |   1995 | 3167746.1808
+ KENYA                     |   1994 | 3115930.9974
+ KENYA                     |   1993 | 2757230.7876
+ KENYA                     |   1992 | 3772840.5239
+ MOROCCO                   |   1998 | 1910409.8344
+ MOROCCO                   |   1997 | 2079091.9815
+ MOROCCO                   |   1996 | 2855170.3039
+ MOROCCO                   |   1995 | 2757684.9532
+ MOROCCO                   |   1994 | 3047045.7541
+ MOROCCO                   |   1993 | 2344315.5957
+ MOROCCO                   |   1992 | 3356287.4554
+ MOZAMBIQUE                |   1998 | 1571598.2545
+ MOZAMBIQUE                |   1997 | 3092729.9819
+ MOZAMBIQUE                |   1996 | 2506563.7296
+ MOZAMBIQUE                |   1995 | 3015593.5948
+ MOZAMBIQUE                |   1994 | 2867115.5482
+ MOZAMBIQUE                |   1993 | 2627266.8980
+ MOZAMBIQUE                |   1992 | 3125574.5080
+ PERU                      |   1998 | 1922425.8882
+ PERU                      |   1997 | 3553557.2770
+ PERU                      |   1996 | 3413566.3580
+ PERU                      |   1995 | 2824957.6823
+ PERU                      |   1994 | 3307104.0987
+ PERU                      |   1993 | 3236360.3065
+ PERU                      |   1992 | 3461340.3608
+ ROMANIA                   |   1998 | 1560997.2822
+ ROMANIA                   |   1997 | 2501336.2461
+ ROMANIA                   |   1996 | 2990452.5887
+ ROMANIA                   |   1995 | 2630179.9428
+ ROMANIA                   |   1994 | 2392720.3447
+ ROMANIA                   |   1993 | 2472560.8993
+ ROMANIA                   |   1992 | 2110854.9516
+ RUSSIA                    |   1998 | 1914260.8898
+ RUSSIA                    |   1997 | 3630448.8250
+ RUSSIA                    |   1996 | 3159243.2610
+ RUSSIA                    |   1995 | 3435916.8962
+ RUSSIA                    |   1994 | 3008779.9992
+ RUSSIA                    |   1993 | 3349350.4628
+ RUSSIA                    |   1992 | 3202360.3684
+ SAUDI ARABIA              |   1998 | 2470981.6267
+ SAUDI ARABIA              |   1997 | 3753389.4150
+ SAUDI ARABIA              |   1996 | 3439214.6376
+ SAUDI ARABIA              |   1995 | 3385650.8499
+ SAUDI ARABIA              |   1994 | 3705411.0938
+ SAUDI ARABIA              |   1993 | 3129861.9028
+ SAUDI ARABIA              |   1992 | 2980161.0836
+ UNITED KINGDOM            |   1998 | 1540681.8936
+ UNITED KINGDOM            |   1997 | 2452584.9385
+ UNITED KINGDOM            |   1996 | 2738713.8604
+ UNITED KINGDOM            |   1995 | 1996666.6949
+ UNITED KINGDOM            |   1994 | 2705213.2585
+ UNITED KINGDOM            |   1993 | 2469622.8001
+ UNITED KINGDOM            |   1992 | 2362099.1876
+ UNITED STATES             |   1998 | 1751263.7985
+ UNITED STATES             |   1997 | 2772198.2615
+ UNITED STATES             |   1996 | 2800122.3096
+ UNITED STATES             |   1995 | 2485132.7789
+ UNITED STATES             |   1994 | 2786406.5980
+ UNITED STATES             |   1993 | 3080178.3373
+ UNITED STATES             |   1992 | 2985088.3768
+ VIETNAM                   |   1998 | 1585349.2040
+ VIETNAM                   |   1997 | 2978927.9240
+ VIETNAM                   |   1996 | 2613500.7375
+ VIETNAM                   |   1995 | 2530975.6163
+ VIETNAM                   |   1994 | 2182106.3252
+ VIETNAM                   |   1993 | 2732101.0810
+ VIETNAM                   |   1992 | 2700131.4032
+(175 rows)
+
+COMMIT;
+COMMIT

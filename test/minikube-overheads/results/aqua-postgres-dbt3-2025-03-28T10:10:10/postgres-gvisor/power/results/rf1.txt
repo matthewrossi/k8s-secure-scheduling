@@ -1,0 +1,9 @@
+TPC-H Population Generator (Version 3.0.0)
+Copyright Transaction Processing Performance Council 1994 - 2010
+Fri Mar 28 10:46:49 CET 2025: Stream 2 : Starting Refresh Stream 1...
+BEGIN
+COPY 6076
+COPY 1500
+COMMIT
+Fri Mar 28 10:46:49 CET 2025: Stream 2 : Refresh Stream 1 completed.
+Stream 2 : Elapsed time for Refresh Stream 1 : 0 seconds
