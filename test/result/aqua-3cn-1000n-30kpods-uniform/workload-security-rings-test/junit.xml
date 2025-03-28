@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <testsuite name="ClusterLoaderV2" tests="0" failures="9" errors="0" time="3089.438">
+      <testcase name="vanilla overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="1029.901558842">
+          <failure type="Failure">:0&#xA;[measurement call WaitForRunningPods - WaitForDirectSchedulerThroughputPods error: got context deadline exceeded while waiting for 30000 pods to be running in labelSelector(group = direct-scheduler-throughput) - summary of pods : Pods: 30000 out of 30000 created, 18276 running (18276 updated), 3 pending scheduled, 11721 not scheduled, 0 inactive, 0 terminating, 0 unknown, 0 runningButNotReady &#xA;measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 143.000000 lower than threshold 400.000000]&#xA;:0</failure>
+      </testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.054006331"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [01] - APIAvailability" classname="ClusterLoaderV2" time="0.003799622"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [02] - APIResponsivenessPrometheus" classname="ClusterLoaderV2" time="0.003572173"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [03] - SchedulingMetrics" classname="ClusterLoaderV2" time="0.087923874"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [04] - SchedulingThroughputPrometheus" classname="ClusterLoaderV2" time="0.003697562"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [05] - GatekeeperValidationRequestDuration" classname="ClusterLoaderV2" time="0.003666683"></testcase>
+      <testcase name="vanilla: [step: 01] Creating scheduler throughput measurements [06] - GatekeeperMutationRequestDuration" classname="ClusterLoaderV2" time="0.003662503"></testcase>
+      <testcase name="vanilla: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="67.340951681"></testcase>
+      <testcase name="vanilla: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="302.28691453">
+          <failure type="Failure">:0&#xA;[measurement call WaitForRunningPods - WaitForDirectSchedulerThroughputPods error: got context deadline exceeded while waiting for 30000 pods to be running in labelSelector(group = direct-scheduler-throughput) - summary of pods : Pods: 30000 out of 30000 created, 18276 running (18276 updated), 3 pending scheduled, 11721 not scheduled, 0 inactive, 0 terminating, 0 unknown, 0 runningButNotReady ]&#xA;:0</failure>
+      </testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [00] - APIAvailability" classname="ClusterLoaderV2" time="0.007185248"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [01] - APIResponsivenessPrometheus" classname="ClusterLoaderV2" time="1.577521677"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [02] - SchedulingMetrics" classname="ClusterLoaderV2" time="0.198079707"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [03] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.003500105">
+          <failure type="Failure">:0&#xA;[measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 143.000000 lower than threshold 400.000000]&#xA;:0</failure>
+      </testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [04] - SchedulingThroughputPrometheus" classname="ClusterLoaderV2" time="0.532901485"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [05] - GatekeeperValidationRequestDuration" classname="ClusterLoaderV2" time="1.075727744"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [06] - GatekeeperMutationRequestDuration" classname="ClusterLoaderV2" time="1.132161143"></testcase>
+      <testcase name="vanilla: [step: 04] Collecting scheduler throughput measurements [07] - GatekeeperConstraintTemplateIngestionDuration" classname="ClusterLoaderV2" time="0.003172256"></testcase>
+      <testcase name="vanilla: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="58.388595267"></testcase>
+      <testcase name="pod-sensitive overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="1031.240049191">
+          <failure type="Failure">:0&#xA;[measurement call WaitForRunningPods - WaitForDirectSchedulerThroughputPods error: got context deadline exceeded while waiting for 30000 pods to be running in labelSelector(group = direct-scheduler-throughput) - summary of pods : Pods: 30000 out of 30000 created, 10782 running (10782 updated), 7508 pending scheduled, 11710 not scheduled, 0 inactive, 0 terminating, 0 unknown, 0 runningButNotReady &#xA;measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 209.000000 lower than threshold 400.000000]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.053355508"></testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [01] - APIAvailability" classname="ClusterLoaderV2" time="0.003016377"></testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [02] - APIResponsivenessPrometheus" classname="ClusterLoaderV2" time="0.003126096"></testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [03] - SchedulingMetrics" classname="ClusterLoaderV2" time="0.069948885"></testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [04] - SchedulingThroughputPrometheus" classname="ClusterLoaderV2" time="0.002978697"></testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [05] - GatekeeperValidationRequestDuration" classname="ClusterLoaderV2" time="0.002908727"></testcase>
+      <testcase name="pod-sensitive: [step: 01] Creating scheduler throughput measurements [06] - GatekeeperMutationRequestDuration" classname="ClusterLoaderV2" time="0.003021857"></testcase>
+      <testcase name="pod-sensitive: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="67.553544767"></testcase>
+      <testcase name="pod-sensitive: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="301.500527532">
+          <failure type="Failure">:0&#xA;[measurement call WaitForRunningPods - WaitForDirectSchedulerThroughputPods error: got context deadline exceeded while waiting for 30000 pods to be running in labelSelector(group = direct-scheduler-throughput) - summary of pods : Pods: 30000 out of 30000 created, 10782 running (10782 updated), 7508 pending scheduled, 11710 not scheduled, 0 inactive, 0 terminating, 0 unknown, 0 runningButNotReady ]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [00] - APIAvailability" classname="ClusterLoaderV2" time="0.003147829"></testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [01] - APIResponsivenessPrometheus" classname="ClusterLoaderV2" time="3.341863987"></testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [02] - SchedulingMetrics" classname="ClusterLoaderV2" time="0.068819187"></testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [03] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.00296057">
+          <failure type="Failure">:0&#xA;[measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 209.000000 lower than threshold 400.000000]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [04] - SchedulingThroughputPrometheus" classname="ClusterLoaderV2" time="0.775203769"></testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [05] - GatekeeperValidationRequestDuration" classname="ClusterLoaderV2" time="2.250766049"></testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [06] - GatekeeperMutationRequestDuration" classname="ClusterLoaderV2" time="2.166071118"></testcase>
+      <testcase name="pod-sensitive: [step: 04] Collecting scheduler throughput measurements [07] - GatekeeperConstraintTemplateIngestionDuration" classname="ClusterLoaderV2" time="0.00295549"></testcase>
+      <testcase name="pod-sensitive: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="58.415856257"></testcase>
+      <testcase name="pod-unhandened overall (use-case/config.yaml)" classname="ClusterLoaderV2" time="1028.293180007">
+          <failure type="Failure">:0&#xA;[measurement call WaitForRunningPods - WaitForDirectSchedulerThroughputPods error: got context deadline exceeded while waiting for 30000 pods to be running in labelSelector(group = direct-scheduler-throughput) - summary of pods : Pods: 30000 out of 30000 created, 0 running (0 updated), 18294 pending scheduled, 11706 not scheduled, 0 inactive, 0 terminating, 0 unknown, 0 runningButNotReady &#xA;measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 143.000000 lower than threshold 400.000000]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [00] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.053607647"></testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [01] - APIAvailability" classname="ClusterLoaderV2" time="0.002797589"></testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [02] - APIResponsivenessPrometheus" classname="ClusterLoaderV2" time="0.003066298"></testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [03] - SchedulingMetrics" classname="ClusterLoaderV2" time="0.054445003"></testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [04] - SchedulingThroughputPrometheus" classname="ClusterLoaderV2" time="0.002797989"></testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [05] - GatekeeperValidationRequestDuration" classname="ClusterLoaderV2" time="0.002782269"></testcase>
+      <testcase name="pod-unhandened: [step: 01] Creating scheduler throughput measurements [06] - GatekeeperMutationRequestDuration" classname="ClusterLoaderV2" time="0.002915579"></testcase>
+      <testcase name="pod-unhandened: [step: 02] create scheduler throughput pods" classname="ClusterLoaderV2" time="67.455645408"></testcase>
+      <testcase name="pod-unhandened: [step: 03] Waiting for scheduler throughput pods to be created [00] - WaitForDirectSchedulerThroughputPods" classname="ClusterLoaderV2" time="300.696919949">
+          <failure type="Failure">:0&#xA;[measurement call WaitForRunningPods - WaitForDirectSchedulerThroughputPods error: got context deadline exceeded while waiting for 30000 pods to be running in labelSelector(group = direct-scheduler-throughput) - summary of pods : Pods: 30000 out of 30000 created, 0 running (0 updated), 18294 pending scheduled, 11706 not scheduled, 0 inactive, 0 terminating, 0 unknown, 0 runningButNotReady ]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [00] - APIAvailability" classname="ClusterLoaderV2" time="0.002897849"></testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [01] - APIResponsivenessPrometheus" classname="ClusterLoaderV2" time="1.491124474"></testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [02] - SchedulingMetrics" classname="ClusterLoaderV2" time="0.159300641"></testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [03] - DirectSchedulingThroughput" classname="ClusterLoaderV2" time="0.002866929">
+          <failure type="Failure">:0&#xA;[measurement call SchedulingThroughput - DirectSchedulingThroughput error: scheduler throughput: actual throughput 143.000000 lower than threshold 400.000000]&#xA;:0</failure>
+      </testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [04] - SchedulingThroughputPrometheus" classname="ClusterLoaderV2" time="0.640107912"></testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [05] - GatekeeperValidationRequestDuration" classname="ClusterLoaderV2" time="0.644825243"></testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [06] - GatekeeperMutationRequestDuration" classname="ClusterLoaderV2" time="0.644261655"></testcase>
+      <testcase name="pod-unhandened: [step: 04] Collecting scheduler throughput measurements [07] - GatekeeperConstraintTemplateIngestionDuration" classname="ClusterLoaderV2" time="0.003142178"></testcase>
+      <testcase name="pod-unhandened: [step: 05] Delete scheduler throughput pods" classname="ClusterLoaderV2" time="58.170158267"></testcase>
+  </testsuite>
