@@ -1,3 +1,35 @@
-/usr/bin/java  -classpath /home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/conf:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/HdrHistogram-2.1.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/core-0.17.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/htrace-core4-4.1.0-incubating.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-core-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-mapper-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/commons-pool2-2.4.2.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/jedis-2.9.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/redis-binding-0.17.0.jar site.ycsb.Client -t -db site.ycsb.db.RedisClient -P ./ycsb-0.17.0/workloads/workloada -p redis.host=192.168.39.222 -p redis.port=30325
-Unable to open the properties file ./ycsb-0.17.0/workloads/workloada
-./ycsb-0.17.0/workloads/workloada (No such file or directory)
+/usr/bin/java  -classpath /home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/conf:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/HdrHistogram-2.1.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/core-0.17.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/htrace-core4-4.1.0-incubating.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-core-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-mapper-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/commons-pool2-2.4.2.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/jedis-2.9.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/redis-binding-0.17.0.jar site.ycsb.Client -t -db site.ycsb.db.RedisClient -P ./deps/ycsb-0.17.0/workloads/workloada -p redis.host=192.168.39.158 -p redis.port=31227
+[OVERALL], RunTime(ms), 91
+[OVERALL], Throughput(ops/sec), 10989.010989010989
+[TOTAL_GCS_G1_Young_Generation], Count, 0
+[TOTAL_GC_TIME_G1_Young_Generation], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Young_Generation], Time(%), 0.0
+[TOTAL_GCS_G1_Concurrent_GC], Count, 0
+[TOTAL_GC_TIME_G1_Concurrent_GC], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Concurrent_GC], Time(%), 0.0
+[TOTAL_GCS_G1_Old_Generation], Count, 0
+[TOTAL_GC_TIME_G1_Old_Generation], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Old_Generation], Time(%), 0.0
+[TOTAL_GCs], Count, 0
+[TOTAL_GC_TIME], Time(ms), 0
+[TOTAL_GC_TIME_%], Time(%), 0.0
+[READ], Operations, 509
+[READ], AverageLatency(us), 73.7524557956778
+[READ], MinLatency(us), 41
+[READ], MaxLatency(us), 3615
+[READ], 95thPercentileLatency(us), 100
+[READ], 99thPercentileLatency(us), 124
+[READ], Return=OK, 509
+[CLEANUP], Operations, 1
+[CLEANUP], AverageLatency(us), 236.0
+[CLEANUP], MinLatency(us), 236
+[CLEANUP], MaxLatency(us), 236
+[CLEANUP], 95thPercentileLatency(us), 236
+[CLEANUP], 99thPercentileLatency(us), 236
+[UPDATE], Operations, 491
+[UPDATE], AverageLatency(us), 69.9775967413442
+[UPDATE], MinLatency(us), 43
+[UPDATE], MaxLatency(us), 484
+[UPDATE], 95thPercentileLatency(us), 109
+[UPDATE], 99thPercentileLatency(us), 147
+[UPDATE], Return=OK, 491

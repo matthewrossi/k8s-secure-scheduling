@@ -8,16 +8,16 @@ for service in $(kubectl get services -l app=redis -o name); do
   port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
   echo "[*] Testing $service at $(minikube ip):$port"
   name=$(echo $service | cut -d'/' -f2)
-  ./deps/ycsb-0.17.0/bin/ycsb.sh load redis -P ./ycsb-0.17.0/workloads/workloada -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-load"
-  ./deps/ycsb-0.17.0/bin/ycsb.sh run redis -P ./ycsb-0.17.0/workloads/workloada -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-run"
+  ./deps/ycsb-0.17.0/bin/ycsb.sh load redis -P ./deps/ycsb-0.17.0/workloads/workloada -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-load"
+  ./deps/ycsb-0.17.0/bin/ycsb.sh run redis -P  ./deps/ycsb-0.17.0/workloads/workloada -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-run"
 done
 
 for service in $(kubectl get services -l app=mongo -o name); do
   port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
   echo "[*] Testing $service at $(minikube ip):$port"
   name=$(echo $service | cut -d'/' -f2)
-  ./deps/ycsb-0.17.0/bin/ycsb.sh load mongodb -P ./ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-load"
-  ./deps/ycsb-0.17.0/bin/ycsb.sh run  mongodb -P ./ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-run"
+  ./deps/ycsb-0.17.0/bin/ycsb.sh load mongodb -P ./deps/ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-load"
+  ./deps/ycsb-0.17.0/bin/ycsb.sh run  mongodb -P ./deps/ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-run"
 done
 
 out="$projroot/test/minikube-overheads/results/$(uname -n)-postgres-sysbench"
