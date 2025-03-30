@@ -16,7 +16,7 @@ OUTSIDE_LEGEND_PARAMS = {
     'ncol': 3,
 }
 
-FOLDER = Path('../anthem-3cn-1000n-30kpods-uniform')
+FOLDER = Path('../aqua-3cn-1000n-30kpods-uniform')
 
 def get_type(path, types=[]):
     for t in types:
@@ -48,7 +48,8 @@ def grouped_bars(use_case, files, types, labels, value_transformers, bar_width=0
 
     plt.ylabel(ylabel)
     plt.xticks(x + xticks_offset, [labels[t] for t in types])
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    plt.legend(loc='upper left')
     plt.ylim(ylim)
     plt.savefig(f'out/{output}.pdf', bbox_inches='tight')
 
@@ -79,7 +80,7 @@ def scheduling_latency(use_case, types, labels):
                      ('P99', lambda x: x['schedulingLatency']['Perc99'] / 1e6),
                  ],
                  ylabel='Latency [ms]',
-                 ylim=(0, 4.1),
+                 ylim=(0, 5),
                  output=f'{use_case}-scheduling-latency')
 
 
