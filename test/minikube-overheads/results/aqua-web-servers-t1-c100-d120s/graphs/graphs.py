@@ -110,7 +110,7 @@ plt.xticks(x + width, groups)
 yticks = range(0, 200, 40)
 plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
 # plt.xlabel('Method')
-plt.ylabel('Throughput [k req/s]')
+plt.ylabel('Throughput [req/s]')
 # plt.yscale('log')
 plt.legend(**OUTSIDE_LEGEND_PARAMS)
 
