@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+filter="$1"
+if [[ "$#" = "0" ]]; then
+  filter="all"
+fi
+
+projroot=$(git rev-parse --show-toplevel)
+
+if [[ "$filter" = "all" || "$filter" = "ycsb" ]]; then
+  out="$projroot/test/minikube-overheads/results/$(uname -n)-nosql-db"
+  mkdir -p "$out"
+
+  for service in $(kubectl get services -l app=redis -o name); do
+    port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
+    echo "[*] Testing $service at $(minikube ip):$port"
+    name=$(echo $service | cut -d'/' -f2)
+    ./deps/ycsb-0.17.0/bin/ycsb.sh load redis -P ./deps/ycsb-0.17.0/workloads/workloada -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-load"
+    ./deps/ycsb-0.17.0/bin/ycsb.sh run redis -P  ./deps/ycsb-0.17.0/workloads/workloada -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-run"
+  done
+
+  for service in $(kubectl get services -l app=mongo -o name); do
+    port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
+    echo "[*] Testing $service at $(minikube ip):$port"
+    name=$(echo $service | cut -d'/' -f2)
+    ./deps/ycsb-0.17.0/bin/ycsb.sh load mongodb -P ./deps/ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-load"
+    ./deps/ycsb-0.17.0/bin/ycsb.sh run  mongodb -P ./deps/ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-run"
+  done
+fi
+
+if [[ "$filter" = "all" || "$filter" = "sysbench" ]]; then
+  out="$projroot/test/minikube-overheads/results/$(uname -n)-sysbench"
+  mkdir -p "$out"
+  for service in $(kubectl get services -l app=postgres -o name); do
+    port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
+    echo "[*] Testing $service at $(minikube ip):$port"
+    name=$(echo $service | cut -d'/' -f2)
+    sysbench \
+      --db-driver=pgsql \
+      --pgsql-host="$(minikube ip)" \
+      --pgsql-port=$port \
+      --pgsql-password=example \
+      oltp_read_write.lua prepare
+    sysbench \
+      --time=120 \
+      --db-driver=pgsql \
+      --pgsql-host="$(minikube ip)" \
+      --pgsql-port=$port \
+      --pgsql-password=example \
+      --percentile=99 \
+      oltp_read_write.lua run > "$out/$name"
+    sysbench \
+      --db-driver=pgsql \
+      --pgsql-host="$(minikube ip)" \
+      --pgsql-port=$port \
+      --pgsql-password=example \
+      oltp_read_write.lua cleanup
+  done
+
+  # for service in $(kubectl get services -l app=mysql -o name); do
+  #   port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
+  #   echo "[*] Testing $service at $(minikube ip):$port"
+  #   name=$(echo $service | cut -d'/' -f2)
+  #   sysbench \
+  #     --db-driver=mysql \
+  #     --mysql-host="$(minikube ip)" \
+  #     --mysql-port=$port \
+  #     --mysql-password=example \
+  #     oltp_read_write.lua prepare
+  #   sysbench \
+  #     --time=120 \
+  #     --db-driver=mysql \
+  #     --mysql-host="$(minikube ip)" \
+  #     --mysql-port=$port \
+  #     --mysql-password=example \
+  #     --percentile=99 \
+  #     oltp_read_write.lua run > "$out/$name"
+  #   sysbench \
+  #     --db-driver=mysql \
+  #     --mysql-host="$(minikube ip)" \
+  #     --mysql-port=$port \
+  #     --mysql-password=example \
+  #     oltp_read_write.lua cleanup
+  # done
+fi
+
+if [[ "$filter" = "all" || "$filter" = "tpch" ]]; then
+  out="$projroot/test/minikube-overheads/results/$(uname -n)-postgres-dbt3-$(date +%Y-%m-%dT%H:%M:%S)"
+  for service in $(kubectl get services -l app=postgres -o name); do
+    port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
+    echo "[*] Testing $service at $(minikube ip):$port"
+    name=$(echo $service | cut -d'/' -f2)
+    PGHOST="$(minikube ip)" PGPORT="$port" PGUSER=sbtest PGPASSWORD=example dbt3-run --stats --tpchtools="deps/TPC-H V3.0.1" pgsql "$out/$name"
+  done
+fi

@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-default
+  labels:
+    app: mysql
+    wrapper: none
+    type: db
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+      wrapper: none
+  template:
+    metadata:
+      labels:
+        app: mysql
+        wrapper: none
+    spec:
+      containers:
+      - name: mysql
+        image: mysql
+        env:
+        - name: MYSQL_PASSWORD
+          value: example
+        - name: MYSQL_ROOT_PASSWORD
+          value: example
+        - name: MYSQL_USER
+          value: sbtest
+        - name: MYSQL_DATABASE
+          value: sbtest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-gvisor
+  labels:
+    app: mysql
+    wrapper: gvisor
+    type: db
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+      wrapper: gvisor
+  template:
+    metadata:
+      labels:
+        app: mysql
+        wrapper: gvisor
+    spec:
+      runtimeClassName: gvisor
+      containers:
+      - name: mysql
+        image: mysql
+        env:
+        - name: MYSQL_PASSWORD
+          value: example
+        - name: MYSQL_ROOT_PASSWORD
+          value: example
+        - name: MYSQL_USER
+          value: sbtest
+        - name: MYSQL_DATABASE
+          value: sbtest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-qemu
+  labels:
+    app: mysql
+    wrapper: qemu
+    type: db
+    paper: secure-scheduling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+      wrapper: qemu
+  template:
+    metadata:
+      labels:
+        app: mysql
+        wrapper: qemu
+    spec:
+      runtimeClassName: kata-qemu
+      containers:
+      - name: mysql
+        image: mysql
+        env:
+        - name: MYSQL_PASSWORD
+          value: example
+        - name: MYSQL_ROOT_PASSWORD
+          value: example
+        - name: MYSQL_USER
+          value: sbtest
+        - name: MYSQL_DATABASE
+          value: sbtest

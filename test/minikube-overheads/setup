@@ -5,8 +5,9 @@ if [[ "$#" = 0 ]]; then
   echo ""
   echo "Available commands:"
   echo "  minikube             Set up minikube with gVisor and Kata Containers"
-  echo "  web-servers          Set up nginx, apache, and lighttpd"
-  echo "  db                   Set up redis, mongodb, and postgres"
+  echo "  web-servers          Set up nginx and lighttpd"
+  echo "  nosql                Set up redis and mongodb"
+  echo "  sql                  Set up postgres and mysql"
   echo "  benchmarks           Downloads and patches YCSB and TPC-H"
   echo "  all                  All of the above"
   exit 1
@@ -44,10 +45,13 @@ fi
 
 # -------------- Databases
 
-if [[ "$1" = "db" || "$1" = "all" ]]; then
+if [[ "$1" = "nosql" || "$1" = "all" ]]; then
   kubectl apply -f redis.yaml
   kubectl apply -f mongodb.yaml
+fi
+if [[ "$1" = "sql" || "$1" = "all" ]]; then
   kubectl apply -f postgres.yaml
+  kubectl apply -f mysql.yaml
 fi
 
 # -------------- Expose everything
@@ -57,15 +61,20 @@ if [[ "$1" = "web-servers" || "$1" = "all" ]]; then
     kubectl expose $dep --type=NodePort --port=80
   done
 fi
-if [[ "$1" = "db" || "$1" = "all" ]]; then
+if [[ "$1" = "nosql" || "$1" = "all" ]]; then
   for dep in $(kubectl get deployments -l app=redis -o name); do
     kubectl expose $dep --type=NodePort --port=6379
   done
   for dep in $(kubectl get deployments -l app=mongo -o name); do
     kubectl expose $dep --type=NodePort --port=27017
   done
+fi
+if [[ "$1" = "sql" || "$1" = "all" ]]; then
   for dep in $(kubectl get deployments -l app=postgres -o name); do
     kubectl expose $dep --type=NodePort --port=5432
+  done
+  for dep in $(kubectl get deployments -l app=mysql -o name); do
+    kubectl expose $dep --type=NodePort --port=3306
   done
 fi
 
