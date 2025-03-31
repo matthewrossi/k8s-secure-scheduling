@@ -11,44 +11,44 @@ plt.rcParams['font.size'] = 18
 data = {
     'Apache': {
         'containerd': {
-            'latency': {'P50': 1.03, 'P90': 3.36, 'P99': 9.31},
-            'throughput': 72570,
+            'latency': {'P50': 1.04, 'P90': 3.32, 'P99': 8.56},
+            'throughput': 72290,
         },
         'gVisor':  {
-            'latency': {'P50': 3.16, 'P90': 9.06, 'P99': 19.02},
-            'throughput': 23160,
+            'latency': {'P50': 3.28, 'P90': 9.14, 'P99': 18.08},
+            'throughput': 22370,
         },
         'QEMU':    {
-            'latency': {'P50': 24.45, 'P90': 71.29, 'P99': 170.39},
-            'throughput': 3420,
+            'latency': {'P50': 24.33, 'P90': 73.32, 'P99': 173.11},
+            'throughput': 3390,
         },
     },
     'Lighttpd': {
         'containerd': {
-            'latency': {'P50': 0.544, 'P90': 0.586, 'P99': 1.06},
-            'throughput': 175400,
+            'latency': {'P50': 0.541, 'P90': 0.708, 'P99': 1.06},
+            'throughput': 175210,
         },
         'gVisor':  {
-            'latency': {'P50': 1.87, 'P90': 2.31, 'P99': 3.32},
-            'throughput': 53550,
+            'latency': {'P50': 1.83, 'P90': 2.30, 'P99': 3.41},
+            'throughput': 54100,
         },
         'QEMU':    {
-            'latency': {'P50': 2.90, 'P90': 3.43, 'P99': 5.37},
-            'throughput': 37830,
+            'latency': {'P50': 3.46, 'P90': 5.28, 'P99': 6.15},
+            'throughput': 34650,
         },
     },
     'Nginx': {
         'containerd': {
-            'latency': {'P50': 0.453, 'P90': 0.694, 'P99': 1.15},
-            'throughput': 181060,
+            'latency': {'P50': 0.474, 'P90': 0.727, 'P99': 1.18},
+            'throughput': 179750,
         },
         'gVisor':  {
-            'latency': {'P50': 2.66, 'P90': 6.14, 'P99': 14.10},
-            'throughput': 33210,
+            'latency': {'P50': 2.64, 'P90': 5.92, 'P99': 13.29},
+            'throughput': 33390,
         },
         'QEMU':    {
-            'latency': {'P50': 29.92, 'P90': 35.44, 'P99': 42.07},
-            'throughput': 3280,
+            'latency': {'P50': 31.93, 'P90': 36.32, 'P99': 40.18},
+            'throughput': 3160,
         },
     },
 }
