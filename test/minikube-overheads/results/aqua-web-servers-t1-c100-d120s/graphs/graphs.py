@@ -9,20 +9,20 @@ plt.rcParams['font.size'] = 18
 # Copied by hand, latency in ms
 # Throughput is average req/s
 data = {
-    'Apache': {
-        'containerd': {
-            'latency': {'P50': 1.04, 'P90': 3.32, 'P99': 8.56},
-            'throughput': 72290,
-        },
-        'gVisor':  {
-            'latency': {'P50': 3.28, 'P90': 9.14, 'P99': 18.08},
-            'throughput': 22370,
-        },
-        'QEMU':    {
-            'latency': {'P50': 24.33, 'P90': 73.32, 'P99': 173.11},
-            'throughput': 3390,
-        },
-    },
+    # 'Apache': {
+    #     'containerd': {
+    #         'latency': {'P50': 1.04, 'P90': 3.32, 'P99': 8.56},
+    #         'throughput': 72290,
+    #     },
+    #     'gVisor':  {
+    #         'latency': {'P50': 3.28, 'P90': 9.14, 'P99': 18.08},
+    #         'throughput': 22370,
+    #     },
+    #     'QEMU':    {
+    #         'latency': {'P50': 24.33, 'P90': 73.32, 'P99': 173.11},
+    #         'throughput': 3390,
+    #     },
+    # },
     'Lighttpd': {
         'containerd': {
             'latency': {'P50': 0.541, 'P90': 0.708, 'P99': 1.06},
@@ -53,34 +53,12 @@ data = {
     },
 }
 
-# ------------------------------------ Latency graphs
 
-for server in data.keys():
-    width = 0.25   # bar width
-
-    groups = list(data[server].keys())
-    percentiles = {}
-    for perc in ['P50', 'P90', 'P99']:
-        percentiles[perc] = [data[server][g]['latency'][perc] for g in groups]
-        
-    plt.figure()
-
-    x = np.arange(len(groups))
-    m = 0
-    for attribute, measurement in percentiles.items():
-        offset = width * m
-        plt.bar(x + offset, measurement, width, label=attribute)
-        m += 1
-
-    plt.xticks(x + width, groups)
-    # plt.xlabel('Method')
-    plt.ylabel('Latency [ms]')
-    # plt.yscale('log')
-    plt.legend()
-
-    plt.savefig(f'{server}-latency.pdf', bbox_inches='tight')
-
-# ------------------------------------ Throughput
+width = 0.25    # bar width
+groups = data.keys()
+xs = np.arange(len(groups))
+latencies = {}
+throughputs = {}
 
 OUTSIDE_LEGEND_PARAMS = {
     'bbox_to_anchor': (-0.06, 1, 1, 0.2), # x0, y0, width, height
@@ -90,28 +68,37 @@ OUTSIDE_LEGEND_PARAMS = {
     'handlelength': 1,
 }
 
-width = 0.25   # bar width
-
-groups = data.keys()
-methods = {}
 for method in ['containerd', 'gVisor', 'QEMU']:
-    methods[method] = [data[g][method]['throughput'] / 1000 for g in groups]
-    
-fig = plt.figure()
+    # ------------------------------------ Latency
 
-x = np.arange(len(groups))
-m = 0
-for attribute, measurement in methods.items():
-    offset = width * m
-    plt.bar(x + offset, measurement, width, label=attribute)
-    m += 1
+    latencies[method] = [data[g][method]['latency']['P99'] for g in groups]
 
-plt.xticks(x + width, groups)
-yticks = range(0, 200, 40)
-plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
-# plt.xlabel('Method')
-plt.ylabel('Throughput [req/s]')
-# plt.yscale('log')
-plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    plt.figure()
+    m = 0
+    for label, values in latencies.items():
+        offset = width * m
+        plt.bar(xs + offset, values, width=width, label=label)
+        m += 1
 
-plt.savefig(f'throughput.pdf', bbox_inches='tight')
+    plt.xticks(xs + width, groups)
+    plt.ylabel('Latency [ms]')
+    plt.legend()
+    plt.savefig('latency.pdf', bbox_inches='tight')
+
+    # ------------------------------------ Throughput
+
+    throughputs[method] = [data[g][method]['throughput'] / 1000 for g in groups]
+
+    plt.figure()
+    m = 0
+    for label, values in throughputs.items():
+        offset = width * m
+        plt.bar(xs + offset, values, width=width, label=label)
+        m += 1
+
+    plt.xticks(xs + width, groups)
+    yticks = range(0, 200, 40)
+    plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
+    plt.ylabel('Throughput [req/s]')
+    plt.legend()
+    plt.savefig('throughput.pdf', bbox_inches='tight')
