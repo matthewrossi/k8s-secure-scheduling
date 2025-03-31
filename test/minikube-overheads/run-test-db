@@ -57,31 +57,31 @@ if [[ "$filter" = "all" || "$filter" = "sysbench" ]]; then
       oltp_read_write.lua cleanup
   done
 
-  # for service in $(kubectl get services -l app=mysql -o name); do
-  #   port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
-  #   echo "[*] Testing $service at $(minikube ip):$port"
-  #   name=$(echo $service | cut -d'/' -f2)
-  #   sysbench \
-  #     --db-driver=mysql \
-  #     --mysql-host="$(minikube ip)" \
-  #     --mysql-port=$port \
-  #     --mysql-password=example \
-  #     oltp_read_write.lua prepare
-  #   sysbench \
-  #     --time=120 \
-  #     --db-driver=mysql \
-  #     --mysql-host="$(minikube ip)" \
-  #     --mysql-port=$port \
-  #     --mysql-password=example \
-  #     --percentile=99 \
-  #     oltp_read_write.lua run > "$out/$name"
-  #   sysbench \
-  #     --db-driver=mysql \
-  #     --mysql-host="$(minikube ip)" \
-  #     --mysql-port=$port \
-  #     --mysql-password=example \
-  #     oltp_read_write.lua cleanup
-  # done
+  for service in $(kubectl get services -l app=mysql -o name); do
+    port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
+    echo "[*] Testing $service at $(minikube ip):$port"
+    name=$(echo $service | cut -d'/' -f2)
+    sysbench \
+      --db-driver=mysql \
+      --mysql-host="$(minikube ip)" \
+      --mysql-port=$port \
+      --mysql-password=example \
+      oltp_read_write.lua prepare
+    sysbench \
+      --time=120 \
+      --db-driver=mysql \
+      --mysql-host="$(minikube ip)" \
+      --mysql-port=$port \
+      --mysql-password=example \
+      --percentile=99 \
+      oltp_read_write.lua run > "$out/$name"
+    sysbench \
+      --db-driver=mysql \
+      --mysql-host="$(minikube ip)" \
+      --mysql-port=$port \
+      --mysql-password=example \
+      oltp_read_write.lua cleanup
+  done
 fi
 
 if [[ "$filter" = "all" || "$filter" = "tpch" ]]; then
