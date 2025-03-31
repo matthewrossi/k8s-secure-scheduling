@@ -160,7 +160,7 @@ data = {
             'throughput': 1493.13,
         },
     },
-    'Redis': {
+    'PostgreSQL': {
         'containerd': {
             'latency-p99':  4.33,
             'throughput': 6991.39,
