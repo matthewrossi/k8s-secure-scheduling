@@ -82,7 +82,7 @@ for method in ['containerd', 'gVisor', 'QEMU']:
 
     plt.xticks(xs + width, groups)
     plt.ylabel('Latency [ms]')
-    plt.legend()
+    plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig('latency.pdf', bbox_inches='tight')
 
     # ------------------------------------ Throughput
@@ -100,5 +100,5 @@ for method in ['containerd', 'gVisor', 'QEMU']:
     yticks = range(0, 200, 40)
     plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [req/s]')
-    plt.legend()
+    plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig('throughput.pdf', bbox_inches='tight')
