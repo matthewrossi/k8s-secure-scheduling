@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
-# TODO: Add muatations and constraints precise times
-
 NODES="${NODES:-100}"
 TEST="${TEST:-multi-tenancy}" # options: data-sovereignty, multi-tenancy, workload-security-rings
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# Apply labels
-POLICY=$TEST $SCRIPT_DIR/update-labels.sh
-echo
+if [ "$BASELINE" = false ]; then
+    # Apply labels
+    POLICY=$TEST $SCRIPT_DIR/update-labels.sh
+    echo
 
-# Apply policies
-POLICY=$TEST $SCRIPT_DIR/update-policy.sh
-echo
+    # Apply policies
+    POLICY=$TEST $SCRIPT_DIR/update-policy.sh
+    echo
+fi
 
 if [ "$TEST" = "multi-tenancy" ]; then
     echo -e "[*] Create namespaces"
@@ -57,9 +57,11 @@ if [ "$TEST" = "multi-tenancy" ]; then
     echo
 fi
 
-# Remove policies
-DELETE=true POLICY=$TEST $SCRIPT_DIR/update-policy.sh
-echo
+if [ "$BASELINE" = false ]; then
+    # Remove policies
+    DELETE=true POLICY=$TEST $SCRIPT_DIR/update-policy.sh
+    echo
 
-# Remove labels
-DELETE=true POLICY=$TEST $SCRIPT_DIR/update-labels.sh
+    # Remove labels
+    DELETE=true POLICY=$TEST $SCRIPT_DIR/update-labels.sh
+fi

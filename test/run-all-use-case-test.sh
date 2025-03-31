@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+BASELINE="${BASELINE:-false}"
 NODES="${NODES:-100}"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
