@@ -3,11 +3,13 @@
 import json
 import matplotlib.pyplot as plt
 import numpy as np
+from cycler import cycler
 from pathlib import Path
 
 # For LaTeX-like fonts, comment if it errors out
 plt.rcParams['font.family'] = 'NewComputerModern08'
 plt.rcParams['font.size'] = 18
+plt.rcParams['axes.prop_cycle'] = cycler('color', plt.get_cmap('Dark2').colors)
 
 BAR_WIDTH = 0.25
 OUTSIDE_LEGEND_PARAMS = {
@@ -71,6 +73,7 @@ throughputs = {}
 for method in ['Baseline', 'Unconstrained', 'Constrained']:
     latencies[method] = [data[g]['scheduling-latency-p99'][method] for g in groups]
     plt.figure()
+    _, ax = plt.subplots()
     m = 0
     for label, values in latencies.items():
         offset = BAR_WIDTH * m

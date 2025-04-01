@@ -2,11 +2,13 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+# from cycler import cycler
 
 plt.rcParams['font.family'] = 'NewComputerModern08'
 plt.rcParams['font.size'] = 18
+# plt.rcParams['axes.prop_cycle'] = cycler('color', plt.get_cmap('Set2').colors)
 
-BAR_WIDTH = 0.25
+BAR_WIDTH = 0.2
 OUTSIDE_LEGEND_PARAMS = {
     'bbox_to_anchor': (-0.06, 1, 1, 0.2), # x0, y0, width, height
     'frameon': False,
