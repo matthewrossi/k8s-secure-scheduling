@@ -36,24 +36,20 @@ if [[ "$filter" = "all" || "$filter" = "sysbench" ]]; then
     echo "[*] Testing $service at $(minikube ip):$port"
     name=$(echo $service | cut -d'/' -f2)
     sysbench \
-      --db-driver=pgsql \
-      --pgsql-host="$(minikube ip)" \
-      --pgsql-port=$port \
-      --pgsql-password=example \
+      --db-driver=pgsql --pgsql-host="$(minikube ip)" --pgsql-port=$port --pgsql-password=example \
       oltp_read_write.lua prepare
+    # Warmup
+    sysbench \
+      --db-driver=pgsql --pgsql-host="$(minikube ip)" --pgsql-port=$port --pgsql-password=example \
+      oltp_read_write.lua run > /dev/null
+    # Actual test
     sysbench \
       --time=120 \
-      --db-driver=pgsql \
-      --pgsql-host="$(minikube ip)" \
-      --pgsql-port=$port \
-      --pgsql-password=example \
+      --db-driver=pgsql --pgsql-host="$(minikube ip)" --pgsql-port=$port --pgsql-password=example \
       --percentile=99 \
       oltp_read_write.lua run > "$out/$name"
     sysbench \
-      --db-driver=pgsql \
-      --pgsql-host="$(minikube ip)" \
-      --pgsql-port=$port \
-      --pgsql-password=example \
+      --db-driver=pgsql --pgsql-host="$(minikube ip)" --pgsql-port=$port --pgsql-password=example \
       oltp_read_write.lua cleanup
   done
 
@@ -62,24 +58,20 @@ if [[ "$filter" = "all" || "$filter" = "sysbench" ]]; then
     echo "[*] Testing $service at $(minikube ip):$port"
     name=$(echo $service | cut -d'/' -f2)
     sysbench \
-      --db-driver=mysql \
-      --mysql-host="$(minikube ip)" \
-      --mysql-port=$port \
-      --mysql-password=example \
+      --db-driver=mysql --mysql-host="$(minikube ip)" --mysql-port=$port --mysql-password=example \
       oltp_read_write.lua prepare
+    # Warmup
+    sysbench \
+      --db-driver=mysql --mysql-host="$(minikube ip)" --mysql-port=$port --mysql-password=example \
+      oltp_read_write.lua run > /dev/null
+    # Actual test
     sysbench \
       --time=120 \
-      --db-driver=mysql \
-      --mysql-host="$(minikube ip)" \
-      --mysql-port=$port \
-      --mysql-password=example \
+      --db-driver=mysql --mysql-host="$(minikube ip)" --mysql-port=$port --mysql-password=example \
       --percentile=99 \
       oltp_read_write.lua run > "$out/$name"
     sysbench \
-      --db-driver=mysql \
-      --mysql-host="$(minikube ip)" \
-      --mysql-port=$port \
-      --mysql-password=example \
+      --db-driver=mysql --mysql-host="$(minikube ip)" --mysql-port=$port --mysql-password=example \
       oltp_read_write.lua cleanup
   done
 fi
