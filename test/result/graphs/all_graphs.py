@@ -9,7 +9,7 @@ from pathlib import Path
 # For LaTeX-like fonts, comment if it errors out
 plt.rcParams['font.family'] = 'NewComputerModern08'
 plt.rcParams['font.size'] = 18
-plt.rcParams['axes.prop_cycle'] = cycler('color', plt.get_cmap('Dark2').colors)
+plt.rcParams['axes.prop_cycle'] = cycler('color', ['orchid', 'teal', 'purple'])
 
 BAR_WIDTH = 0.25
 OUTSIDE_LEGEND_PARAMS = {
