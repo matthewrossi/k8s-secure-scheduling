@@ -24,7 +24,7 @@ OUTSIDE_LEGEND_PARAMS = {
 # other data taken from ../aqua-3cn-1000n-30kpods-uniform
 #
 # Scheduling Latency in ms (if more values of p99, then the max)
-# Throughput is qps (max value, if given more values then the average of the max excluding obvious outliers)
+# Throughput is qps (max value, if given more values then the minimum of the maximums)
 
 data = {
     'DS': {
@@ -60,7 +60,7 @@ data = {
         'scheduling-throughput': {
             'Baseline': 179,
             'Unconstrained': 143,
-            'Constrained': 176,
+            'Constrained': 143,
         },
     },
 }
