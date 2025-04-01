@@ -1,0 +1,821 @@
+diff --git a/scripts/dbt3-build-dbgen.in b/scripts/dbt3-build-dbgen.in
+index cd947b5..35b4ec0 100755
+--- a/scripts/dbt3-build-dbgen.in
++++ b/scripts/dbt3-build-dbgen.in
+@@ -122,6 +122,9 @@ case "${DBMS}" in
+ 	(pgsql)
+ 		DATABASE="postgresql"
+ 		;;
++	(mysql)
++		DATABASE="mysql"
++		;;
+ 	(*)
+ 		echo "ERROR: Unhandled DBMS: ${DBMS}"
+ 		exit 1
+diff --git a/scripts/dbt3-get-config.in b/scripts/dbt3-get-config.in
+index 22dc84c..44a921f 100755
+--- a/scripts/dbt3-get-config.in
++++ b/scripts/dbt3-get-config.in
+@@ -38,6 +38,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		DBMS_ARGS="${DBMS_ARGS} --mysql-socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1}"
++		;;
++	(--mysql-host=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1}"
++		;;
++	(--mysql-port=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1}"
++		;;
++	(--mysql-user=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1}"
++		;;
++	(--mysql-password=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1#*--mysql-password=}"
++		;;
+ 	(-V | --version)
+ 		echo "$(basename "${0}") (Database Test 3) v@PROJECT_VERSION@"
+ 		;;
+diff --git a/scripts/dbt3-load-test.in b/scripts/dbt3-load-test.in
+index b310367..7bd6b7b 100755
+--- a/scripts/dbt3-load-test.in
++++ b/scripts/dbt3-load-test.in
+@@ -118,6 +118,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		DBMS_ARGS="${DBMS_ARGS} --mysql-socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1}"
++		;;
++	(--mysql-host=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1}"
++		;;
++	(--mysql-port=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1}"
++		;;
++	(--mysql-user=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1}"
++		;;
++	(--mysql-password=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1#*--mysql-password=}"
++		;;
+ 	(-o)
+ 		shift
+ 		OUTPUT_DIR="${1}"
+diff --git a/scripts/dbt3-power-test.in b/scripts/dbt3-power-test.in
+index 216ca8e..f046b1f 100755
+--- a/scripts/dbt3-power-test.in
++++ b/scripts/dbt3-power-test.in
+@@ -99,6 +99,42 @@ while [ "${#}" -gt 0 ] ; do
+ 		MYSQL_ARGS="${MYSQL_ARGS} --socket=${1#*--mysql-socket=}"
+ 		DBMS_ARGS="${DBMS_ARGS} --mysql-socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1}"
++		;;
++	(--mysql-host=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1}"
++		;;
++	(--mysql-port=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1}"
++		;;
++	(--mysql-user=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1}"
++		;;
++	(--mysql-password=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1#*--mysql-password=}"
++		;;
+ 	(-o)
+ 		shift
+ 		OUTPUT_DIR="${1}"
+@@ -161,7 +197,7 @@ if [ $DATABASE = "monetdb" ]; then
+ elif [ $DATABASE = "pgsql" ] || [ $DATABASE = "pgxl" ]; then
+ 	DBCMD="psql -v ON_ERROR_STOP=1 -X -e"
+ elif [ $DATABASE = "mysql" ]; then
+-	DBCMD="mysql -u root -D ${DBNAME} ${MYSQL_ARGS}"
++	DBCMD="mysql --ssl-verify-server-cert=off -D ${DBNAME} ${MYSQL_ARGS}"
+ elif [ $DATABASE = "virtuoso" ]; then
+ 	DBCMD="isql PROMPT=OFF ERRORS=STDOUT ECHO=ON VERBOSE=OFF"
+ else
+diff --git a/scripts/dbt3-run-query.in b/scripts/dbt3-run-query.in
+index f132ff6..cdf3105 100755
+--- a/scripts/dbt3-run-query.in
++++ b/scripts/dbt3-run-query.in
+@@ -220,7 +220,7 @@ elif [ "${DATABASE}" = "pgsql" ] || [ "${DATABASE}" = "pgxl" ]; then
+ 	fi
+ 	export PGDATABASE="${DBNAME}"
+ elif [ "${DATABASE}" = "mysql" ]; then
+-	DBCMD="mysql -u root -D ${DBNAME}"
++	DBCMD="mysql --ssl-verify-server-cert=off -D ${DBNAME}"
+ elif [ "${DATABASE}" = "virtuoso" ]; then
+ 	DBCMD="isql PROMPT=OFF ERRORS=STDOUT ECHO=ON VERBOSE=OFF"
+ else
+diff --git a/scripts/dbt3-run.in b/scripts/dbt3-run.in
+index 06fa1e0..c2901f6 100755
+--- a/scripts/dbt3-run.in
++++ b/scripts/dbt3-run.in
+@@ -190,6 +190,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		DBMS_ARGS="${DBMS_ARGS} --mysql-socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1}"
++		;;
++	(--mysql-host=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1}"
++		;;
++	(--mysql-port=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1}"
++		;;
++	(--mysql-user=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1}"
++		;;
++	(--mysql-password=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1#*--mysql-password=}"
++		;;
+ 	(-n | --streams)
+ 		shift
+ 		STREAMS=$1
+diff --git a/scripts/dbt3-throughput-stream-wrapper.in b/scripts/dbt3-throughput-stream-wrapper.in
+index d0113e0..1dfc40b 100755
+--- a/scripts/dbt3-throughput-stream-wrapper.in
++++ b/scripts/dbt3-throughput-stream-wrapper.in
+@@ -68,6 +68,34 @@ while [ "${#}" -gt 0 ]; do
+ 	(--mysql-socket=?*)
+ 		DBMS_ARGS="${DBMS_ARGS} --mysql-socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1}"
++		;;
++	(--mysql-host=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1}"
++		;;
++	(--mysql-port=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1}"
++		;;
++	(--mysql-user=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1}"
++		;;
++	(--mysql-password=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1#*--mysql-password=}"
++		;;
+ 	(-n)
+ 		shift
+ 		num_stream="${1}"
+diff --git a/scripts/dbt3-throughput-stream.in b/scripts/dbt3-throughput-stream.in
+index c705012..5d91fcb 100755
+--- a/scripts/dbt3-throughput-stream.in
++++ b/scripts/dbt3-throughput-stream.in
+@@ -34,6 +34,10 @@ DBMS options are:
+ MySQL specific options:
+   --mysql-socket=FILE
+                   specify socket FILE
++  --mysql-host=IP
++                  specify host IP
++  --mysql-port=PORT
++                  specify host port
+ 
+ PostgreSQL specific options:
+   -e             EXPLAIN ANALYZE
+@@ -68,6 +72,42 @@ while [ "${#}" -gt 0 ]; do
+ 		DBMS_ARGS="${DBMS_ARGS} --mysql-socket=${1#*--mysql-socket=}"
+ 		MYSQL_ARGS="${MYSQL_ARGS} --socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1}"
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		;;
++	(--mysql-host=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1#*--mysql-host=}"
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1}"
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		;;
++	(--mysql-port=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1#*--mysql-port=}"
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1}"
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		;;
++	(--mysql-user=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1#*--mysql-user=}"
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1}"
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		;;
++	(--mysql-password=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1#*--mysql-password=}"
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
++		;;
+ 	(-n)
+ 		shift
+ 		num_stream="${1}"
+@@ -121,7 +161,7 @@ if [ $DATABASE = "monetdb" ]; then
+ elif [ $DATABASE = "pgsql" ] || [ $DATABASE = "pgxl" ]; then
+ 	DBCMD="psql -v ON_ERROR_STOP=1 -X -e"
+ elif [ $DATABASE = "mysql" ]; then
+-	DBCMD="mysql -u root -D ${DBNAME} ${MYSQL_ARGS}"
++	DBCMD="mysql --ssl-verify-server-cert=off -D ${DBNAME} ${MYSQL_ARGS}"
+ elif [ $DATABASE = "virtuoso" ]; then
+ 	DBCMD="isql PROMPT=OFF ERRORS=STDOUT ECHO=ON VERBOSE=OFF"
+ else
+diff --git a/scripts/dbt3-throughput-test.in b/scripts/dbt3-throughput-test.in
+index e3ca400..5def450 100755
+--- a/scripts/dbt3-throughput-test.in
++++ b/scripts/dbt3-throughput-test.in
+@@ -90,6 +90,34 @@ while [ "${#}" -gt 0 ]; do
+ 	(--mysql-socket=?*)
+ 		DBMS_ARGS="${DBMS_ARGS} --mysql-socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1}"
++		;;
++	(--mysql-host=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1}"
++		;;
++	(--mysql-port=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1}"
++		;;
++	(--mysql-user=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1}"
++		;;
++	(--mysql-password=?*)
++		DBMS_ARGS="${DBMS_ARGS} --mysql-password=${1#*--mysql-password=}"
++		;;
+ 	(-n)
+ 		shift
+ 		num_stream="${1}"
+diff --git a/scripts/mysql/dbt3-mysql-create-db.in b/scripts/mysql/dbt3-mysql-create-db.in
+index 688c841..ab93263 100755
+--- a/scripts/mysql/dbt3-mysql-create-db.in
++++ b/scripts/mysql/dbt3-mysql-create-db.in
+@@ -57,6 +57,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		MYSQL_ARGS="${MYSQL_ARGS} --socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		;;
++	(--mysql-host=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		;;
++	(--mysql-port=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		;;
++	(--mysql-user=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		;;
++	(--mysql-password=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
++		;;
+ 	(-o)
+ 		shift
+ 		OUTPUT_DIR="${1}"
+@@ -118,5 +146,5 @@ if [ ${PRIVILEGED} -eq 1 ]; then
+ fi
+ 
+ echo "Creating database $DBNAME..."
+-eval "mysql -u root ${MYSQL_ARGS} \
++eval "mysql --ssl-verify-server-cert=off ${MYSQL_ARGS} \
+ 		-e \"CREATE DATABASE IF NOT EXISTS ${DBNAME};\""
+diff --git a/scripts/mysql/dbt3-mysql-create-tables.in b/scripts/mysql/dbt3-mysql-create-tables.in
+index 3741c28..7d449b2 100755
+--- a/scripts/mysql/dbt3-mysql-create-tables.in
++++ b/scripts/mysql/dbt3-mysql-create-tables.in
+@@ -6,7 +6,7 @@
+ #
+ # Copyright The DBT-3 Authors
+ 
+-MYSQL="mysql -u root -D $DBNAME -s"
++MYSQL="mysql --ssl-verify-server-cert=off -D $DBNAME -s"
+ 
+ while getopts "be:" OPT; do
+     case ${OPT} in
+diff --git a/scripts/mysql/dbt3-mysql-drop-db.in b/scripts/mysql/dbt3-mysql-drop-db.in
+index 7099680..6dd326b 100755
+--- a/scripts/mysql/dbt3-mysql-drop-db.in
++++ b/scripts/mysql/dbt3-mysql-drop-db.in
+@@ -17,4 +17,4 @@ if [ -z ${DBNAME} ]; then
+ 	exit 1
+ fi
+ 
+-mysqladmin -u root --force drop $DBNAME || exit 1
++mysqladmin --ssl-verify-server-cert=off --force drop $DBNAME || exit 1
+diff --git a/scripts/mysql/dbt3-mysql-drop-tables.in b/scripts/mysql/dbt3-mysql-drop-tables.in
+index a7cfce5..b200a46 100755
+--- a/scripts/mysql/dbt3-mysql-drop-tables.in
++++ b/scripts/mysql/dbt3-mysql-drop-tables.in
+@@ -42,10 +42,33 @@ while [ "${#}" -gt 0 ] ; do
+ 		usage
+ 		exit 0
+ 		;;
+-	(--* | -*)
+-		echo "$(basename "${0}"): invalid option -- '${1}'"
+-		echo "try \"$(basename "${0}") --help\" for more information."
+-		exit 1
++	(--mysql-host)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		;;
++	(--mysql-host=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		;;
++	(--mysql-port=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		;;
++	(--mysql-user=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		;;
++	(--mysql-password=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
+ 		;;
+ 	(*)
+ 		break
+@@ -54,7 +77,7 @@ while [ "${#}" -gt 0 ] ; do
+ 	shift
+ done
+ 
+-MYSQL="mysql -u root -D ${DBNAME} ${MYSQL_ARGS}"
++MYSQL="mysql -D ${DBNAME} ${MYSQL_ARGS}"
+ 
+ eval "${MYSQL} -e \"DROP TABLE IF EXISTS supplier;\""
+ eval "${MYSQL} -e \"DROP TABLE IF EXISTS part;\""
+diff --git a/scripts/mysql/dbt3-mysql-get-query-time.in b/scripts/mysql/dbt3-mysql-get-query-time.in
+index 11017d4..5640ecb 100755
+--- a/scripts/mysql/dbt3-mysql-get-query-time.in
++++ b/scripts/mysql/dbt3-mysql-get-query-time.in
+@@ -22,6 +22,10 @@ Options:
+   -H             use alternate output format
+   --mysql-socket=FILE
+                  specify socket FILE
++  --mysql-host=IP
++                  specify host IP
++  --mysql-port=PORT
++                  specify host port
+   -o DIRECTORY   path to store query data
+   -V, --version  output version information, then exit
+   -?, --help     show this help, then exit
+@@ -44,6 +48,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		MYSQL_ARGS="${MYSQL_ARGS} --socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		;;
++	(--mysql-host=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		;;
++	(--mysql-port=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		;;
++	(--mysql-user=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		;;
++	(--mysql-password=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
++		;;
+ 	(-V | --version)
+ 		echo "$(basename "${0}") (Database Test 3) v@PROJECT_VERSION@"
+ 		;;
+@@ -64,6 +96,6 @@ while [ "${#}" -gt 0 ] ; do
+ done
+ 
+ # Convert output to CSV format on the fly.
+-eval "mysql -u root -D ${DBNAME} -e \"${SQL}\" ${MYSQL_ARGS}" \
++eval "mysql --ssl-verify-server-cert=off -D ${DBNAME} -e \"${SQL}\" ${MYSQL_ARGS}" \
+ 		| sed -e 's/\t/,/g;'
+ sleep 2
+diff --git a/scripts/mysql/dbt3-mysql-get-version.in b/scripts/mysql/dbt3-mysql-get-version.in
+index 2d063ab..58279ee 100755
+--- a/scripts/mysql/dbt3-mysql-get-version.in
++++ b/scripts/mysql/dbt3-mysql-get-version.in
+@@ -27,6 +27,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		MYSQL_ARGS="${MYSQL_ARGS} --socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		;;
++	(--mysql-host=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		;;
++	(--mysql-port=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		;;
++	(--mysql-user=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		;;
++	(--mysql-password=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
++		;;
+ 	(-V | --version)
+ 		echo "$(basename "${0}") (Database Test 3) v@PROJECT_VERSION@"
+ 		;;
+@@ -46,6 +74,6 @@ while [ "${#}" -gt 0 ] ; do
+ 	shift
+ done
+ 
+-eval "mysql -u root -s ${MYSQL_ARGS} \
++eval "mysql --ssl-verify-server-cert=off -s ${MYSQL_ARGS} \
+ 		-e \"show global variables like 'version'\"" | \
+ 		awk '{print "MySQL " $2}' || exit 1
+diff --git a/scripts/mysql/dbt3-mysql-load-data.in b/scripts/mysql/dbt3-mysql-load-data.in
+index 4136210..295581d 100755
+--- a/scripts/mysql/dbt3-mysql-load-data.in
++++ b/scripts/mysql/dbt3-mysql-load-data.in
+@@ -19,6 +19,10 @@ Options:
+   --db-name      databse name, default $DBNAME
+   --mysql-socket=FILE
+                   specify socket FILE
++  --mysql-host=IP
++                  specify host IP
++  --mysql-port=PORT
++                  specify host port
+   -o DIRECTORY   DIRECTORY to save any output, default current directory
+   -V, --version  output version information, then exit
+   -?, --help     show this help, then exit
+@@ -55,6 +59,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		MYSQL_ARGS="${MYSQL_ARGS} --socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		;;
++	(--mysql-host=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		;;
++	(--mysql-port=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		;;
++	(--mysql-user=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		;;
++	(--mysql-password=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
++		;;
+ 	(-o)
+ 		shift
+ 		OUTPUT_DIR="${1}"
+@@ -92,7 +124,7 @@ while [ "${#}" -gt 0 ] ; do
+ 	shift
+ done
+ 
+-MYSQL="mysql -u root -D ${DBNAME} -s ${MYSQL_ARGS}"
++MYSQL="mysql --ssl-verify-server-cert=off -D ${DBNAME} -s ${MYSQL_ARGS}"
+ 
+ # Load tables
+ # This background stuff is honestly kinda ugly. IMO the right way to do this is
+@@ -110,13 +142,13 @@ load_table() {
+ 	if [ "${CHUNKS}" -eq 1 ] || [ "${table}" = "nation" ] || \
+ 			[ "${table}" = "region" ]; then
+ 		file=${table}.tbl
+-		eval "mysqlimport -u root ${MYSQL_ARGS} \
++		eval "mysqlimport --ssl-verify-server-cert=off ${MYSQL_ARGS} \
+ 				--fields-terminated-by='|' ${DBNAME} ${DSS_PATH}/${file}"
+ 	else
+ 		i=1
+ 		while [ ${i} -le "${CHUNKS}" ]; do
+ 			file=${table}.tbl.${i}
+-			eval "mysqlimport -u root ${MYSQL_ARGS} \
++			eval "mysqlimport --ssl-verify-server-cert=off ${MYSQL_ARGS} \
+ 					--fields-terminated-by='|' ${DBNAME} ${DSS_PATH}/${file}" &
+ 			i=$(( i + 1 ))
+ 		done
+diff --git a/scripts/mysql/dbt3-mysql-rf1.in b/scripts/mysql/dbt3-mysql-rf1.in
+index c59d05c..deb6b14 100755
+--- a/scripts/mysql/dbt3-mysql-rf1.in
++++ b/scripts/mysql/dbt3-mysql-rf1.in
+@@ -19,6 +19,10 @@ Options:
+                  database SCALE_FACTOR
+   --mysql-socket=FILE
+                  specify socket FILE
++  --mysql-host=IP
++                  specify host IP
++  --mysql-port=PORT
++                  specify host port
+   -V, --version  output version information, then exit
+   -?, --help     show this help, then exit
+ 
+@@ -42,6 +46,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		MYSQL_ARGS="${MYSQL_ARGS} --socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		;;
++	(--mysql-host=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		;;
++	(--mysql-port=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		;;
++	(--mysql-user=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		;;
++	(--mysql-password=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
++		;;
+ 	(-U)
+ 		# Intentionally do nothing at this time.
+ 		;;
+@@ -64,7 +96,7 @@ while [ "${#}" -gt 0 ] ; do
+ 	shift
+ done
+ 
+-MYSQL="mysql -u root -D ${DBNAME} -s ${MYSQL_ARGS} -N"
++MYSQL="mysql --ssl-verify-server-cert=off -D ${DBNAME} -s ${MYSQL_ARGS} -N"
+ 
+ set_num=`$MYSQL << __EOF__
+ BEGIN;
+diff --git a/scripts/mysql/dbt3-mysql-rf2.in b/scripts/mysql/dbt3-mysql-rf2.in
+index 3b7ea12..fcd1714 100755
+--- a/scripts/mysql/dbt3-mysql-rf2.in
++++ b/scripts/mysql/dbt3-mysql-rf2.in
+@@ -41,6 +41,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		MYSQL_ARGS="${MYSQL_ARGS} --socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		;;
++	(--mysql-host=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		;;
++	(--mysql-port=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		;;
++	(--mysql-user=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		;;
++	(--mysql-password=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
++		;;
+ 	(-s)
+ 		shift
+ 		set_num="${1}"
+@@ -67,7 +95,7 @@ while [ "${#}" -gt 0 ] ; do
+ 	shift
+ done
+ 
+-MYSQL="mysql -u root -D ${DBNAME} -s ${MYSQL_ARGS} -N"
++MYSQL="mysql --ssl-verify-server-cert=off -D ${DBNAME} -s ${MYSQL_ARGS} -N"
+ 
+ echo "`date`: Stream ${set_num} : Starting Refresh Stream 2..."
+ s_time=`date +%s`
+diff --git a/scripts/mysql/dbt3-mysql-stop-db.in b/scripts/mysql/dbt3-mysql-stop-db.in
+index 672aaf9..7d4d6b9 100755
+--- a/scripts/mysql/dbt3-mysql-stop-db.in
++++ b/scripts/mysql/dbt3-mysql-stop-db.in
+@@ -19,7 +19,7 @@ if [ $? -eq 1 ]; then
+ 	exit 0
+ fi
+ 
+-mysqladmin -u root shutdown
++mysqladmin --ssl-verify-server-cert=off shutdown
+ count=0
+ while [ 1 ]; do
+ 	mysqladmin -s ping > /dev/null 2>&1
+diff --git a/scripts/mysql/dbt3-mysql-time-statistics.in b/scripts/mysql/dbt3-mysql-time-statistics.in
+index c461d27..4b8d310 100755
+--- a/scripts/mysql/dbt3-mysql-time-statistics.in
++++ b/scripts/mysql/dbt3-mysql-time-statistics.in
+@@ -23,6 +23,10 @@ Options:
+   -e             set end time
+   --mysql-socket=FILE
+                  specify socket FILE
++  --mysql-host=IP
++                  specify host IP
++  --mysql-port=PORT
++                  specify host port
+   -n NAME        NAME of the time to modify
+   -s             set start time
+   -V, --version  output version information, then exit
+@@ -48,6 +52,34 @@ while [ "${#}" -gt 0 ] ; do
+ 	(--mysql-socket=?*)
+ 		MYSQL_ARGS="${MYSQL_ARGS} --socket=${1#*--mysql-socket=}"
+ 		;;
++	(--mysql-host)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1}"
++		;;
++	(--mysql-host=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --host=${1#*--mysql-host=}"
++		;;
++	(--mysql-port)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1}"
++		;;
++	(--mysql-port=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --port=${1#*--mysql-port=}"
++		;;
++	(--mysql-user)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1}"
++		;;
++	(--mysql-user=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --user=${1#*--mysql-user=}"
++		;;
++	(--mysql-password)
++		shift
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1}"
++		;;
++	(--mysql-password=?*)
++		MYSQL_ARGS="${MYSQL_ARGS} --password=${1#*--mysql-password=}"
++		;;
+ 	(-n)
+ 		shift
+ 		NAME=$OPTARG
+@@ -94,4 +126,4 @@ if [ $cmd_end == 1 ]; then
+     SQL="UPDATE time_statistics SET e_time = now() WHERE task_name = '$NAME'"
+ fi;
+ 
+-eval "mysql -u root -D ${DBNAME} ${MYSQL_ARGS} -e \"${SQL}\""
++eval "mysql --ssl-verify-server-cert=off -D ${DBNAME} ${MYSQL_ARGS} -e \"${SQL}\""
