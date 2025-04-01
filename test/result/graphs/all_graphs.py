@@ -96,3 +96,10 @@ for method in ['Baseline', 'Unconstrained', 'Constrained']:
     plt.ylabel('Throughput [qps]')
     plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig('scheduling-throughput.pdf', bbox_inches='tight')
+
+for use_case, values in data.items():
+    print(use_case)
+    for measure, results in values.items():
+        print(f'  {measure}')
+        print(f'    Unconstrained: {round((results['Unconstrained'] / results['Baseline'] - 1) * 100, 2)}%')
+        print(f'    Constrained:   {round((results['Constrained'] / results['Baseline'] - 1) * 100, 2)}%')
