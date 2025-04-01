@@ -90,8 +90,8 @@ if [[ "$1" = "benchmarks" || "$1" = "all" ]]; then
   fi
 
   if [[ ! -d 'TPC-H V3.0.1' ]]; then
-    unzip tpc-h-tools.zip
-    ./prepare-postgres
+    unzip tpc-h-tools.zip -d postgres-tpch
+    unzip tpc-h-tools.zip -d mysql-tpch
   fi
 
   popd

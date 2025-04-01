@@ -18,6 +18,11 @@ source=("$pkgname-pacman::git+$url.git")
 noextract=()
 sha256sums=('SKIP')
 
+prepare() {
+	cd "$srcdir/$pkgname-pacman"
+	patch -p1 -i "$srcdir/../patch"
+}
+
 build() {
 	cd "$srcdir/$pkgname-pacman"
 	git checkout v2.0.10

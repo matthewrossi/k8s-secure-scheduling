@@ -82,6 +82,16 @@ if [[ "$filter" = "all" || "$filter" = "tpch" ]]; then
     port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
     echo "[*] Testing $service at $(minikube ip):$port"
     name=$(echo $service | cut -d'/' -f2)
-    PGHOST="$(minikube ip)" PGPORT="$port" PGUSER=sbtest PGPASSWORD=example dbt3-run --stats --tpchtools="deps/TPC-H V3.0.1" pgsql "$out/$name"
+    PGHOST="$(minikube ip)" PGPORT="$port" PGUSER=sbtest PGPASSWORD=example dbt3-run --stats --tpchtools="deps/postgres-tpch/TPC-H V3.0.1" pgsql "$out/$name"
+  done
+
+  out="$projroot/test/minikube-overheads/results/$(uname -n)-mysql-dbt3-$(date +%Y-%m-%dT%H:%M:%S)"
+  for service in $(kubectl get services -l app=mysql -o name); do
+    port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
+    echo "[*] Testing $service at $(minikube ip):$port"
+    name=$(echo $service | cut -d'/' -f2)
+    bt3-run --stats \
+      --mysql-host="$(minikube ip)" --mysql-port=32320 --mysql-user=sbtest --mysql-password=example \
+      --tpchtools 'deps/mysql-tpch/TPC-H V3.0.1' mysql "$out/$name"
   done
 fi
