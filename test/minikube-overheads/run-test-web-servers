@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 WRK_THREADS=1
-WRK_CONNS=100
+WRK_CONNS=10
 WRK_TIME=120s
 
 projroot=$(git rev-parse --show-toplevel)
