@@ -18,9 +18,11 @@ OUTSIDE_LEGEND_PARAMS = {
 }
 
 # ============================================================ Web Servers
-
+# 
 # Latency in ms
-data = {
+
+# --------------------------- With 100 connections
+data_100 = {
     'Lighttpd': {
         'containerd': { 'latency-p99': 1.06, 'throughput': 175210 },
         'gVisor':  { 'latency-p99': 3.41, 'throughput': 54100 },
@@ -30,6 +32,19 @@ data = {
         'containerd': { 'latency-p99': 1.18, 'throughput': 179750 },
         'gVisor':  { 'latency-p99': 13.29, 'throughput': 33390 },
         'QEMU':    { 'latency-p99': 40.18, 'throughput': 3160 },
+    },
+}
+# --------------------------- With 10 connections
+data = {
+    'Lighttpd': {
+        'containerd': { 'latency-p99': 0.109, 'throughput': 139510 },
+        'gVisor':     { 'latency-p99': 0.586, 'throughput': 41070 },
+        'QEMU':       { 'latency-p99': 0.512, 'throughput': 38010 },
+    },
+    'Nginx': {
+        'containerd': { 'latency-p99': 0.235, 'throughput': 136260 },
+        'gVisor':     { 'latency-p99': 2.56, 'throughput': 27730 },
+        'QEMU':       { 'latency-p99': 4.16, 'throughput': 3120 },
     },
 }
 
