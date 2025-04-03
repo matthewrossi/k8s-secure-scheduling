@@ -13,11 +13,13 @@ plt.rcParams['axes.prop_cycle'] = cycler('color', ['orchid', 'teal', 'purple'])
 
 BAR_WIDTH = 0.25
 OUTSIDE_LEGEND_PARAMS = {
-    'bbox_to_anchor': (0, 1.02, 1, 0.2), # x0, y0, width, height
+    'bbox_to_anchor': (-0.15, 1.02, 1, 0.2), # x0, y0, width, height
     'frameon': False,
     'handlelength': 1,
     'loc': 'lower left',
-    'ncol': 2,
+    'ncol': 3,
+    'columnspacing': 0.8,
+    'handletextpad': 0.4,
 }
 
 # baseline taken from ../aqua-baseline-3cn-1000n-30kpods-uniform, from vanilla tests
@@ -27,7 +29,7 @@ OUTSIDE_LEGEND_PARAMS = {
 # Throughput is qps (max value, if given more values then the minimum of the maximums)
 
 data = {
-    'DS': {
+    'Data\nSovereignty': {
         'scheduling-latency-p99': {
             'Baseline': 1.70,
             'Unconstrained': 1.80,
@@ -39,7 +41,7 @@ data = {
             'Constrained': 137,
         },
     },
-    'MT': {
+    'Multiple\nTenants': {
         'scheduling-latency-p99': {
             'Baseline': 1.68,
             'Unconstrained': 1.82,
@@ -51,7 +53,7 @@ data = {
             'Constrained': 58.6,
         },
     },
-    'ISL': {
+    'Incompatible\nSecurity Levels': {
         'scheduling-latency-p99': {
             'Baseline': 1.75,
             'Unconstrained': 1.87,
@@ -104,5 +106,5 @@ for use_case, values in data.items():
     print(use_case)
     for measure, results in values.items():
         print(f'  {measure}')
-        print(f'    Unconstrained: {round((results['Unconstrained'] / results['Baseline'] - 1) * 100, 2)}%')
-        print(f'    Constrained:   {round((results['Constrained'] / results['Baseline'] - 1) * 100, 2)}%')
+        print(f"    Unconstrained: {round((results['Unconstrained'] / results['Baseline'] - 1) * 100, 2)}%")
+        print(f"    Constrained:   {round((results['Constrained'] / results['Baseline'] - 1) * 100, 2)}%")

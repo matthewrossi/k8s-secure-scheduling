@@ -10,11 +10,13 @@ plt.rcParams['font.size'] = 18
 
 BAR_WIDTH = 0.2
 OUTSIDE_LEGEND_PARAMS = {
-    'bbox_to_anchor': (-0.06, 1, 1, 0.2), # x0, y0, width, height
+    'bbox_to_anchor': (0.03, 1, 1, 0.2), # x0, y0, width, height
     'frameon': False,
     'loc': 'lower left',
     'ncol': 3,
     'handlelength': 1,
+    'columnspacing': 0.8,
+    'handletextpad': 0.4,
 }
 
 # ============================================================ Web Servers
