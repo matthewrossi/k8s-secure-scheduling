@@ -13,11 +13,11 @@ plt.rcParams['axes.prop_cycle'] = cycler('color', ['orchid', 'teal', 'purple'])
 
 BAR_WIDTH = 0.25
 OUTSIDE_LEGEND_PARAMS = {
-    'bbox_to_anchor': (0, 1.02, 1, 0.2), # x0, y0, width, height
+    'bbox_to_anchor': (0, 1.02, 1, 0.2),  # x0, y0, width, height
     'frameon': False,
     'handlelength': 1,
     'loc': 'lower left',
-    'ncol': 2,
+    'ncol': 1,
 }
 
 # baseline taken from ../aqua-baseline-3cn-1000n-30kpods-uniform, from vanilla tests
@@ -27,7 +27,7 @@ OUTSIDE_LEGEND_PARAMS = {
 # Throughput is qps (max value, if given more values then the minimum of the maximums)
 
 data = {
-    'DS': {
+    'DT': {
         'scheduling-latency-p99': {
             'Baseline': 1.70,
             'Unconstrained': 1.80,
@@ -70,30 +70,44 @@ xs = np.arange(len(groups))
 latencies = {}
 throughputs = {}
 
+new_names = {
+    'Baseline': "Default",
+    'Unconstrained': "Unconstrained pods",
+    'Constrained': "Constrained pods",
+}
+new_groups = [
+    'Data\nSovereignty', 'Multiple\nTenants',
+    'Incompatible\nSensitivity\nLevels'
+]
+
 for method in ['Baseline', 'Unconstrained', 'Constrained']:
-    latencies[method] = [data[g]['scheduling-latency-p99'][method] for g in groups]
+    latencies[method] = [
+        data[g]['scheduling-latency-p99'][method] for g in groups
+    ]
     plt.figure()
     _, ax = plt.subplots()
     m = 0
     for label, values in latencies.items():
         offset = BAR_WIDTH * m
-        plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
+        plt.bar(xs + offset, values, width=BAR_WIDTH, label=new_names[label])
         m += 1
 
-    plt.xticks(xs + BAR_WIDTH, groups)
+    plt.xticks(xs + BAR_WIDTH, new_groups)
     plt.ylabel('Latency [ms]')
     plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig('scheduling-latency.pdf', bbox_inches='tight')
 
-    throughputs[method] = [data[g]['scheduling-throughput'][method] for g in groups]
+    throughputs[method] = [
+        data[g]['scheduling-throughput'][method] for g in groups
+    ]
     plt.figure()
     m = 0
     for label, values in throughputs.items():
         offset = BAR_WIDTH * m
-        plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
+        plt.bar(xs + offset, values, width=BAR_WIDTH, label=new_names[label])
         m += 1
 
-    plt.xticks(xs + BAR_WIDTH, groups)
+    plt.xticks(xs + BAR_WIDTH, new_groups)
     # yticks = range(0, 200, 40)
     # plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [qps]')
