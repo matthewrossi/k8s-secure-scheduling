@@ -28,12 +28,12 @@ data_100 = {
     'Lighttpd': {
         'containerd': { 'latency-p99': 1.06, 'throughput': 175210 },
         'gVisor':  { 'latency-p99': 3.41, 'throughput': 54100 },
-        'QEMU':    { 'latency-p99': 6.15, 'throughput': 34650 },
+        'Kata':    { 'latency-p99': 6.15, 'throughput': 34650 },
     },
     'Nginx': {
         'containerd': { 'latency-p99': 1.18, 'throughput': 179750 },
         'gVisor':  { 'latency-p99': 13.29, 'throughput': 33390 },
-        'QEMU':    { 'latency-p99': 40.18, 'throughput': 3160 },
+        'Kata':    { 'latency-p99': 40.18, 'throughput': 3160 },
     },
 }
 # --------------------------- With 10 connections
@@ -41,12 +41,12 @@ data = {
     'Lighttpd': {
         'containerd': { 'latency-p99': 0.109, 'throughput': 139510 },
         'gVisor':     { 'latency-p99': 0.586, 'throughput': 41070 },
-        'QEMU':       { 'latency-p99': 0.512, 'throughput': 38010 },
+        'Kata':       { 'latency-p99': 0.512, 'throughput': 38010 },
     },
     'Nginx': {
         'containerd': { 'latency-p99': 0.235, 'throughput': 136260 },
         'gVisor':     { 'latency-p99': 2.56, 'throughput': 27730 },
-        'QEMU':       { 'latency-p99': 4.16, 'throughput': 3120 },
+        'Kata':       { 'latency-p99': 4.16, 'throughput': 3120 },
     },
 }
 
@@ -55,7 +55,7 @@ xs = np.arange(len(groups))
 latencies = {}
 throughputs = {}
 
-for method in ['containerd', 'gVisor', 'QEMU']:
+for method in ['containerd', 'gVisor', 'Kata']:
     latencies[method] = [data[g][method]['latency-p99'] for g in groups]
     plt.figure()
     m = 0
@@ -100,7 +100,7 @@ data = {
             'write-p99': 500,
             'throughput': 2183.41,
         },
-        'QEMU':    {
+        'Kata':    {
             'read-p99':  536,
             'write-p99': 448,
             'throughput': 2398.08,
@@ -117,7 +117,7 @@ data = {
             'write-p99': 189,
             'throughput': 8547.01,
         },
-        'QEMU':    {
+        'Kata':    {
             'read-p99':  124,
             'write-p99': 147,
             'throughput': 10989.01,
@@ -129,7 +129,7 @@ groups = data.keys()
 xs = np.arange(len(groups))
 latencies = {}
 throughputs = {}
-for method in ['containerd', 'gVisor', 'QEMU']:
+for method in ['containerd', 'gVisor', 'Kata']:
     latencies[method] = [max(data[g][method]['read-p99'], data[g][method]['write-p99']) / 1000 for g in groups]
     plt.figure()
     m = 0
@@ -174,7 +174,7 @@ data = {
             'latency-p99':  21.11,
             'throughput': 1661.38,
         },
-        'QEMU':    {
+        'Kata':    {
             'latency-p99':  21.50,
             'throughput': 1493.13,
         },
@@ -188,7 +188,7 @@ data = {
             'latency-p99':  9.22,
             'throughput': 3321.93,
         },
-        'QEMU':    {
+        'Kata':    {
             'latency-p99':  5.57,
             'throughput': 5006.76,
         },
@@ -199,7 +199,7 @@ groups = data.keys()
 xs = np.arange(len(groups))
 latencies = {}
 throughputs = {}
-for method in ['containerd', 'gVisor', 'QEMU']:
+for method in ['containerd', 'gVisor', 'Kata']:
     latencies[method] = [data[g][method]['latency-p99'] for g in groups]
     plt.figure()
     m = 0
