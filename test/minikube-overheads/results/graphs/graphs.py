@@ -5,12 +5,12 @@ import numpy as np
 # from cycler import cycler
 
 plt.rcParams['font.family'] = 'NewComputerModern08'
-plt.rcParams['font.size'] = 18
+plt.rcParams['font.size'] = 20
 # plt.rcParams['axes.prop_cycle'] = cycler('color', plt.get_cmap('Set2').colors)
 
 BAR_WIDTH = 0.2
 OUTSIDE_LEGEND_PARAMS = {
-    'bbox_to_anchor': (0.03, 1, 1, 0.2), # x0, y0, width, height
+    'bbox_to_anchor': (-0.01, 1, 1, 0.2), # x0, y0, width, height
     'frameon': False,
     'loc': 'lower left',
     'ncol': 3,
@@ -26,12 +26,12 @@ OUTSIDE_LEGEND_PARAMS = {
 # --------------------------- With 100 connections
 data_100 = {
     'Lighttpd': {
-        'containerd': { 'latency-p99': 1.06, 'throughput': 175210 },
+        'Our solution': { 'latency-p99': 1.06, 'throughput': 175210 },
         'gVisor':  { 'latency-p99': 3.41, 'throughput': 54100 },
         'Kata':    { 'latency-p99': 6.15, 'throughput': 34650 },
     },
     'Nginx': {
-        'containerd': { 'latency-p99': 1.18, 'throughput': 179750 },
+        'Our solution': { 'latency-p99': 1.18, 'throughput': 179750 },
         'gVisor':  { 'latency-p99': 13.29, 'throughput': 33390 },
         'Kata':    { 'latency-p99': 40.18, 'throughput': 3160 },
     },
@@ -39,12 +39,12 @@ data_100 = {
 # --------------------------- With 10 connections
 data = {
     'Lighttpd': {
-        'containerd': { 'latency-p99': 0.109, 'throughput': 139510 },
+        'Our solution': { 'latency-p99': 0.109, 'throughput': 139510 },
         'gVisor':     { 'latency-p99': 0.586, 'throughput': 41070 },
         'Kata':       { 'latency-p99': 0.512, 'throughput': 38010 },
     },
     'Nginx': {
-        'containerd': { 'latency-p99': 0.235, 'throughput': 136260 },
+        'Our solution': { 'latency-p99': 0.235, 'throughput': 136260 },
         'gVisor':     { 'latency-p99': 2.56, 'throughput': 27730 },
         'Kata':       { 'latency-p99': 4.16, 'throughput': 3120 },
     },
@@ -55,7 +55,7 @@ xs = np.arange(len(groups))
 latencies = {}
 throughputs = {}
 
-for method in ['containerd', 'gVisor', 'Kata']:
+for method in ['Our solution', 'gVisor', 'Kata']:
     latencies[method] = [data[g][method]['latency-p99'] for g in groups]
     plt.figure()
     m = 0
@@ -90,7 +90,7 @@ for method in ['containerd', 'gVisor', 'Kata']:
 # Latency in us
 data = {
     'MongoDB': {
-        'containerd': {
+        'Our solution': {
             'read-p99':  419,
             'write-p99': 429,
             'throughput': 2645.50,
@@ -107,7 +107,7 @@ data = {
         },
     },
     'Redis': {
-        'containerd': {
+        'Our solution': {
             'read-p99':  111,
             'write-p99': 98,
             'throughput': 16949.15,
@@ -129,7 +129,7 @@ groups = data.keys()
 xs = np.arange(len(groups))
 latencies = {}
 throughputs = {}
-for method in ['containerd', 'gVisor', 'Kata']:
+for method in ['Our solution', 'gVisor', 'Kata']:
     latencies[method] = [max(data[g][method]['read-p99'], data[g][method]['write-p99']) / 1000 for g in groups]
     plt.figure()
     m = 0
@@ -166,7 +166,7 @@ for method in ['containerd', 'gVisor', 'Kata']:
 # Latency in ms
 data = {
     'MySQL': {
-        'containerd': {
+        'Our solution': {
             'latency-p99':  16.12,
             'throughput': 2270.57,
         },
@@ -180,7 +180,7 @@ data = {
         },
     },
     'PostgreSQL': {
-        'containerd': {
+        'Our solution': {
             'latency-p99':  4.33,
             'throughput': 6991.39,
         },
@@ -199,7 +199,7 @@ groups = data.keys()
 xs = np.arange(len(groups))
 latencies = {}
 throughputs = {}
-for method in ['containerd', 'gVisor', 'Kata']:
+for method in ['Our solution', 'gVisor', 'Kata']:
     latencies[method] = [data[g][method]['latency-p99'] for g in groups]
     plt.figure()
     m = 0
