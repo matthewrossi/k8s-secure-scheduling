@@ -5,12 +5,12 @@ import numpy as np
 # from cycler import cycler
 
 plt.rcParams['font.family'] = 'NewComputerModern08'
-plt.rcParams['font.size'] = 20
+plt.rcParams['font.size'] = 23
 # plt.rcParams['axes.prop_cycle'] = cycler('color', plt.get_cmap('Set2').colors)
 
 BAR_WIDTH = 0.2
 OUTSIDE_LEGEND_PARAMS = {
-    'bbox_to_anchor': (-0.01, 1, 1, 0.2), # x0, y0, width, height
+    'bbox_to_anchor': (-0.15, 1, 1, 0.2), # x0, y0, width, height
     'frameon': False,
     'loc': 'lower left',
     'ncol': 3,
