@@ -11,20 +11,26 @@ if [[ "$filter" = "all" || "$filter" = "ycsb" ]]; then
   out="$projroot/test/minikube-overheads/results/$(uname -n)-nosql-db"
   mkdir -p "$out"
 
+  percentiles="hdrhistogram.percentiles=50,90,99"
+
   for service in $(kubectl get services -l app=redis -o name); do
     port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
     echo "[*] Testing $service at $(minikube ip):$port"
     name=$(echo $service | cut -d'/' -f2)
-    ./deps/ycsb-0.17.0/bin/ycsb.sh load redis -P ./deps/ycsb-0.17.0/workloads/workloada -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-load"
-    ./deps/ycsb-0.17.0/bin/ycsb.sh run redis -P  ./deps/ycsb-0.17.0/workloads/workloada -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-run"
+    ./deps/ycsb-0.17.0/bin/ycsb.sh load redis -P ./deps/ycsb-0.17.0/workloads/workloada \
+        -p "$percentiles" -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-load"
+    ./deps/ycsb-0.17.0/bin/ycsb.sh run redis -P  ./deps/ycsb-0.17.0/workloads/workloada \
+        -p "$percentiles" -p "redis.host=$(minikube ip)" -p "redis.port=$port" > "$out/$name-run"
   done
 
   for service in $(kubectl get services -l app=mongo -o name); do
     port=$(kubectl get $service -o json | jq '.spec.ports[0].nodePort')
     echo "[*] Testing $service at $(minikube ip):$port"
     name=$(echo $service | cut -d'/' -f2)
-    ./deps/ycsb-0.17.0/bin/ycsb.sh load mongodb -P ./deps/ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-load"
-    ./deps/ycsb-0.17.0/bin/ycsb.sh run  mongodb -P ./deps/ycsb-0.17.0/workloads/workloada -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-run"
+    ./deps/ycsb-0.17.0/bin/ycsb.sh load mongodb -P ./deps/ycsb-0.17.0/workloads/workloada \
+        -p "$percentiles" -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-load"
+    ./deps/ycsb-0.17.0/bin/ycsb.sh run  mongodb -P ./deps/ycsb-0.17.0/workloads/workloada \
+        -p "$percentiles" -p "mongodb.url=mongodb://$(minikube ip):$port" > "$out/$name-run"
   done
 fi
 
@@ -43,11 +49,13 @@ if [[ "$filter" = "all" || "$filter" = "sysbench" ]]; then
       --db-driver=pgsql --pgsql-host="$(minikube ip)" --pgsql-port=$port --pgsql-password=example \
       oltp_read_write.lua run > /dev/null
     # Actual test
-    sysbench \
-      --time=120 \
-      --db-driver=pgsql --pgsql-host="$(minikube ip)" --pgsql-port=$port --pgsql-password=example \
-      --percentile=99 \
-      oltp_read_write.lua run > "$out/$name"
+    for perc in 99 90 50; do
+      sysbench \
+        --time=120 \
+        --db-driver=pgsql --pgsql-host="$(minikube ip)" --pgsql-port=$port --pgsql-password=example \
+        --percentile=$perc \
+        oltp_read_write.lua run > "$out/$name-p$perc"
+    done
     sysbench \
       --db-driver=pgsql --pgsql-host="$(minikube ip)" --pgsql-port=$port --pgsql-password=example \
       oltp_read_write.lua cleanup
@@ -65,11 +73,13 @@ if [[ "$filter" = "all" || "$filter" = "sysbench" ]]; then
       --db-driver=mysql --mysql-host="$(minikube ip)" --mysql-port=$port --mysql-password=example \
       oltp_read_write.lua run > /dev/null
     # Actual test
-    sysbench \
-      --time=120 \
-      --db-driver=mysql --mysql-host="$(minikube ip)" --mysql-port=$port --mysql-password=example \
-      --percentile=99 \
-      oltp_read_write.lua run > "$out/$name"
+    for perc in 99 90 50; do
+      sysbench \
+        --time=120 \
+        --db-driver=mysql --mysql-host="$(minikube ip)" --mysql-port=$port --mysql-password=example \
+        --percentile=$perc \
+        oltp_read_write.lua run > "$out/$name-p$perc"
+    done
     sysbench \
       --db-driver=mysql --mysql-host="$(minikube ip)" --mysql-port=$port --mysql-password=example \
       oltp_read_write.lua cleanup
