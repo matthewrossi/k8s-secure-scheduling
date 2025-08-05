@@ -1,6 +1,6 @@
-/usr/bin/java  -classpath /home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/conf:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/HdrHistogram-2.1.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/core-0.17.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/htrace-core4-4.1.0-incubating.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-core-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-mapper-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/commons-pool2-2.4.2.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/jedis-2.9.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/redis-binding-0.17.0.jar site.ycsb.Client -load -db site.ycsb.db.RedisClient -P ./deps/ycsb-0.17.0/workloads/workloada -p redis.host=192.168.39.158 -p redis.port=31958
-[OVERALL], RunTime(ms), 216
-[OVERALL], Throughput(ops/sec), 4629.62962962963
+/usr/bin/java  -classpath /home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/conf:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/HdrHistogram-2.1.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/core-0.17.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/htrace-core4-4.1.0-incubating.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-core-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-mapper-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/commons-pool2-2.4.2.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/jedis-2.9.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/redis-binding/lib/redis-binding-0.17.0.jar site.ycsb.Client -load -db site.ycsb.db.RedisClient -P ./deps/ycsb-0.17.0/workloads/workloada -p hdrhistogram.percentiles=50,90,99 -p redis.host=192.168.39.129 -p redis.port=30150
+[OVERALL], RunTime(ms), 213
+[OVERALL], Throughput(ops/sec), 4694.835680751174
 [TOTAL_GCS_G1_Young_Generation], Count, 0
 [TOTAL_GC_TIME_G1_Young_Generation], Time(ms), 0
 [TOTAL_GC_TIME_%_G1_Young_Generation], Time(%), 0.0
@@ -14,15 +14,17 @@
 [TOTAL_GC_TIME], Time(ms), 0
 [TOTAL_GC_TIME_%], Time(%), 0.0
 [CLEANUP], Operations, 1
-[CLEANUP], AverageLatency(us), 319.0
-[CLEANUP], MinLatency(us), 319
-[CLEANUP], MaxLatency(us), 319
-[CLEANUP], 95thPercentileLatency(us), 319
-[CLEANUP], 99thPercentileLatency(us), 319
+[CLEANUP], AverageLatency(us), 352.0
+[CLEANUP], MinLatency(us), 352
+[CLEANUP], MaxLatency(us), 352
+[CLEANUP], 50thPercentileLatency(us), 352
+[CLEANUP], 90thPercentileLatency(us), 352
+[CLEANUP], 99thPercentileLatency(us), 352
 [INSERT], Operations, 1000
-[INSERT], AverageLatency(us), 194.742
-[INSERT], MinLatency(us), 114
-[INSERT], MaxLatency(us), 2799
-[INSERT], 95thPercentileLatency(us), 298
-[INSERT], 99thPercentileLatency(us), 426
+[INSERT], AverageLatency(us), 194.556
+[INSERT], MinLatency(us), 121
+[INSERT], MaxLatency(us), 2629
+[INSERT], 50thPercentileLatency(us), 178
+[INSERT], 90thPercentileLatency(us), 248
+[INSERT], 99thPercentileLatency(us), 394
 [INSERT], Return=OK, 1000
