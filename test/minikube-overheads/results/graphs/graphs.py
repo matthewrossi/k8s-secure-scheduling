@@ -26,27 +26,27 @@ OUTSIDE_LEGEND_PARAMS = {
 # --------------------------- With 100 connections
 data_100 = {
     'Lighttpd': {
-        'Our solution': { 'latency-p99': 1.06, 'throughput': 175210 },
-        'gVisor':  { 'latency-p99': 3.41, 'throughput': 54100 },
-        'Kata':    { 'latency-p99': 6.15, 'throughput': 34650 },
+        'Our solution': { 'latency-p99': 1.06,  'latency-p90': 0.71,  'latency-p50': 0.54,  'throughput': 175210 },
+        'gVisor':       { 'latency-p99': 3.41,  'latency-p90': 2.30,  'latency-p50': 1.83,  'throughput': 54100 },
+        'Kata':         { 'latency-p99': 6.15,  'latency-p90': 5.28,  'latency-p50': 3.46,  'throughput': 34650 },
     },
     'Nginx': {
-        'Our solution': { 'latency-p99': 1.18, 'throughput': 179750 },
-        'gVisor':  { 'latency-p99': 13.29, 'throughput': 33390 },
-        'Kata':    { 'latency-p99': 40.18, 'throughput': 3160 },
+        'Our solution': { 'latency-p99': 1.18,  'latency-p90': 0.73,  'latency-p50': 0.47,  'throughput': 179750 },
+        'gVisor':       { 'latency-p99': 13.29, 'latency-p90': 5.92,  'latency-p50': 2.64,  'throughput': 33390 },
+        'Kata':         { 'latency-p99': 40.18, 'latency-p90': 36.32, 'latency-p50': 31.93, 'throughput': 3160 },
     },
 }
 # --------------------------- With 10 connections
 data = {
     'Lighttpd': {
-        'Our solution': { 'latency-p99': 0.109, 'throughput': 139510 },
-        'gVisor':     { 'latency-p99': 0.586, 'throughput': 41070 },
-        'Kata':       { 'latency-p99': 0.512, 'throughput': 38010 },
+        'Our solution': { 'latency-p99': 0.109, 'latency-p90': 0.082, 'latency-p50': 0.070, 'throughput': 139510 },
+        'gVisor':       { 'latency-p99': 0.586, 'latency-p90': 0.345, 'latency-p50': 0.214, 'throughput': 41070 },
+        'Kata':         { 'latency-p99': 0.512, 'latency-p90': 0.358, 'latency-p50': 0.276, 'throughput': 38010 },
     },
     'Nginx': {
-        'Our solution': { 'latency-p99': 0.235, 'throughput': 136260 },
-        'gVisor':     { 'latency-p99': 2.56, 'throughput': 27730 },
-        'Kata':       { 'latency-p99': 4.16, 'throughput': 3120 },
+        'Our solution': { 'latency-p99': 0.235, 'latency-p90': 0.100, 'latency-p50': 0.064, 'throughput': 136260 },
+        'gVisor':       { 'latency-p99': 2.56,  'latency-p90': 0.797, 'latency-p50': 0.304, 'throughput': 27730 },
+        'Kata':         { 'latency-p99': 4.16,  'latency-p90': 3.67,  'latency-p50': 3.21,  'throughput': 3120 },
     },
 }
 
@@ -56,18 +56,21 @@ latencies = {}
 throughputs = {}
 
 for method in ['Our solution', 'gVisor', 'Kata']:
-    latencies[method] = [data[g][method]['latency-p99'] for g in groups]
-    plt.figure()
-    m = 0
-    for label, values in latencies.items():
-        offset = BAR_WIDTH * m
-        plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
-        m += 1
+    for perc in ['p99', 'p90', 'p50']:
+        latencies[method] = [data[g][method][f'latency-{perc}'] for g in groups]
+        plt.figure()
+        m = 0
+        for label, values in latencies.items():
+            offset = BAR_WIDTH * m
+            plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
+            m += 1
 
-    plt.xticks(xs + BAR_WIDTH, groups)
-    plt.ylabel('Latency [ms]')
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.savefig('web-servers-latency.pdf', bbox_inches='tight')
+        plt.xticks(xs + BAR_WIDTH, groups)
+        plt.ylabel('Latency [ms]')
+        plt.ylim(0, 4.3)
+        plt.legend(**OUTSIDE_LEGEND_PARAMS)
+        plt.savefig(f'web-servers-latency-{perc}.pdf', bbox_inches='tight')
+        plt.close()
 
     throughputs[method] = [data[g][method]['throughput'] / 1000 for g in groups]
     plt.figure()
