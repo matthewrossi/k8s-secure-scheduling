@@ -31,9 +31,19 @@ OUTSIDE_LEGEND_PARAMS = {
 data = {
     'Data\nSovereignty': {
         'scheduling-latency-p99': {
-            'Baseline': 1.70,
-            'Unconstrained': 1.80,
-            'Constrained': 3.83,
+            'Baseline': 1.700,
+            'Unconstrained': 1.803,
+            'Constrained': 4.300,
+        },
+        'scheduling-latency-p90': {
+            'Baseline': 0.922,
+            'Unconstrained': 0.929,
+            'Constrained': 1.396,
+        },
+        'scheduling-latency-p50': {
+            'Baseline': 0.513,
+            'Unconstrained': 0.516,
+            'Constrained': 0.581,
         },
         'scheduling-throughput': {
             'Baseline': 146,
@@ -43,9 +53,19 @@ data = {
     },
     'Multiple\nTenants': {
         'scheduling-latency-p99': {
-            'Baseline': 1.68,
-            'Unconstrained': 1.82,
-            'Constrained': 3.69,
+            'Baseline': 1.684,
+            'Unconstrained': 1.823,
+            'Constrained': 3.689,
+        },
+        'scheduling-latency-p90': {
+            'Baseline': 0.922,
+            'Unconstrained': 0.927,
+            'Constrained': 0.984,
+        },
+        'scheduling-latency-p50': {
+            'Baseline': 0.512,
+            'Unconstrained': 0.515,
+            'Constrained': 0.547,
         },
         'scheduling-throughput': {
             'Baseline': 143,
@@ -55,9 +75,19 @@ data = {
     },
     'Incompatible\nSecurity Levels': {
         'scheduling-latency-p99': {
-            'Baseline': 1.75,
-            'Unconstrained': 1.87,
-            'Constrained': 3.51,
+            'Baseline': 1.748,
+            'Unconstrained': 1.875,
+            'Constrained': 3.512,
+        },
+        'scheduling-latency-p90': {
+            'Baseline': 0.923,
+            'Unconstrained': 0.931,
+            'Constrained': 0.981,
+        },
+        'scheduling-latency-p50': {
+            'Baseline': 0.513,
+            'Unconstrained': 0.517,
+            'Constrained': 0.545,
         },
         'scheduling-throughput': {
             'Baseline': 179,
