@@ -81,7 +81,7 @@ for method in ['Our solution', 'gVisor', 'Kata']:
         m += 1
 
     plt.xticks(xs + BAR_WIDTH, groups)
-    yticks = range(0, 200, 40)
+    yticks = range(0, 200, 50)
     plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [req/s]')
     plt.legend(**OUTSIDE_LEGEND_PARAMS)
@@ -94,36 +94,36 @@ for method in ['Our solution', 'gVisor', 'Kata']:
 data = {
     'MongoDB': {
         'Our solution': {
-            'read-p99':  419,
-            'write-p99': 429,
-            'throughput': 2645.50,
+            'read-p99':  413, 'read-p90':  266, 'read-p50':  155,
+            'write-p99': 357, 'write-p90': 246, 'write-p50': 156,
+            'throughput': 2801.12,
         },
         'gVisor':  {
-            'read-p99':  554,
-            'write-p99': 500,
-            'throughput': 2183.41,
+            'read-p99':  461, 'read-p90':  371, 'read-p50':  253,
+            'write-p99': 549, 'write-p90': 365, 'write-p50': 258,
+            'throughput': 2222.22,
         },
         'Kata':    {
-            'read-p99':  536,
-            'write-p99': 448,
-            'throughput': 2398.08,
+            'read-p99':  801,  'read-p90':  333, 'read-p50':  198,
+            'write-p99': 2341, 'write-p90': 347, 'write-p50': 219,
+            'throughput': 2262.44,
         },
     },
     'Redis': {
         'Our solution': {
-            'read-p99':  111,
-            'write-p99': 98,
-            'throughput': 16949.15,
+            'read-p99':  110, 'read-p90':  48, 'read-p50':  33,
+            'write-p99': 101, 'write-p90': 53, 'write-p50': 37,
+            'throughput': 15873.02,
         },
         'gVisor':  {
-            'read-p99':  198,
-            'write-p99': 189,
-            'throughput': 8547.01,
+            'read-p99':  194, 'read-p90':  112, 'read-p50':  83,
+            'write-p99': 184, 'write-p90': 124, 'write-p50': 86,
+            'throughput': 8928.57,
         },
         'Kata':    {
-            'read-p99':  124,
-            'write-p99': 147,
-            'throughput': 10989.01,
+            'read-p99':  106, 'read-p90':  82, 'read-p50':  65,
+            'write-p99': 129, 'write-p90': 82, 'write-p50': 66,
+            'throughput': 11111.11,
         },
     },
 }
@@ -133,18 +133,20 @@ xs = np.arange(len(groups))
 latencies = {}
 throughputs = {}
 for method in ['Our solution', 'gVisor', 'Kata']:
-    latencies[method] = [max(data[g][method]['read-p99'], data[g][method]['write-p99']) / 1000 for g in groups]
-    plt.figure()
-    m = 0
-    for label, values in latencies.items():
-        offset = BAR_WIDTH * m
-        plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
-        m += 1
+    for perc in ['p99', 'p90', 'p50']:
+        latencies[method] = [max(data[g][method][f'read-{perc}'], data[g][method][f'write-{perc}']) / 1000 for g in groups]
+        plt.figure()
+        m = 0
+        for label, values in latencies.items():
+            offset = BAR_WIDTH * m
+            plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
+            m += 1
 
-    plt.xticks(xs + BAR_WIDTH, groups)
-    plt.ylabel('Latency [ms]')
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.savefig('nosql-latency.pdf', bbox_inches='tight')
+        plt.xticks(xs + BAR_WIDTH, groups)
+        plt.ylabel('Latency [ms]')
+        plt.legend(**OUTSIDE_LEGEND_PARAMS)
+        plt.savefig(f'nosql-latency-{perc}.pdf', bbox_inches='tight')
+        plt.close()
 
     throughputs[method] = [data[g][method]['throughput'] / 1000 for g in groups]
     plt.figure()
@@ -158,7 +160,7 @@ for method in ['Our solution', 'gVisor', 'Kata']:
     yticks = range(0, 21, 5)
     plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [q/s]')
-    plt.ylim(0, 21)
+    plt.ylim(0, 17)
     plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig('nosql-throughput.pdf', bbox_inches='tight')
 
@@ -167,33 +169,34 @@ for method in ['Our solution', 'gVisor', 'Kata']:
 # ============================================================ SQL (Sysbench)
 
 # Latency in ms
+# throughput is the best among all three
 data = {
     'MySQL': {
         'Our solution': {
-            'latency-p99':  16.12,
-            'throughput': 2270.57,
+            'latency-p99':  26.68, 'latency-p90': 20.74, 'latency-p50': 11.45,
+            'throughput': 1485.43,
         },
         'gVisor':  {
-            'latency-p99':  21.11,
-            'throughput': 1661.38,
+            'latency-p99':  26.20, 'latency-p90': 21.89, 'latency-p50': 16.41,
+            'throughput': 1168.28,
         },
         'Kata':    {
-            'latency-p99':  21.50,
-            'throughput': 1493.13,
+            'latency-p99':  33.12, 'latency-p90': 22.28, 'latency-p50': 13.22,
+            'throughput': 1318.14,
         },
     },
     'PostgreSQL': {
         'Our solution': {
-            'latency-p99':  4.33,
-            'throughput': 6991.39,
+            'latency-p99':  5.28, 'latency-p90': 3.13, 'latency-p50': 2.86,
+            'throughput': 6782.39,
         },
         'gVisor':  {
-            'latency-p99':  9.22,
-            'throughput': 3321.93,
+            'latency-p99':  10.65, 'latency-p90': 9.56, 'latency-p50': 8.58,
+            'throughput': 3234.48,
         },
         'Kata':    {
-            'latency-p99':  5.57,
-            'throughput': 5006.76,
+            'latency-p99':  9.06, 'latency-p90': 5.88, 'latency-p50': 5.37,
+            'throughput': 3690.98,
         },
     },
 }
@@ -203,18 +206,20 @@ xs = np.arange(len(groups))
 latencies = {}
 throughputs = {}
 for method in ['Our solution', 'gVisor', 'Kata']:
-    latencies[method] = [data[g][method]['latency-p99'] for g in groups]
-    plt.figure()
-    m = 0
-    for label, values in latencies.items():
-        offset = BAR_WIDTH * m
-        plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
-        m += 1
+    for perc in ['p99', 'p90', 'p50']:
+        latencies[method] = [data[g][method][f'latency-{perc}'] for g in groups]
+        plt.figure()
+        m = 0
+        for label, values in latencies.items():
+            offset = BAR_WIDTH * m
+            plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
+            m += 1
 
-    plt.xticks(xs + BAR_WIDTH, groups)
-    plt.ylabel('Latency [ms]')
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.savefig('sysbench-latency.pdf', bbox_inches='tight')
+        plt.xticks(xs + BAR_WIDTH, groups)
+        plt.ylabel('Latency [ms]')
+        plt.legend(**OUTSIDE_LEGEND_PARAMS)
+        plt.savefig(f'sysbench-latency-{perc}.pdf', bbox_inches='tight')
+        plt.close()
 
     throughputs[method] = [data[g][method]['throughput'] / 1000 for g in groups]
     plt.figure()
