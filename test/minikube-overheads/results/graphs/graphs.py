@@ -19,6 +19,19 @@ OUTSIDE_LEGEND_PARAMS = {
     'handletextpad': 0.4,
 }
 
+# The legend as a separate image
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+legend = plt.figure()
+line1, = ax.bar(0, 100)
+line2, = ax.bar(0, 100)
+line3, = ax.bar(0, 100)
+
+legend.legend([line1, line2, line3], ['Our solution', 'gVisor', 'Kata'], loc='center', ncol=3, handlelength=1, columnspacing=0.8, frameon=False)
+legend.savefig('legend.pdf', bbox_inches='tight')
+
 # ============================================================ Web Servers
 # 
 # Latency in ms
@@ -72,7 +85,7 @@ for soft in software:
 
     plt.xticks(xs + BAR_WIDTH, [f'P{p}' for p in percentiles])
     plt.ylabel('Latency [ms]')
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig(f'{soft.lower()}-latency.pdf', bbox_inches='tight')
     plt.close()
 
@@ -82,18 +95,19 @@ for soft in software:
     for method in methods:
         throughputs[method] = [data[soft][method]['throughput'] / 1000]
 
-    plt.figure()
+    plt.figure(figsize=(3, 5.5))
     m = 0
     for label, values in throughputs.items():
         offset = BAR_WIDTH * m
         plt.bar(offset, values, width=BAR_WIDTH, label=label)
         m += 1
 
+    plt.xlim(-0.4, 0.9)
     plt.xticks([])
     yticks = range(0, 200, 50)
     plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [req/s]')
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
     plt.close()
 
@@ -160,7 +174,7 @@ for soft in software:
 
     plt.xticks(xs + BAR_WIDTH, [f'P{p}' for p in percentiles])
     plt.ylabel('Latency [ms]')
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig(f'{soft.lower()}-latency.pdf', bbox_inches='tight')
     plt.close()
 
@@ -175,7 +189,7 @@ for soft in software:
     for method in methods:
         throughputs[method] = [data[soft][method]['throughput'] / 1000]
 
-    plt.figure()
+    plt.figure(figsize=(3, 5.5))
     m = 0
     for label, values in throughputs.items():
         offset = BAR_WIDTH * m
@@ -183,10 +197,11 @@ for soft in software:
         m += 1
 
     plt.xticks([])
+    plt.xlim(-0.4, 0.9)
     yticks = ticks[soft]
     plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [q/s]')
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
     plt.close()
 
@@ -248,7 +263,7 @@ for soft in software:
 
     plt.xticks(xs + BAR_WIDTH, [f'P{p}' for p in percentiles])
     plt.ylabel('Latency [ms]')
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig(f'{soft.lower()}-latency.pdf', bbox_inches='tight')
     plt.close()
 
@@ -263,17 +278,18 @@ for soft in software:
     for method in methods:
         throughputs[method] = [data[soft][method]['throughput'] / 1000]
 
-    plt.figure()
+    plt.figure(figsize=(3, 5.5))
     m = 0
     for label, values in throughputs.items():
         offset = BAR_WIDTH * m
         plt.bar(offset, values, width=BAR_WIDTH, label=label)
         m += 1
 
+    plt.xlim(-0.4, 0.9)
     plt.xticks([])
     yticks = ticks[soft]
     plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [q/s]')
-    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
     plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
     plt.close()
