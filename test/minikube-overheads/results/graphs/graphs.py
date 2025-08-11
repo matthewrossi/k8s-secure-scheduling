@@ -91,25 +91,26 @@ for soft in software:
 
 # Throughputs
 
-for soft in software:
-    for method in methods:
-        throughputs[method] = [data[soft][method]['throughput'] / 1000]
+with plt.rc_context({'xtick.color': 'white'}):
+    for soft in software:
+        for method in methods:
+            throughputs[method] = [data[soft][method]['throughput'] / 1000]
 
-    plt.figure(figsize=(3, 5.5))
-    m = 0
-    for label, values in throughputs.items():
-        offset = BAR_WIDTH * m
-        plt.bar(offset, values, width=BAR_WIDTH, label=label)
-        m += 1
+        plt.figure(figsize=(3, 5.5))
+        m = 0
+        for label, values in throughputs.items():
+            offset = BAR_WIDTH * m
+            plt.bar(offset, values, width=BAR_WIDTH, label=label)
+            m += 1
 
-    plt.xlim(-0.4, 0.9)
-    plt.xticks([])
-    yticks = range(0, 200, 50)
-    plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
-    plt.ylabel('Throughput [req/s]')
-    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
-    plt.close()
+        plt.xlim(-0.4, 0.9)
+        plt.xticks([0])
+        yticks = range(0, 200, 50)
+        plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
+        plt.ylabel('Throughput [req/s]')
+        # plt.legend(**OUTSIDE_LEGEND_PARAMS)
+        plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
+        plt.close()
 
 
 # ============================================================ NoSQL
@@ -185,25 +186,26 @@ ticks = {
     'Redis': range(0, 21, 5),
 }
 
-for soft in software:
-    for method in methods:
-        throughputs[method] = [data[soft][method]['throughput'] / 1000]
+with plt.rc_context({'xtick.color': 'white'}):
+    for soft in software:
+        for method in methods:
+            throughputs[method] = [data[soft][method]['throughput'] / 1000]
 
-    plt.figure(figsize=(3, 5.5))
-    m = 0
-    for label, values in throughputs.items():
-        offset = BAR_WIDTH * m
-        plt.bar(offset, values, width=BAR_WIDTH, label=label)
-        m += 1
+        plt.figure(figsize=(3, 5.5))
+        m = 0
+        for label, values in throughputs.items():
+            offset = BAR_WIDTH * m
+            plt.bar(offset, values, width=BAR_WIDTH, label=label)
+            m += 1
 
-    plt.xticks([])
-    plt.xlim(-0.4, 0.9)
-    yticks = ticks[soft]
-    plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
-    plt.ylabel('Throughput [q/s]')
-    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
-    plt.close()
+        plt.xticks([0])
+        plt.xlim(-0.4, 0.9)
+        yticks = ticks[soft]
+        plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
+        plt.ylabel('Throughput [q/s]')
+        # plt.legend(**OUTSIDE_LEGEND_PARAMS)
+        plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
+        plt.close()
 
 
 # ============================================================ SQL (Sysbench)
@@ -274,22 +276,23 @@ ticks = {
     'PostgreSQL': range(0, 8),
 }
 
-for soft in software:
-    for method in methods:
-        throughputs[method] = [data[soft][method]['throughput'] / 1000]
+with plt.rc_context({'xtick.color': 'white'}):
+    for soft in software:
+        for method in methods:
+            throughputs[method] = [data[soft][method]['throughput'] / 1000]
 
-    plt.figure(figsize=(3, 5.5))
-    m = 0
-    for label, values in throughputs.items():
-        offset = BAR_WIDTH * m
-        plt.bar(offset, values, width=BAR_WIDTH, label=label)
-        m += 1
+        plt.figure(figsize=(3, 5.5))
+        m = 0
+        for label, values in throughputs.items():
+            offset = BAR_WIDTH * m
+            plt.bar(offset, values, width=BAR_WIDTH, label=label)
+            m += 1
 
-    plt.xlim(-0.4, 0.9)
-    plt.xticks([])
-    yticks = ticks[soft]
-    plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
-    plt.ylabel('Throughput [q/s]')
-    # plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
-    plt.close()
+        plt.xlim(-0.4, 0.9)
+        plt.xticks([0])
+        yticks = ticks[soft]
+        plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
+        plt.ylabel('Throughput [q/s]')
+        # plt.legend(**OUTSIDE_LEGEND_PARAMS)
+        plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
+        plt.close()
