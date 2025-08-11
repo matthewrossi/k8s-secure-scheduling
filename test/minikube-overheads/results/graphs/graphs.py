@@ -50,42 +50,52 @@ data = {
     },
 }
 
-groups = data.keys()
-xs = np.arange(len(groups))
+software = data.keys()
+percentiles = [50, 90, 99]
+xs = np.arange(len(percentiles))
+methods = ['Our solution', 'gVisor', 'Kata']
 latencies = {}
 throughputs = {}
 
-for method in ['Our solution', 'gVisor', 'Kata']:
-    for perc in ['p99', 'p90', 'p50']:
-        latencies[method] = [data[g][method][f'latency-{perc}'] for g in groups]
-        plt.figure()
-        m = 0
-        for label, values in latencies.items():
-            offset = BAR_WIDTH * m
-            plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
-            m += 1
+# Latencies
 
-        plt.xticks(xs + BAR_WIDTH, groups)
-        plt.ylabel('Latency [ms]')
-        plt.ylim(0, 4.3)
-        plt.legend(**OUTSIDE_LEGEND_PARAMS)
-        plt.savefig(f'web-servers-latency-{perc}.pdf', bbox_inches='tight')
-        plt.close()
+for soft in software:
+    for method in methods:
+        latencies[method] = [data[soft][method][f'latency-p{p}'] for p in percentiles]
 
-    throughputs[method] = [data[g][method]['throughput'] / 1000 for g in groups]
     plt.figure()
     m = 0
-    for label, values in throughputs.items():
+    for label, values in latencies.items():
         offset = BAR_WIDTH * m
         plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
         m += 1
 
-    plt.xticks(xs + BAR_WIDTH, groups)
+    plt.xticks(xs + BAR_WIDTH, [f'P{p}' for p in percentiles])
+    plt.ylabel('Latency [ms]')
+    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    plt.savefig(f'{soft.lower()}-latency.pdf', bbox_inches='tight')
+    plt.close()
+
+# Throughputs
+
+for soft in software:
+    for method in methods:
+        throughputs[method] = [data[soft][method]['throughput'] / 1000]
+
+    plt.figure()
+    m = 0
+    for label, values in throughputs.items():
+        offset = BAR_WIDTH * m
+        plt.bar(offset, values, width=BAR_WIDTH, label=label)
+        m += 1
+
+    plt.xticks([])
     yticks = range(0, 200, 50)
     plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [req/s]')
     plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.savefig('web-servers-throughput.pdf', bbox_inches='tight')
+    plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
+    plt.close()
 
 
 # ============================================================ NoSQL
@@ -128,42 +138,57 @@ data = {
     },
 }
 
-groups = data.keys()
-xs = np.arange(len(groups))
+software = data.keys()
+percentiles = [50, 90, 99]
+xs = np.arange(len(percentiles))
+methods = ['Our solution', 'gVisor', 'Kata']
 latencies = {}
 throughputs = {}
-for method in ['Our solution', 'gVisor', 'Kata']:
-    for perc in ['p99', 'p90', 'p50']:
-        latencies[method] = [max(data[g][method][f'read-{perc}'], data[g][method][f'write-{perc}']) / 1000 for g in groups]
-        plt.figure()
-        m = 0
-        for label, values in latencies.items():
-            offset = BAR_WIDTH * m
-            plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
-            m += 1
 
-        plt.xticks(xs + BAR_WIDTH, groups)
-        plt.ylabel('Latency [ms]')
-        plt.legend(**OUTSIDE_LEGEND_PARAMS)
-        plt.savefig(f'nosql-latency-{perc}.pdf', bbox_inches='tight')
-        plt.close()
+# Latencies
 
-    throughputs[method] = [data[g][method]['throughput'] / 1000 for g in groups]
+for soft in software:
+    for method in methods:
+        latencies[method] = [max(data[soft][method][f'read-p{p}'], data[soft][method][f'write-p{p}']) / 1000 for p in percentiles]
+
     plt.figure()
     m = 0
-    for label, values in throughputs.items():
+    for label, values in latencies.items():
         offset = BAR_WIDTH * m
         plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
         m += 1
 
-    plt.xticks(xs + BAR_WIDTH, groups)
-    yticks = range(0, 21, 5)
+    plt.xticks(xs + BAR_WIDTH, [f'P{p}' for p in percentiles])
+    plt.ylabel('Latency [ms]')
+    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    plt.savefig(f'{soft.lower()}-latency.pdf', bbox_inches='tight')
+    plt.close()
+
+# Throughputs
+
+ticks = {
+    'MongoDB': range(0, 4),
+    'Redis': range(0, 21, 5),
+}
+
+for soft in software:
+    for method in methods:
+        throughputs[method] = [data[soft][method]['throughput'] / 1000]
+
+    plt.figure()
+    m = 0
+    for label, values in throughputs.items():
+        offset = BAR_WIDTH * m
+        plt.bar(offset, values, width=BAR_WIDTH, label=label)
+        m += 1
+
+    plt.xticks([])
+    yticks = ticks[soft]
     plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [q/s]')
-    plt.ylim(0, 17)
     plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.savefig('nosql-throughput.pdf', bbox_inches='tight')
-
+    plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
+    plt.close()
 
 
 # ============================================================ SQL (Sysbench)
@@ -201,37 +226,54 @@ data = {
     },
 }
 
-groups = data.keys()
-xs = np.arange(len(groups))
+software = data.keys()
+percentiles = [50, 90, 99]
+xs = np.arange(len(percentiles))
+methods = ['Our solution', 'gVisor', 'Kata']
 latencies = {}
 throughputs = {}
-for method in ['Our solution', 'gVisor', 'Kata']:
-    for perc in ['p99', 'p90', 'p50']:
-        latencies[method] = [data[g][method][f'latency-{perc}'] for g in groups]
-        plt.figure()
-        m = 0
-        for label, values in latencies.items():
-            offset = BAR_WIDTH * m
-            plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
-            m += 1
 
-        plt.xticks(xs + BAR_WIDTH, groups)
-        plt.ylabel('Latency [ms]')
-        plt.legend(**OUTSIDE_LEGEND_PARAMS)
-        plt.savefig(f'sysbench-latency-{perc}.pdf', bbox_inches='tight')
-        plt.close()
+# Latencies
 
-    throughputs[method] = [data[g][method]['throughput'] / 1000 for g in groups]
+for soft in software:
+    for method in methods:
+        latencies[method] = [data[soft][method][f'latency-p{p}'] for p in percentiles]
+
     plt.figure()
     m = 0
-    for label, values in throughputs.items():
+    for label, values in latencies.items():
         offset = BAR_WIDTH * m
         plt.bar(xs + offset, values, width=BAR_WIDTH, label=label)
         m += 1
 
-    plt.xticks(xs + BAR_WIDTH, groups)
-    yticks = range(0, 8)
+    plt.xticks(xs + BAR_WIDTH, [f'P{p}' for p in percentiles])
+    plt.ylabel('Latency [ms]')
+    plt.legend(**OUTSIDE_LEGEND_PARAMS)
+    plt.savefig(f'{soft.lower()}-latency.pdf', bbox_inches='tight')
+    plt.close()
+
+# Throughputs
+
+ticks = {
+    'MySQL': range(0, 2),
+    'PostgreSQL': range(0, 8),
+}
+
+for soft in software:
+    for method in methods:
+        throughputs[method] = [data[soft][method]['throughput'] / 1000]
+
+    plt.figure()
+    m = 0
+    for label, values in throughputs.items():
+        offset = BAR_WIDTH * m
+        plt.bar(offset, values, width=BAR_WIDTH, label=label)
+        m += 1
+
+    plt.xticks([])
+    yticks = ticks[soft]
     plt.yticks(ticks=yticks, labels=[f'{k}K' if k != 0 else '0' for k in yticks])
     plt.ylabel('Throughput [q/s]')
     plt.legend(**OUTSIDE_LEGEND_PARAMS)
-    plt.savefig('sysbench-throughput.pdf', bbox_inches='tight')
+    plt.savefig(f'{soft.lower()}-throughput.pdf', bbox_inches='tight')
+    plt.close()
