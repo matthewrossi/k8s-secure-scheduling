@@ -272,7 +272,7 @@ for soft in software:
 # Throughputs
 
 ticks = {
-    'MySQL': range(0, 2),
+    'MySQL': [x / 10.0 for x in range(0, 20, 3)],
     'PostgreSQL': range(0, 8),
 }
 
