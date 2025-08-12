@@ -119,19 +119,19 @@ with plt.rc_context({'xtick.color': 'white'}):
 data = {
     'MongoDB': {
         'Our solution': {
-            'read-p99':  413, 'read-p90':  266, 'read-p50':  155,
-            'write-p99': 357, 'write-p90': 246, 'write-p50': 156,
-            'throughput': 2801.12,
+            'read-p99':  399, 'read-p90':  251, 'read-p50':  153,
+            'write-p99': 400, 'write-p90': 248, 'write-p50': 157,
+            'throughput': 2777.78,
         },
         'gVisor':  {
-            'read-p99':  461, 'read-p90':  371, 'read-p50':  253,
-            'write-p99': 549, 'write-p90': 365, 'write-p50': 258,
-            'throughput': 2222.22,
+            'read-p99':  601, 'read-p90':  376, 'read-p50':  248,
+            'write-p99': 503, 'write-p90': 380, 'write-p50': 257,
+            'throughput': 2178.65,
         },
         'Kata':    {
-            'read-p99':  801,  'read-p90':  333, 'read-p50':  198,
-            'write-p99': 2341, 'write-p90': 347, 'write-p50': 219,
-            'throughput': 2262.44,
+            'read-p99':  494, 'read-p90':  309, 'read-p50':  197,
+            'write-p99': 489, 'write-p90': 311, 'write-p50': 208,
+            'throughput': 2469.14,
         },
     },
     'Redis': {
@@ -215,16 +215,16 @@ with plt.rc_context({'xtick.color': 'white'}):
 data = {
     'MySQL': {
         'Our solution': {
-            'latency-p99':  26.68, 'latency-p90': 20.74, 'latency-p50': 11.45,
-            'throughput': 1485.43,
+            'latency-p99':  20.00, 'latency-p90': 15.83, 'latency-p50': 11.45,
+            'throughput': 1876.92,
         },
         'gVisor':  {
-            'latency-p99':  26.20, 'latency-p90': 21.89, 'latency-p50': 16.41,
-            'throughput': 1168.28,
+            'latency-p99':  27.66, 'latency-p90': 22.69, 'latency-p50': 17.32,
+            'throughput': 1165.94,
         },
         'Kata':    {
-            'latency-p99':  33.12, 'latency-p90': 22.28, 'latency-p50': 13.22,
-            'throughput': 1318.14,
+            'latency-p99':  30.81, 'latency-p90': 26.20, 'latency-p50': 17.95,
+            'throughput': 1177.54,
         },
     },
     'PostgreSQL': {
