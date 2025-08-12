@@ -1,7 +1,7 @@
-/usr/bin/java  -classpath /home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/conf:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/HdrHistogram-2.1.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/core-0.17.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/htrace-core4-4.1.0-incubating.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-core-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-mapper-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/logback-classic-1.1.2.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/logback-core-1.1.2.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/mongo-java-driver-3.8.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/mongodb-async-driver-2.0.1.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/mongodb-binding-0.17.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/slf4j-api-1.7.25.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/snappy-java-1.1.7.1.jar site.ycsb.Client -load -db site.ycsb.db.MongoDbClient -P ./deps/ycsb-0.17.0/workloads/workloada -p hdrhistogram.percentiles=50,90,99 -p mongodb.url=mongodb://192.168.39.129:30812
-mongo client connection created with mongodb://192.168.39.129:30812
-[OVERALL], RunTime(ms), 450
-[OVERALL], Throughput(ops/sec), 2222.222222222222
+/usr/bin/java  -classpath /home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/conf:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/HdrHistogram-2.1.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/core-0.17.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/htrace-core4-4.1.0-incubating.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-core-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/lib/jackson-mapper-asl-1.9.4.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/logback-classic-1.1.2.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/logback-core-1.1.2.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/mongo-java-driver-3.8.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/mongodb-async-driver-2.0.1.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/mongodb-binding-0.17.0.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/slf4j-api-1.7.25.jar:/home/michele/git/code/k8s-secure-scheduling/test/minikube-overheads/deps/ycsb-0.17.0/mongodb-binding/lib/snappy-java-1.1.7.1.jar site.ycsb.Client -load -db site.ycsb.db.MongoDbClient -P ./deps/ycsb-0.17.0/workloads/workloada -p hdrhistogram.percentiles=50,90,99 -p mongodb.url=mongodb://192.168.39.49:32382
+mongo client connection created with mongodb://192.168.39.49:32382
+[OVERALL], RunTime(ms), 392
+[OVERALL], Throughput(ops/sec), 2551.0204081632655
 [TOTAL_GCS_G1_Young_Generation], Count, 0
 [TOTAL_GC_TIME_G1_Young_Generation], Time(ms), 0
 [TOTAL_GC_TIME_%_G1_Young_Generation], Time(%), 0.0
@@ -15,17 +15,17 @@ mongo client connection created with mongodb://192.168.39.129:30812
 [TOTAL_GC_TIME], Time(ms), 0
 [TOTAL_GC_TIME_%], Time(%), 0.0
 [CLEANUP], Operations, 1
-[CLEANUP], AverageLatency(us), 746.0
-[CLEANUP], MinLatency(us), 746
-[CLEANUP], MaxLatency(us), 746
-[CLEANUP], 50thPercentileLatency(us), 746
-[CLEANUP], 90thPercentileLatency(us), 746
-[CLEANUP], 99thPercentileLatency(us), 746
+[CLEANUP], AverageLatency(us), 784.0
+[CLEANUP], MinLatency(us), 784
+[CLEANUP], MaxLatency(us), 784
+[CLEANUP], 50thPercentileLatency(us), 784
+[CLEANUP], 90thPercentileLatency(us), 784
+[CLEANUP], 99thPercentileLatency(us), 784
 [INSERT], Operations, 1000
-[INSERT], AverageLatency(us), 228.272
-[INSERT], MinLatency(us), 78
-[INSERT], MaxLatency(us), 89535
-[INSERT], 50thPercentileLatency(us), 118
+[INSERT], AverageLatency(us), 233.654
+[INSERT], MinLatency(us), 80
+[INSERT], MaxLatency(us), 93503
+[INSERT], 50thPercentileLatency(us), 126
 [INSERT], 90thPercentileLatency(us), 223
-[INSERT], 99thPercentileLatency(us), 392
+[INSERT], 99thPercentileLatency(us), 344
 [INSERT], Return=OK, 1000
